@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RPG Profile - Completed Tasks</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-6">
+  <h1 class="text-3xl font-bold text-yellow-400 mb-6">🌟 Your RPG Profile</h1>
+  <p class="mb-6 text-gray-400">Here are the tasks, books, and podcasts you have completed for all RPG topics.</p>
+
+  <div id="profileContent" class="space-y-10 max-w-4xl mx-auto"></div>
+
+  <script>
+    const profileContent = document.getElementById('profileContent');
+
+    // Book & podcast titles (same for all pages, adjust as needed)
+    const bookTitles = [
+      "AWS Certified Solutions Architect Official Study Guide",
+      "Amazon Web Services in Action",
+      "Serverless Architectures on AWS",
+      "AWS Lambda in Action",
+      "Learning AWS EventBridge (eBook/Blog Series)"
+    ];
+
+    const podcastTitles = [
+      "AWS Podcast",
+      "Serverless Chats",
+      "The Cloudcast",
+      "AWS TechChat",
+      "Software Engineering Daily (AWS episodes)"
+    ];
+
+    function createSection(title, contentElements) {
+      const section = document.createElement('section');
+      section.className = 'bg-gray-800 p-5 rounded shadow';
+
+      const h2 = document.createElement('h2');
+      h2.textContent = title;
+      h2.className = 'text-yellow-400 font-bold text-xl mb-3';
+      section.appendChild(h2);
+
+      if (contentElements.length === 0) {
+        const emptyMsg = document.createElement('p');
+        emptyMsg.textContent = 'No items completed yet.';
+        emptyMsg.className = 'text-gray-400 italic';
+        section.appendChild(emptyMsg);
+      } else {
+        section.appendChild(contentElements);
+      }
+
+      return section;
+    }
+
+    function createList(items) {
+      const ul = document.createElement('ul');
+      ul.className = 'list-disc list-inside space-y-1';
+      items.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        ul.appendChild(li);
+      });
+      return ul;
+    }
+
+    // Group localStorage keys by topic (prefix)
+    const keys = Object.keys(localStorage);
+    const topics = {};
+
+    keys.forEach(key => {
+      const match = key.match(/(.*?)_(tasks|books|podcasts)/);
+      if (match) {
+        const topic = match[1];
+        if (!topics[topic]) topics[topic] = {};
+        topics[topic][match[2]] = JSON.parse(localStorage.getItem(key)) || [];
+      }
+    });
+
+    if (Object.keys(topics).length === 0) {
+      profileContent.textContent = "No RPG data found yet.";
+    } else {
+      for (const topic in topics) {
+        const topicData = topics[topic];
+        const topicSection = document.createElement('section');
+        topicSection.className = 'bg-gray-700 p-6 rounded shadow space-y-4';
+
+        const topicTitle = document.createElement('h2');
+        topicTitle.textContent = `📚 ${topic.replace(/_/g, ' ').toUpperCase()}`;
+        topicTitle.className = 'text-yellow-300 font-semibold text-2xl';
+        topicSection.appendChild(topicTitle);
+
+        // Tasks
+        const completedTasksByLevel = {};
+        (topicData.tasks || []).forEach(task => {
+          if (task.completed) {
+            if (!completedTasksByLevel[task.level]) completedTasksByLevel[task.level] = [];
+            completedTasksByLevel[task.level].push(task.description);
+          }
+        });
+
+        const tasksFragment = document.createDocumentFragment();
+        let hasAnyTask = false;
+        for (const level in completedTasksByLevel) {
+          const levelTitle = document.createElement('h3');
+          levelTitle.textContent = `Level ${level}`;
+          levelTitle.className = 'text-yellow-200 font-semibold mt-4 mb-1';
+
+          const ul = createList(completedTasksByLevel[level]);
+
+          tasksFragment.appendChild(levelTitle);
+          tasksFragment.appendChild(ul);
+          hasAnyTask = true;
+        }
+
+        topicSection.appendChild(createSection('✅ Completed Tasks', hasAnyTask ? tasksFragment : []));
+
+        // Books
+        const completedBooks = (topicData.books || []).map((v, i) => v ? bookTitles[i] : null).filter(Boolean);
+        topicSection.appendChild(createSection('📖 Completed Books', completedBooks.length ? createList(completedBooks) : []));
+
+        // Podcasts
+        const completedPodcasts = (topicData.podcasts || []).map((v, i) => v ? podcastTitles[i] : null).filter(Boolean);
+        topicSection.appendChild(createSection('🎧 Completed Podcasts', completedPodcasts.length ? createList(completedPodcasts) : []));
+
+        profileContent.appendChild(topicSection);
+      }
+    }
+  </script>
+</body>
+</html>
