@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MySQL Wizardry RPG Tracker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .completed { text-decoration: line-through; color: #888; }
+</style>
+</head>
+<body class="p-6 max-w-7xl mx-auto">
+<h1 class="text-4xl font-extrabold text-blue-400 mb-6">🐬 MySQL Wizardry RPG Tracker</h1>
+<p class="mb-8 text-gray-400">Level up your MySQL skills by completing tasks, reading essential books, and tuning into top database and DevOps podcasts!</p>
+
+<div class="flex flex-col md:flex-row gap-8">
+  <section class="flex-1 space-y-6" id="levelsContainer"></section>
+
+  <aside class="w-full md:w-96 bg-gray-800 rounded p-6 space-y-8">
+    <div>
+      <h2 class="text-xl font-bold text-blue-300 mb-3">📚 10 Must-Read MySQL & DB Books</h2>
+      <ul id="booksList" class="space-y-2">
+        <li><label><input type="checkbox" data-book="0" class="mr-2" />High Performance MySQL</label></li>
+        <li><label><input type="checkbox" data-book="1" class="mr-2" />MySQL 8 Cookbook</label></li>
+        <li><label><input type="checkbox" data-book="2" class="mr-2" />Learning MySQL</label></li>
+        <li><label><input type="checkbox" data-book="3" class="mr-2" />SQL Queries for Mere Mortals</label></li>
+        <li><label><input type="checkbox" data-book="4" class="mr-2" />SQL Antipatterns</label></li>
+        <li><label><input type="checkbox" data-book="5" class="mr-2" />Database Reliability Engineering</label></li>
+        <li><label><input type="checkbox" data-book="6" class="mr-2" />The Art of SQL</label></li>
+        <li><label><input type="checkbox" data-book="7" class="mr-2" />MySQL Administrator’s Bible</label></li>
+        <li><label><input type="checkbox" data-book="8" class="mr-2" />SQL Performance Explained</label></li>
+        <li><label><input type="checkbox" data-book="9" class="mr-2" />Designing Data-Intensive Applications</label></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-blue-300 mb-3">🎧 5 Popular Database & DevOps Podcasts</h2>
+      <ul id="podcastsList" class="space-y-2">
+        <li><label><input type="checkbox" data-podcast="0" class="mr-2" />Data Engineering Podcast</label></li>
+        <li><label><input type="checkbox" data-podcast="1" class="mr-2" />SQL Data Partners</label></li>
+        <li><label><input type="checkbox" data-podcast="2" class="mr-2" />The Cloudcast</label></li>
+        <li><label><input type="checkbox" data-podcast="3" class="mr-2" />Software Engineering Daily</label></li>
+        <li><label><input type="checkbox" data-podcast="4" class="mr-2" />The InfoQ Podcast</label></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<div class="mt-8">
+  <p class="text-gray-400 mb-2">Overall Progress:</p>
+  <div class="h-5 bg-gray-700 rounded overflow-hidden">
+    <div id="progressBar" class="h-5 bg-blue-500 transition-all duration-300"></div>
+  </div>
+  <p id="progressText" class="text-sm text-gray-400 mt-1"></p>
+</div>
+
+<script>
+const levels = [
+  "Level 1: MySQL Basics & Setup",
+  "Level 2: SQL Query Fundamentals",
+  "Level 3: Database Design & Schema",
+  "Level 4: Indexes & Performance",
+  "Level 5: Transactions & Locking",
+  "Level 6: Stored Procedures & Triggers",
+  "Level 7: Backup, Restore & Replication",
+  "Level 8: Security & User Management",
+  "Level 9: Monitoring & Troubleshooting",
+  "Level 10: Real-world MySQL Projects"
+];
+
+const levelTasks = [
+  [
+    "Install MySQL Server locally",
+    "Understand MySQL architecture",
+    "Start and stop MySQL service",
+    "Connect using MySQL CLI",
+    "Create your first database",
+    "Create tables with appropriate data types",
+    "Insert data using INSERT statements",
+    "Explore the MySQL Workbench UI",
+    "Understand NULL and default values",
+    "Practice basic SELECT queries"
+  ],
+  [
+    "Write SELECT with WHERE filters",
+    "Use JOINs: INNER, LEFT, RIGHT",
+    "Apply GROUP BY and HAVING",
+    "Practice ORDER BY and LIMIT",
+    "Use aggregate functions COUNT, SUM, AVG",
+    "Write subqueries and correlated subqueries",
+    "Implement UNION and UNION ALL",
+    "Use DISTINCT and aliases",
+    "Update and delete rows safely",
+    "Learn conditional CASE statements"
+  ],
+  [
+    "Design normalized schema (1NF, 2NF, 3NF)",
+    "Define primary and foreign keys",
+    "Implement unique constraints",
+    "Understand ENUM and SET types",
+    "Model many-to-many relationships",
+    "Practice schema migrations",
+    "Use indexes in schema design",
+    "Explore InnoDB vs MyISAM storage engines",
+    "Implement CHECK constraints (MySQL 8+)",
+    "Create views for reusable queries"
+  ],
+  [
+    "Create single and composite indexes",
+    "Analyze queries with EXPLAIN",
+    "Use FULLTEXT indexes",
+    "Optimize SELECT queries using indexes",
+    "Understand index coverage",
+    "Monitor slow queries and logs",
+    "Use OPTIMIZE TABLE to defragment",
+    "Understand performance impact of indexes on writes",
+    "Use persistent optimizer statistics",
+    "Avoid common indexing pitfalls"
+  ],
+  [
+    "Manage transactions with START, COMMIT, ROLLBACK",
+    "Understand isolation levels and locking",
+    "Implement optimistic vs pessimistic locking",
+    "Use GET_LOCK for application-level locks",
+    "Learn about deadlocks and how to resolve",
+    "Practice multi-statement transactions",
+    "Explore locking read and write conflicts",
+    "Use foreign key constraints with cascading",
+    "Understand autocommit behavior",
+    "Use SAVEPOINTS in complex transactions"
+  ],
+  [
+    "Create and call stored procedures",
+    "Write functions and triggers",
+    "Understand trigger event timings (BEFORE/AFTER)",
+    "Manage stored routine permissions",
+    "Debug stored routines effectively",
+    "Use variables and control flow in procedures",
+    "Create events for scheduled jobs",
+    "Explore cursors in stored procedures",
+    "Handle errors inside routines",
+    "Practice writing complex triggers"
+  ],
+  [
+    "Backup MySQL database with mysqldump",
+    "Restore database from backups",
+    "Use binary logs for point-in-time recovery",
+    "Set up master-slave replication",
+    "Understand GTIDs and replication formats",
+    "Practice failover and recovery",
+    "Automate backups with cron jobs",
+    "Use MySQL Enterprise Backup (if available)",
+    "Monitor replication status",
+    "Set up multi-source replication"
+  ],
+  [
+    "Create users and manage privileges",
+    "Implement password policies",
+    "Use roles for permission groups",
+    "Secure connections with SSL/TLS",
+    "Audit user activity",
+    "Use encryption at rest and in transit",
+    "Limit user resource usage",
+    "Configure firewall and network rules",
+    "Understand MySQL authentication plugins",
+    "Review and tighten security settings"
+  ],
+  [
+    "Monitor server status variables",
+    "Use Performance Schema",
+    "Analyze slow query logs",
+    "Tune MySQL configuration parameters",
+    "Diagnose locking and deadlocks",
+    "Monitor resource usage (CPU, memory, disk)",
+    "Use tools like MySQLTuner",
+    "Understand error logs and warnings",
+    "Set up alerting for critical issues",
+    "Document troubleshooting workflows"
+  ],
+  [
+    "Build a simple blog CMS with MySQL backend",
+    "Create a user authentication system",
+    "Implement inventory or sales tracking app",
+    "Build a personal finance tracker",
+    "Design a real-time chat app backend",
+    "Develop a task management tool",
+    "Create a small e-commerce demo",
+    "Build reporting dashboards",
+    "Integrate MySQL with your favorite language/framework",
+    "Publish your project and documentation"
+  ]
+];
+
+const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+  tasksInLevel.map(desc => ({
+    id: `${levelIndex}-${desc}`,
+    description: desc,
+    level: levelIndex + 1,
+    completed: false
+  }))
+);
+
+const savedTasks = JSON.parse(localStorage.getItem('mysql_tasks')) || tasks;
+const savedBooks = JSON.parse(localStorage.getItem('mysql_books')) || Array(10).fill(false);
+const savedPodcasts = JSON.parse(localStorage.getItem('mysql_podcasts')) || Array(5).fill(false);
+
+const levelsContainer = document.getElementById('levelsContainer');
+const booksList = document.getElementById('booksList');
+const podcastsList = document.getElementById('podcastsList');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+
+function renderLevels() {
+  levelsContainer.innerHTML = '';
+  levels.forEach((levelTitle, i) => {
+    const levelNum = i + 1;
+    const div = document.createElement('section');
+    div.className = 'bg-gray-700 rounded p-4';
+    const h2 = document.createElement('h2');
+    h2.className = 'text-lg font-semibold text-blue-300 mb-3';
+    h2.textContent = levelTitle;
+    div.appendChild(h2);
+    const ul = document.createElement('ul');
+    ul.className = 'space-y-2';
+    savedTasks.filter(t => t.level === levelNum).forEach(task => {
+      const li = document.createElement('li');
+      li.className = 'flex items-center bg-gray-600 rounded p-2';
+      li.innerHTML = `
+        <input type="checkbox" class="mr-3 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+        <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+      `;
+      ul.appendChild(li);
+    });
+    div.appendChild(ul);
+    levelsContainer.appendChild(div);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const completedCount = savedTasks.filter(t => t.completed).length;
+  const totalCount = savedTasks.length;
+  const percent = Math.round((completedCount / totalCount) * 100);
+  progressBar.style.width = `${percent}%`;
+  progressText.textContent = `${completedCount}/${totalCount} tasks completed (${percent}%)`;
+}
+
+document.body.addEventListener('change', e => {
+  if (e.target.matches('.task-checkbox')) {
+    const id = e.target.dataset.id;
+    const task = savedTasks.find(t => t.id === id);
+    if (task) {
+      task.completed = e.target.checked;
+      localStorage.setItem('mysql_tasks', JSON.stringify(savedTasks));
+      renderLevels();
+    }
+  }
+  if (e.target.matches('[data-book]')) {
+    const idx = parseInt(e.target.dataset.book, 10);
+    savedBooks[idx] = e.target.checked;
+    localStorage.setItem('mysql_books', JSON.stringify(savedBooks));
+  }
+  if (e.target.matches('[data-podcast]')) {
+    const idx = parseInt(e.target.dataset.podcast, 10);
+    savedPodcasts[idx] = e.target.checked;
+    localStorage.setItem('mysql_podcasts', JSON.stringify(savedPodcasts));
+  }
+});
+
+function renderBooks() {
+  savedBooks.forEach((checked, i) => {
+    const el = booksList.querySelector(`[data-book="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+function renderPodcasts() {
+  savedPodcasts.forEach((checked, i) => {
+    const el = podcastsList.querySelector(`[data-podcast="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+
+renderLevels();
+renderBooks();
+renderPodcasts();
+</script>
+</body>
+</html>

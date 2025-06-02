@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AWS CDK Wizardry RPG Tracker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .completed { text-decoration: line-through; color: #888; }
+</style>
+</head>
+<body class="p-6 max-w-7xl mx-auto">
+<h1 class="text-4xl font-extrabold text-purple-400 mb-6">🛠️ AWS CDK Wizardry RPG Tracker</h1>
+<p class="mb-8 text-gray-400">Become an AWS CDK master by conquering tasks, reading must-have books, and listening to essential podcasts!</p>
+
+<div class="flex flex-col md:flex-row gap-8">
+  <section class="flex-1 space-y-6" id="levelsContainer"></section>
+
+  <aside class="w-full md:w-96 bg-gray-800 rounded p-6 space-y-8">
+    <div>
+      <h2 class="text-xl font-bold text-purple-300 mb-3">📚 10 Must-Read AWS CDK Books</h2>
+      <ul id="booksList" class="space-y-2">
+        <li><label><input type="checkbox" data-book="0" class="mr-2" />AWS CDK in Action</label></li>
+        <li><label><input type="checkbox" data-book="1" class="mr-2" />Infrastructure as Code (Morris)</label></li>
+        <li><label><input type="checkbox" data-book="2" class="mr-2" />AWS CDK for Developers</label></li>
+        <li><label><input type="checkbox" data-book="3" class="mr-2" />Mastering AWS CDK</label></li>
+        <li><label><input type="checkbox" data-book="4" class="mr-2" />Learning AWS CDK</label></li>
+        <li><label><input type="checkbox" data-book="5" class="mr-2" />Practical AWS CDK</label></li>
+        <li><label><input type="checkbox" data-book="6" class="mr-2" />AWS Cloud Development Kit (CDK) Handbook</label></li>
+        <li><label><input type="checkbox" data-book="7" class="mr-2" />AWS CDK Essentials</label></li>
+        <li><label><input type="checkbox" data-book="8" class="mr-2" />Serverless Architectures with CDK</label></li>
+        <li><label><input type="checkbox" data-book="9" class="mr-2" />CDK Patterns</label></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-purple-300 mb-3">🎧 5 Popular AWS CDK Podcasts</h2>
+      <ul id="podcastsList" class="space-y-2">
+        <li><label><input type="checkbox" data-podcast="0" class="mr-2" />AWS Podcast</label></li>
+        <li><label><input type="checkbox" data-podcast="1" class="mr-2" />Screaming in the Cloud</label></li>
+        <li><label><input type="checkbox" data-podcast="2" class="mr-2" />The Cloudcast</label></li>
+        <li><label><input type="checkbox" data-podcast="3" class="mr-2" />Day Two Cloud</label></li>
+        <li><label><input type="checkbox" data-podcast="4" class="mr-2" />AWS Developers Podcast</label></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<div class="mt-8">
+  <p class="text-gray-400 mb-2">Overall Progress:</p>
+  <div class="h-5 bg-gray-700 rounded overflow-hidden">
+    <div id="progressBar" class="h-5 bg-purple-500 transition-all duration-300"></div>
+  </div>
+  <p id="progressText" class="text-sm text-gray-400 mt-1"></p>
+</div>
+
+<script>
+const levels = [
+  "Level 1: Getting Started",
+  "Level 2: Basic CDK Constructs",
+  "Level 3: Stacks and Deployment",
+  "Level 4: Context and Parameters",
+  "Level 5: CDK Constructs Library",
+  "Level 6: Advanced Constructs",
+  "Level 7: Testing & Validation",
+  "Level 8: CI/CD Integration",
+  "Level 9: Multi-Account & Multi-Region",
+  "Level 10: Best Practices & Advanced Patterns"
+];
+
+const levelTasks = [
+  [
+    "Install AWS CDK CLI",
+    "Set up AWS credentials",
+    "Bootstrap a CDK app",
+    "Understand app, stack, and construct",
+    "Run cdk synth",
+    "Run cdk deploy",
+    "Explore cdk diff",
+    "Destroy stack with cdk destroy",
+    "Update AWS CLI and CDK versions",
+    "Explore the CDK Workshop"
+  ],
+  [
+    "Create a simple S3 bucket using CDK",
+    "Add a DynamoDB table construct",
+    "Add an SNS topic",
+    "Explore L1 constructs",
+    "Use L2 constructs for Lambda",
+    "Understand CDK core module",
+    "Work with EC2 instance constructs",
+    "Add a basic VPC construct",
+    "Deploy a simple API Gateway",
+    "Use CDK context variables"
+  ],
+  [
+    "Understand deployment lifecycle",
+    "Use CDK Toolkit commands",
+    "Explore multiple stacks",
+    "Deploy stack dependencies",
+    "Use environment variables in stacks",
+    "Use nested stacks",
+    "Handle environment-specific stacks",
+    "Clean up unused stacks",
+    "Track changes with cdk diff",
+    "Explore CDK CloudFormation output"
+  ],
+  [
+    "Use CDK context for environment-specific logic",
+    "Add stack parameters",
+    "Use environment variables in code",
+    "Explore asset management (bundling assets)",
+    "Use cdk.json for configuration",
+    "Use cdk.context.json file",
+    "Understand CDK environment files",
+    "Use SSM parameters with CDK",
+    "Explore dynamic context usage",
+    "Secure sensitive information"
+  ],
+  [
+    "Explore CDK construct library (L2 constructs)",
+    "Deploy an ECS service",
+    "Add an RDS instance",
+    "Use Lambda integrations with API Gateway",
+    "Add an SQS queue",
+    "Explore higher-level constructs",
+    "Use Step Functions with CDK",
+    "Create a CodePipeline with CDK",
+    "Use CDK for IAM policies",
+    "Integrate S3 event notifications"
+  ],
+  [
+    "Build a custom construct",
+    "Understand construct lifecycle",
+    "Explore escape hatches for L1 resources",
+    "Add metadata to constructs",
+    "Use tokens and lazy evaluation",
+    "Add dependencies between constructs",
+    "Manage resource policies",
+    "Create reusable patterns",
+    "Use aspect-oriented programming",
+    "Explore CDK construct hub"
+  ],
+  [
+    "Write unit tests for CDK stacks",
+    "Use assertions for synthesized templates",
+    "Write integration tests",
+    "Use AWS Solutions Constructs",
+    "Check for resource compliance",
+    "Run cdk doctor",
+    "Use CloudFormation template validators",
+    "Test cross-stack references",
+    "Validate outputs and dependencies",
+    "Explore snapshot testing"
+  ],
+  [
+    "Integrate CDK in CodePipeline",
+    "Automate deployments via GitHub Actions",
+    "Use CDK with CodeBuild",
+    "Automate stack updates",
+    "Add tests to CI/CD pipeline",
+    "Handle rollback scenarios",
+    "Deploy CDK via CLI in CI",
+    "Secure deployments with IAM roles",
+    "Deploy CDK with CodeDeploy",
+    "Explore continuous delivery best practices"
+  ],
+  [
+    "Understand CDK environments (env)",
+    "Use cross-account roles",
+    "Set up a central deployment account",
+    "Manage cross-region resources",
+    "Use AWS Organizations",
+    "Deploy to multiple AWS accounts",
+    "Handle cross-stack dependencies",
+    "Use StackSets for global resources",
+    "Secure multi-account access",
+    "Implement governance best practices"
+  ],
+  [
+    "Use CDK best practices guide",
+    "Refactor for reusability",
+    "Use higher-level constructs and patterns",
+    "Follow secure-by-design practices",
+    "Document CDK stacks effectively",
+    "Use CDK constructs from Construct Hub",
+    "Understand security implications",
+    "Use CDK version pinning",
+    "Follow well-architected practices",
+    "Master CDK for operational excellence"
+  ]
+];
+
+const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+  tasksInLevel.map(desc => ({
+    id: `${levelIndex}-${desc}`,
+    description: desc,
+    level: levelIndex + 1,
+    completed: false
+  }))
+);
+
+const savedTasks = JSON.parse(localStorage.getItem('cdk_tasks')) || tasks;
+const savedBooks = JSON.parse(localStorage.getItem('cdk_books')) || Array(10).fill(false);
+const savedPodcasts = JSON.parse(localStorage.getItem('cdk_podcasts')) || Array(5).fill(false);
+
+const levelsContainer = document.getElementById('levelsContainer');
+const booksList = document.getElementById('booksList');
+const podcastsList = document.getElementById('podcastsList');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+
+function renderLevels() {
+  levelsContainer.innerHTML = '';
+  levels.forEach((levelTitle, i) => {
+    const levelNum = i + 1;
+    const div = document.createElement('section');
+    div.className = 'bg-gray-700 rounded p-4';
+    const h2 = document.createElement('h2');
+    h2.className = 'text-lg font-semibold text-purple-300 mb-3';
+    h2.textContent = levelTitle;
+    div.appendChild(h2);
+    const ul = document.createElement('ul');
+    ul.className = 'space-y-2';
+    savedTasks.filter(t => t.level === levelNum).forEach(task => {
+      const li = document.createElement('li');
+      li.className = 'flex items-center bg-gray-600 rounded p-2';
+      li.innerHTML = `
+        <input type="checkbox" class="mr-3 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+        <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+      `;
+      ul.appendChild(li);
+    });
+    div.appendChild(ul);
+    levelsContainer.appendChild(div);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const completedCount = savedTasks.filter(t => t.completed).length;
+  const totalCount = savedTasks.length;
+  const percent = Math.round((completedCount / totalCount) * 100);
+  progressBar.style.width = `${percent}%`;
+  progressText.textContent = `${completedCount}/${totalCount} tasks completed (${percent}%)`;
+}
+
+document.body.addEventListener('change', e => {
+  if (e.target.matches('.task-checkbox')) {
+    const id = e.target.dataset.id;
+    const task = savedTasks.find(t => t.id === id);
+    if (task) {
+      task.completed = e.target.checked;
+      localStorage.setItem('cdk_tasks', JSON.stringify(savedTasks));
+      renderLevels();
+    }
+  }
+  if (e.target.matches('[data-book]')) {
+    const idx = parseInt(e.target.dataset.book, 10);
+    savedBooks[idx] = e.target.checked;
+    localStorage.setItem('cdk_books', JSON.stringify(savedBooks));
+  }
+  if (e.target.matches('[data-podcast]')) {
+    const idx = parseInt(e.target.dataset.podcast, 10);
+    savedPodcasts[idx] = e.target.checked;
+    localStorage.setItem('cdk_podcasts', JSON.stringify(savedPodcasts));
+  }
+});
+
+function renderBooks() {
+  savedBooks.forEach((checked, i) => {
+    const el = booksList.querySelector(`[data-book="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+function renderPodcasts() {
+  savedPodcasts.forEach((checked, i) => {
+    const el = podcastsList.querySelector(`[data-podcast="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+
+renderLevels();
+renderBooks();
+renderPodcasts();
+</script>
+</body>
+</html>

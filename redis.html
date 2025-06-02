@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Redis Wizardry RPG Tracker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .completed { text-decoration: line-through; color: #888; }
+</style>
+</head>
+<body class="p-6 max-w-7xl mx-auto">
+<h1 class="text-4xl font-extrabold text-red-400 mb-6">🟥 Redis Wizardry RPG Tracker</h1>
+<p class="mb-8 text-gray-400">Level up your Redis skills by completing tasks, reading essential books, and tuning into top database and DevOps podcasts!</p>
+
+<div class="flex flex-col md:flex-row gap-8">
+  <section class="flex-1 space-y-6" id="levelsContainer"></section>
+
+  <aside class="w-full md:w-96 bg-gray-800 rounded p-6 space-y-8">
+    <div>
+      <h2 class="text-xl font-bold text-red-300 mb-3">📚 10 Must-Read Redis & Data Structure Books</h2>
+      <ul id="booksList" class="space-y-2">
+        <li><label><input type="checkbox" data-book="0" class="mr-2" />Redis in Action</label></li>
+        <li><label><input type="checkbox" data-book="1" class="mr-2" />Redis Essentials</label></li>
+        <li><label><input type="checkbox" data-book="2" class="mr-2" />Mastering Redis</label></li>
+        <li><label><input type="checkbox" data-book="3" class="mr-2" />Redis 4.x Cookbook</label></li>
+        <li><label><input type="checkbox" data-book="4" class="mr-2" />Designing Data-Intensive Applications</label></li>
+        <li><label><input type="checkbox" data-book="5" class="mr-2" />NoSQL Distilled</label></li>
+        <li><label><input type="checkbox" data-book="6" class="mr-2" />High Performance Browser Networking</label></li>
+        <li><label><input type="checkbox" data-book="7" class="mr-2" />The Little Redis Book</label></li>
+        <li><label><input type="checkbox" data-book="8" class="mr-2" />Redis Applied Design Patterns</label></li>
+        <li><label><input type="checkbox" data-book="9" class="mr-2" />Redis Essentials: Learning and Implementing</label></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-red-300 mb-3">🎧 5 Popular Database & DevOps Podcasts</h2>
+      <ul id="podcastsList" class="space-y-2">
+        <li><label><input type="checkbox" data-podcast="0" class="mr-2" />Data Engineering Podcast</label></li>
+        <li><label><input type="checkbox" data-podcast="1" class="mr-2" />Software Engineering Daily</label></li>
+        <li><label><input type="checkbox" data-podcast="2" class="mr-2" />The InfoQ Podcast</label></li>
+        <li><label><input type="checkbox" data-podcast="3" class="mr-2" />Redis Labs Podcast</label></li>
+        <li><label><input type="checkbox" data-podcast="4" class="mr-2" />The Cloudcast</label></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<div class="mt-8">
+  <p class="text-gray-400 mb-2">Overall Progress:</p>
+  <div class="h-5 bg-gray-700 rounded overflow-hidden">
+    <div id="progressBar" class="h-5 bg-red-500 transition-all duration-300"></div>
+  </div>
+  <p id="progressText" class="text-sm text-gray-400 mt-1"></p>
+</div>
+
+<script>
+const levels = [
+  "Level 1: Redis Basics & Setup",
+  "Level 2: Strings and Basic Commands",
+  "Level 3: Data Structures I (Hashes, Lists)",
+  "Level 4: Data Structures II (Sets, Sorted Sets)",
+  "Level 5: Transactions & Lua Scripting",
+  "Level 6: Persistence & Data Durability",
+  "Level 7: Replication & High Availability",
+  "Level 8: Performance Tuning & Monitoring",
+  "Level 9: Security & Access Control",
+  "Level 10: Real-world Redis Applications"
+];
+
+const levelTasks = [
+  [
+    "Install Redis locally or on a server",
+    "Start and stop Redis server",
+    "Connect with redis-cli",
+    "Understand Redis architecture",
+    "Learn about in-memory data storage",
+    "Run your first PING and ECHO commands",
+    "Set and get keys",
+    "Understand TTL and key expiration",
+    "Use the Redis CLI monitor command",
+    "Explore basic Redis configuration"
+  ],
+  [
+    "Work with String data type commands",
+    "Use INCR and DECR for counters",
+    "Append and overwrite string values",
+    "Use MGET and MSET for multiple keys",
+    "Understand bit operations",
+    "Use GETRANGE and SETRANGE",
+    "Explore Redis bitmaps",
+    "Learn about string length and substrings",
+    "Practice setting keys with expiration",
+    "Delete keys safely"
+  ],
+  [
+    "Create and manipulate hashes",
+    "Use HSET, HGET, HDEL",
+    "Work with lists and their commands",
+    "Use LPUSH, RPUSH, LPOP, RPOP",
+    "Get list length and range",
+    "Use LREM to remove elements",
+    "Implement queues with lists",
+    "Use hashes for user profiles",
+    "Experiment with blocking list commands",
+    "Understand list performance considerations"
+  ],
+  [
+    "Use sets and their unique properties",
+    "Add and remove members with SADD, SREM",
+    "Check membership with SISMEMBER",
+    "Perform set operations: SUNION, SINTER, SDIFF",
+    "Use sorted sets and scores",
+    "Add members with ZADD",
+    "Range queries with ZRANGE, ZREVRANGE",
+    "Remove members from sorted sets",
+    "Use sorted sets for leaderboards",
+    "Explore expiration and persistence of sets"
+  ],
+  [
+    "Execute MULTI and EXEC commands",
+    "Understand optimistic locking with WATCH",
+    "Discard transactions with DISCARD",
+    "Use Lua scripting with EVAL",
+    "Write simple Lua scripts for Redis",
+    "Pass keys and arguments to Lua",
+    "Handle errors in scripts",
+    "Use Redis scripting for atomic operations",
+    "Combine transactions with scripting",
+    "Debug and test Lua scripts"
+  ],
+  [
+    "Understand Redis persistence options",
+    "Configure RDB snapshots",
+    "Configure AOF (Append Only File)",
+    "Use both RDB and AOF together",
+    "Understand persistence trade-offs",
+    "Recover data from snapshots",
+    "Rewrite AOF to optimize",
+    "Configure backup strategies",
+    "Monitor persistence status",
+    "Test data durability scenarios"
+  ],
+  [
+    "Set up Redis replication (master-slave)",
+    "Understand replication mechanics",
+    "Failover and automatic promotion",
+    "Use Redis Sentinel for HA",
+    "Configure Sentinel monitoring",
+    "Test failover procedures",
+    "Monitor replication lag",
+    "Configure cluster mode basics",
+    "Understand Redis Cluster topology",
+    "Use cluster-aware clients"
+  ],
+  [
+    "Monitor Redis with INFO command",
+    "Use Redis slowlog",
+    "Understand latency monitoring",
+    "Tune Redis memory settings",
+    "Use Redis memory analysis commands",
+    "Configure eviction policies",
+    "Profile command performance",
+    "Set up external monitoring tools",
+    "Use Redis modules monitoring",
+    "Perform stress and load testing"
+  ],
+  [
+    "Secure Redis with ACLs",
+    "Configure user roles and permissions",
+    "Enable TLS encryption",
+    "Use firewall and network restrictions",
+    "Disable dangerous commands",
+    "Audit Redis command usage",
+    "Rotate Redis passwords",
+    "Use Redis AUTH and role-based access",
+    "Understand Redis security best practices",
+    "Review security patches and updates"
+  ],
+  [
+    "Build a caching layer for a web app",
+    "Implement session storage",
+    "Create a real-time chat using Pub/Sub",
+    "Use Redis streams for event processing",
+    "Implement leaderboard with sorted sets",
+    "Use Redis as a message broker",
+    "Build rate-limiting with Redis",
+    "Integrate Redis with your favorite language",
+    "Deploy Redis in Docker/Kubernetes",
+    "Document and share your Redis projects"
+  ]
+];
+
+const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+  tasksInLevel.map(desc => ({
+    id: `${levelIndex}-${desc}`,
+    description: desc,
+    level: levelIndex + 1,
+    completed: false
+  }))
+);
+
+const savedTasks = JSON.parse(localStorage.getItem('redis_tasks')) || tasks;
+const savedBooks = JSON.parse(localStorage.getItem('redis_books')) || Array(10).fill(false);
+const savedPodcasts = JSON.parse(localStorage.getItem('redis_podcasts')) || Array(5).fill(false);
+
+const levelsContainer = document.getElementById('levelsContainer');
+const booksList = document.getElementById('booksList');
+const podcastsList = document.getElementById('podcastsList');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+
+function renderLevels() {
+  levelsContainer.innerHTML = '';
+  levels.forEach((levelTitle, i) => {
+    const levelNum = i + 1;
+    const div = document.createElement('section');
+    div.className = 'bg-gray-700 rounded p-4';
+    const h2 = document.createElement('h2');
+    h2.className = 'text-lg font-semibold text-red-300 mb-3';
+    h2.textContent = levelTitle;
+    div.appendChild(h2);
+    const ul = document.createElement('ul');
+    ul.className = 'space-y-2';
+    savedTasks.filter(t => t.level === levelNum).forEach(task => {
+      const li = document.createElement('li');
+      li.className = 'flex items-center bg-gray-600 rounded p-2';
+      li.innerHTML = `
+        <input type="checkbox" class="mr-3 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+        <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+      `;
+      ul.appendChild(li);
+    });
+    div.appendChild(ul);
+    levelsContainer.appendChild(div);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const completedCount = savedTasks.filter(t => t.completed).length;
+  const totalCount = savedTasks.length;
+  const percent = Math.round((completedCount / totalCount) * 100);
+  progressBar.style.width = `${percent}%`;
+  progressText.textContent = `${completedCount}/${totalCount} tasks completed (${percent}%)`;
+}
+
+document.body.addEventListener('change', e => {
+  if (e.target.matches('.task-checkbox')) {
+    const id = e.target.dataset.id;
+    const task = savedTasks.find(t => t.id === id);
+    if (task) {
+      task.completed = e.target.checked;
+      localStorage.setItem('redis_tasks', JSON.stringify(savedTasks));
+      renderLevels();
+    }
+  }
+  if (e.target.matches('[data-book]')) {
+    const idx = parseInt(e.target.dataset.book, 10);
+    savedBooks[idx] = e.target.checked;
+    localStorage.setItem('redis_books', JSON.stringify(savedBooks));
+  }
+  if (e.target.matches('[data-podcast]')) {
+    const idx = parseInt(e.target.dataset.podcast, 10);
+    savedPodcasts[idx] = e.target.checked;
+    localStorage.setItem('redis_podcasts', JSON.stringify(savedPodcasts));
+  }
+});
+
+function renderBooks() {
+  savedBooks.forEach((checked, i) => {
+    const el = booksList.querySelector(`[data-book="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+function renderPodcasts() {
+  savedPodcasts.forEach((checked, i) => {
+    const el = podcastsList.querySelector(`[data-podcast="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+
+renderLevels();
+renderBooks();
+renderPodcasts();
+</script>
+</body>
+</html>

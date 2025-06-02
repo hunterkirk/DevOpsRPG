@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AWS Q Developer Wizardry RPG Tracker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .completed { text-decoration: line-through; color: #888; }
+</style>
+</head>
+<body class="p-6 max-w-7xl mx-auto">
+<h1 class="text-4xl font-extrabold text-yellow-400 mb-6">⚡ AWS Q Developer Wizardry RPG Tracker</h1>
+<p class="mb-8 text-gray-400">Master AWS Q Developer to supercharge your coding productivity! Complete the tasks, absorb the wisdom of books, and tune into podcasts to become a Q Developer Wizard!</p>
+
+<div class="flex flex-col md:flex-row gap-8">
+  <section class="flex-1 space-y-6" id="levelsContainer"></section>
+
+  <aside class="w-full md:w-96 bg-gray-800 rounded p-6 space-y-8">
+    <div>
+      <h2 class="text-xl font-bold text-yellow-300 mb-3">📚 10 Must-Read Books</h2>
+      <ul id="booksList" class="space-y-2">
+        <li><label><input type="checkbox" data-book="0" class="mr-2" />Generative AI in Action</label></li>
+        <li><label><input type="checkbox" data-book="1" class="mr-2" />AI-Powered Development</label></li>
+        <li><label><input type="checkbox" data-book="2" class="mr-2" />Prompt Engineering for Developers</label></li>
+        <li><label><input type="checkbox" data-book="3" class="mr-2" />Code Generation with AI</label></li>
+        <li><label><input type="checkbox" data-book="4" class="mr-2" />AWS Q Developer in Practice</label></li>
+        <li><label><input type="checkbox" data-book="5" class="mr-2" />AI and the Future of Work</label></li>
+        <li><label><input type="checkbox" data-book="6" class="mr-2" />Mastering AWS Tools</label></li>
+        <li><label><input type="checkbox" data-book="7" class="mr-2" />Machine Learning for Developers</label></li>
+        <li><label><input type="checkbox" data-book="8" class="mr-2" />AI for DevOps</label></li>
+        <li><label><input type="checkbox" data-book="9" class="mr-2" />The Pragmatic Programmer</label></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-yellow-300 mb-3">🎧 5 Popular Podcasts</h2>
+      <ul id="podcastsList" class="space-y-2">
+        <li><label><input type="checkbox" data-podcast="0" class="mr-2" />AWS Podcast</label></li>
+        <li><label><input type="checkbox" data-podcast="1" class="mr-2" />Software Engineering Daily</label></li>
+        <li><label><input type="checkbox" data-podcast="2" class="mr-2" />Practical AI</label></li>
+        <li><label><input type="checkbox" data-podcast="3" class="mr-2" />Lex Fridman Podcast</label></li>
+        <li><label><input type="checkbox" data-podcast="4" class="mr-2" />Changelog Podcast</label></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<div class="mt-8">
+  <p class="text-gray-400 mb-2">Overall Progress:</p>
+  <div class="h-5 bg-gray-700 rounded overflow-hidden">
+    <div id="progressBar" class="h-5 bg-yellow-500 transition-all duration-300"></div>
+  </div>
+  <p id="progressText" class="text-sm text-gray-400 mt-1"></p>
+</div>
+
+<script>
+const levels = [
+  "Level 1: Q Developer Basics",
+  "Level 2: Q for Code Generation",
+  "Level 3: Prompt Engineering with Q",
+  "Level 4: Integrating Q in IDEs",
+  "Level 5: Debugging with Q",
+  "Level 6: Best Practices with Q",
+  "Level 7: Automating Tasks with Q",
+  "Level 8: Collaborating with Q",
+  "Level 9: Advanced Q Techniques",
+  "Level 10: Building Production-Ready Apps"
+];
+
+const levelTasks = [
+  [
+    "Sign up for AWS Q Developer access",
+    "Explore the AWS Q Developer console",
+    "Read the Q Developer overview docs",
+    "Understand supported programming languages",
+    "Test a basic Q code suggestion",
+    "Understand Q Developer's security model",
+    "Review usage limits and quotas",
+    "Watch a Q Developer intro video",
+    "Join the Q Developer community",
+    "Bookmark the Q Developer blog"
+  ],
+  [
+    "Use Q Developer to generate Python code snippets",
+    "Try Q Developer with JavaScript/Node.js code",
+    "Generate infrastructure code snippets (IaC)",
+    "Review Q Developer’s suggestions in your IDE",
+    "Explore Q Developer's code completion feature",
+    "Test generating unit tests for a function",
+    "Review code formatting of generated code",
+    "Understand language-specific quirks",
+    "Document successful generation patterns",
+    "Try generating a REST API snippet"
+  ],
+  [
+    "Learn prompt best practices for Q",
+    "Use descriptive prompts for better code",
+    "Try multi-step prompts for complex code",
+    "Experiment with creative prompts",
+    "Refine prompts for optimal output",
+    "Document prompt examples that worked well",
+    "Test prompt variations for the same task",
+    "Evaluate response accuracy and completeness",
+    "Explore prompt chaining in Q Developer",
+    "Test Q's code refactoring suggestions"
+  ],
+  [
+    "Install Q Developer plugin for VS Code",
+    "Explore Q integration in JetBrains IDEs",
+    "Test Q Developer in cloud-based IDEs",
+    "Check real-time suggestions in the IDE",
+    "Understand IDE-specific features of Q",
+    "Test linting and formatting support",
+    "Compare IDE plugin performance",
+    "Document IDE-specific settings for Q",
+    "Test multiple file support with Q",
+    "Share IDE usage tips with your team"
+  ],
+  [
+    "Use Q Developer to identify bugs in code",
+    "Ask Q for potential fixes for a bug",
+    "Test debugging with different languages",
+    "Understand Q’s limitations in debugging",
+    "Document successful debugging examples",
+    "Test Q's suggestions for edge cases",
+    "Evaluate accuracy of suggested fixes",
+    "Test error handling improvements",
+    "Review how Q helps with debugging logs",
+    "Compare manual vs Q debugging approaches"
+  ],
+  [
+    "Read AWS Q Developer best practices",
+    "Set up secure usage of Q Developer",
+    "Document data privacy considerations",
+    "Understand AWS compliance & Q usage",
+    "Integrate Q usage into existing workflows",
+    "Create a Q Developer usage policy",
+    "Review usage analytics for Q Developer",
+    "Monitor Q usage for performance impact",
+    "Optimize cost when using Q Developer",
+    "Stay updated with Q Developer updates"
+  ],
+  [
+    "Automate repetitive coding tasks with Q",
+    "Test Q for boilerplate code generation",
+    "Generate deployment scripts with Q",
+    "Test Q for data parsing code",
+    "Explore API call generation with Q",
+    "Automate code documentation with Q",
+    "Integrate Q tasks in your CI/CD pipeline",
+    "Test script conversion between languages",
+    "Document automation use cases",
+    "Build a small automation pipeline with Q"
+  ],
+  [
+    "Test Q Developer in team code reviews",
+    "Collaborate with teammates using Q output",
+    "Test Q for documenting team knowledge",
+    "Share prompt templates with teammates",
+    "Discuss Q adoption in team standups",
+    "Explore pair programming with Q",
+    "Document team best practices for Q usage",
+    "Set up a Q usage playbook for teams",
+    "Evaluate team productivity with Q",
+    "Showcase a team project built with Q"
+  ],
+  [
+    "Explore advanced Q Developer features",
+    "Test Q for large project support",
+    "Use Q for codebase modernization tasks",
+    "Test advanced prompt chaining workflows",
+    "Explore multi-language generation",
+    "Test Q with external API integrations",
+    "Evaluate Q’s performance at scale",
+    "Document advanced use cases",
+    "Test Q Developer in enterprise apps",
+    "Explore Q’s support for monorepos"
+  ],
+  [
+    "Plan a production-ready app with Q",
+    "Integrate Q output into CI/CD workflows",
+    "Monitor Q suggestions for performance",
+    "Test real-time Q usage in production",
+    "Handle large code generation tasks",
+    "Document production readiness checks",
+    "Review code ownership with generated code",
+    "Compare Q vs traditional dev workflows",
+    "Build a showcase project using Q",
+    "Celebrate your AWS Q Developer wizardry!"
+  ]
+];
+
+const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+  tasksInLevel.map(desc => ({
+    id: `${levelIndex}-${desc}`,
+    description: desc,
+    level: levelIndex + 1,
+    completed: false
+  }))
+);
+
+const savedTasks = JSON.parse(localStorage.getItem('qdev_tasks')) || tasks;
+const savedBooks = JSON.parse(localStorage.getItem('qdev_books')) || Array(10).fill(false);
+const savedPodcasts = JSON.parse(localStorage.getItem('qdev_podcasts')) || Array(5).fill(false);
+
+const levelsContainer = document.getElementById('levelsContainer');
+const booksList = document.getElementById('booksList');
+const podcastsList = document.getElementById('podcastsList');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+
+function renderLevels() {
+  levelsContainer.innerHTML = '';
+  levels.forEach((levelTitle, i) => {
+    const levelNum = i + 1;
+    const div = document.createElement('section');
+    div.className = 'bg-gray-700 rounded p-4';
+    const h2 = document.createElement('h2');
+    h2.className = 'text-lg font-semibold text-yellow-300 mb-3';
+    h2.textContent = levelTitle;
+    div.appendChild(h2);
+    const ul = document.createElement('ul');
+    ul.className = 'space-y-2';
+    savedTasks.filter(t => t.level === levelNum).forEach(task => {
+      const li = document.createElement('li');
+      li.className = 'flex items-center bg-gray-600 rounded p-2';
+      li.innerHTML = `
+        <input type="checkbox" class="mr-3 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+        <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+      `;
+      ul.appendChild(li);
+    });
+    div.appendChild(ul);
+    levelsContainer.appendChild(div);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const completedCount = savedTasks.filter(t => t.completed).length;
+  const totalCount = savedTasks.length;
+  const percent = Math.round((completedCount / totalCount) * 100);
+  progressBar.style.width = `${percent}%`;
+  progressText.textContent = `${completedCount}/${totalCount} tasks completed (${percent}%)`;
+}
+
+document.body.addEventListener('change', e => {
+  if (e.target.matches('.task-checkbox')) {
+    const id = e.target.dataset.id;
+    const task = savedTasks.find(t => t.id === id);
+    if (task) {
+      task.completed = e.target.checked;
+      localStorage.setItem('qdev_tasks', JSON.stringify(savedTasks));
+      renderLevels();
+    }
+  }
+  if (e.target.matches('[data-book]')) {
+    const idx = parseInt(e.target.dataset.book, 10);
+    savedBooks[idx] = e.target.checked;
+    localStorage.setItem('qdev_books', JSON.stringify(savedBooks));
+  }
+  if (e.target.matches('[data-podcast]')) {
+    const idx = parseInt(e.target.dataset.podcast, 10);
+    savedPodcasts[idx] = e.target.checked;
+    localStorage.setItem('qdev_podcasts', JSON.stringify(savedPodcasts));
+  }
+});
+
+function renderBooks() {
+  savedBooks.forEach((checked, i) => {
+    const el = booksList.querySelector(`[data-book="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+function renderPodcasts() {
+  savedPodcasts.forEach((checked, i) => {
+    const el = podcastsList.querySelector(`[data-podcast="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+
+renderLevels();
+renderBooks();
+renderPodcasts();
+</script>
+</body>
+</html>

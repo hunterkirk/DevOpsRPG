@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AWS Bedrock Wizardry RPG Tracker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .completed { text-decoration: line-through; color: #888; }
+</style>
+</head>
+<body class="p-6 max-w-7xl mx-auto">
+<h1 class="text-4xl font-extrabold text-purple-400 mb-6">🪄 AWS Bedrock Wizardry RPG Tracker</h1>
+<p class="mb-8 text-gray-400">Master Generative AI on AWS Bedrock! Complete quests, absorb books, and tune in to podcasts to become a Bedrock Sorcerer!</p>
+
+<div class="flex flex-col md:flex-row gap-8">
+  <section class="flex-1 space-y-6" id="levelsContainer"></section>
+
+  <aside class="w-full md:w-96 bg-gray-800 rounded p-6 space-y-8">
+    <div>
+      <h2 class="text-xl font-bold text-purple-300 mb-3">📚 10 Must-Read Bedrock & GenAI Books</h2>
+      <ul id="booksList" class="space-y-2">
+        <li><label><input type="checkbox" data-book="0" class="mr-2" />GenAI on AWS Bedrock</label></li>
+        <li><label><input type="checkbox" data-book="1" class="mr-2" />Practical AI with AWS</label></li>
+        <li><label><input type="checkbox" data-book="2" class="mr-2" />AWS Certified Machine Learning</label></li>
+        <li><label><input type="checkbox" data-book="3" class="mr-2" />Mastering Generative AI</label></li>
+        <li><label><input type="checkbox" data-book="4" class="mr-2" />The AI Playbook</label></li>
+        <li><label><input type="checkbox" data-book="5" class="mr-2" />Prompt Engineering for GenAI</label></li>
+        <li><label><input type="checkbox" data-book="6" class="mr-2" />Building AI-powered Apps</label></li>
+        <li><label><input type="checkbox" data-book="7" class="mr-2" />AI/ML in the Cloud</label></li>
+        <li><label><input type="checkbox" data-book="8" class="mr-2" />AWS Bedrock for Developers</label></li>
+        <li><label><input type="checkbox" data-book="9" class="mr-2" />Generative AI Best Practices</label></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-purple-300 mb-3">🎧 5 Popular GenAI Podcasts</h2>
+      <ul id="podcastsList" class="space-y-2">
+        <li><label><input type="checkbox" data-podcast="0" class="mr-2" />AWS Podcast</label></li>
+        <li><label><input type="checkbox" data-podcast="1" class="mr-2" />Practical AI</label></li>
+        <li><label><input type="checkbox" data-podcast="2" class="mr-2" />Data Skeptic</label></li>
+        <li><label><input type="checkbox" data-podcast="3" class="mr-2" />AI in Business</label></li>
+        <li><label><input type="checkbox" data-podcast="4" class="mr-2" />Lex Fridman Podcast</label></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<div class="mt-8">
+  <p class="text-gray-400 mb-2">Overall Progress:</p>
+  <div class="h-5 bg-gray-700 rounded overflow-hidden">
+    <div id="progressBar" class="h-5 bg-purple-500 transition-all duration-300"></div>
+  </div>
+  <p id="progressText" class="text-sm text-gray-400 mt-1"></p>
+</div>
+
+<script>
+const levels = [
+  "Level 1: Bedrock Foundations",
+  "Level 2: Bedrock Models & Capabilities",
+  "Level 3: Prompt Engineering",
+  "Level 4: Deploying Bedrock APIs",
+  "Level 5: Fine-Tuning & Customization",
+  "Level 6: Security & Governance",
+  "Level 7: Integrating Bedrock with Other AWS Services",
+  "Level 8: Monitoring & Troubleshooting",
+  "Level 9: GenAI Best Practices",
+  "Level 10: Building Production-Ready Solutions"
+];
+
+const levelTasks = [
+  [
+    "Sign up for AWS Bedrock access",
+    "Explore the Bedrock console and documentation",
+    "Understand Foundation Models (FM) in Bedrock",
+    "Understand text, image, and embedding models",
+    "Explore the Bedrock API basics",
+    "Review Bedrock vs SageMaker differences",
+    "Understand Bedrock model availability",
+    "Test a basic text generation model",
+    "Learn about Bedrock service limits",
+    "Watch an AWS Bedrock intro video"
+  ],
+  [
+    "Explore Titan models in Bedrock",
+    "Understand Claude, Jurassic, and Llama support",
+    "Compare use cases for different models",
+    "Test embedding models for search",
+    "Explore image generation models",
+    "Understand multimodal model capabilities",
+    "Review pricing and cost estimation",
+    "Compare response formats",
+    "Experiment with text summarization",
+    "Explore sentiment analysis with Bedrock"
+  ],
+  [
+    "Understand prompt design basics",
+    "Experiment with system vs user prompts",
+    "Use clear and concise prompts",
+    "Test chain-of-thought prompting",
+    "Try role-based prompting",
+    "Evaluate response creativity",
+    "Explore prompt templates in Bedrock",
+    "Test prompt variations",
+    "Document successful prompt patterns",
+    "Understand prompt engineering best practices"
+  ],
+  [
+    "Use Bedrock APIs with Postman",
+    "Write a basic Python script for Bedrock API",
+    "Test API responses for accuracy",
+    "Use Bedrock SDK in your preferred language",
+    "Explore error handling in API calls",
+    "Handle API authentication & keys",
+    "Integrate with CloudWatch for monitoring",
+    "Test API performance and latency",
+    "Document API usage patterns",
+    "Build a basic Bedrock chatbot app"
+  ],
+  [
+    "Understand model fine-tuning vs custom models",
+    "Learn about model customization in Bedrock",
+    "Explore data preparation for fine-tuning",
+    "Test small fine-tuning jobs (if available)",
+    "Understand potential cost impacts",
+    "Explore model evaluation metrics",
+    "Integrate updated models into your app",
+    "Review AWS documentation on customization",
+    "Document lessons from fine-tuning",
+    "Plan a fine-tuning workflow"
+  ],
+  [
+    "Understand IAM roles for Bedrock API access",
+    "Set up least-privilege access for Bedrock use",
+    "Understand data governance for GenAI",
+    "Explore encryption options for prompts & data",
+    "Use API keys securely",
+    "Audit usage with CloudTrail",
+    "Apply organizational controls (e.g., SCPs)",
+    "Review Bedrock security whitepapers",
+    "Understand responsible AI concepts",
+    "Implement security best practices"
+  ],
+  [
+    "Use Bedrock with S3 for input/output data",
+    "Integrate Bedrock with Lambda functions",
+    "Explore Bedrock + Step Functions",
+    "Test Bedrock in a serverless app",
+    "Use Bedrock with DynamoDB for context storage",
+    "Integrate Bedrock with SageMaker pipelines",
+    "Explore Bedrock in a containerized app",
+    "Test Bedrock output in data visualizations",
+    "Document integration architectures",
+    "Build a sample integration demo"
+  ],
+  [
+    "Monitor Bedrock usage in CloudWatch",
+    "Set up CloudWatch alarms for usage",
+    "Understand error rates and patterns",
+    "Handle common API errors",
+    "Debug prompt issues in the console",
+    "Explore metrics and logs in the console",
+    "Test Bedrock performance across regions",
+    "Troubleshoot API limits and errors",
+    "Document troubleshooting steps",
+    "Understand AWS support options for Bedrock"
+  ],
+  [
+    "Review AWS GenAI best practices",
+    "Balance creativity vs accuracy in GenAI apps",
+    "Optimize prompt engineering for performance",
+    "Understand latency implications in real-time apps",
+    "Plan for cost optimization in GenAI workloads",
+    "Explore generative AI compliance topics",
+    "Evaluate fairness & bias considerations",
+    "Test real-world scenarios with Bedrock",
+    "Document lessons learned",
+    "Share best practices with your team"
+  ],
+  [
+    "Plan production deployment strategies",
+    "Use CI/CD pipelines for Bedrock apps",
+    "Monitor performance in production",
+    "Test autoscaling and reliability",
+    "Handle real-time and batch workloads",
+    "Review cost management in production",
+    "Build a Bedrock-powered chatbot or Q&A system",
+    "Explore multi-language support with Bedrock",
+    "Document deployment architecture",
+    "Celebrate your AWS Bedrock mastery!"
+  ]
+];
+
+const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+  tasksInLevel.map(desc => ({
+    id: `${levelIndex}-${desc}`,
+    description: desc,
+    level: levelIndex + 1,
+    completed: false
+  }))
+);
+
+const savedTasks = JSON.parse(localStorage.getItem('bedrock_tasks')) || tasks;
+const savedBooks = JSON.parse(localStorage.getItem('bedrock_books')) || Array(10).fill(false);
+const savedPodcasts = JSON.parse(localStorage.getItem('bedrock_podcasts')) || Array(5).fill(false);
+
+const levelsContainer = document.getElementById('levelsContainer');
+const booksList = document.getElementById('booksList');
+const podcastsList = document.getElementById('podcastsList');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+
+function renderLevels() {
+  levelsContainer.innerHTML = '';
+  levels.forEach((levelTitle, i) => {
+    const levelNum = i + 1;
+    const div = document.createElement('section');
+    div.className = 'bg-gray-700 rounded p-4';
+    const h2 = document.createElement('h2');
+    h2.className = 'text-lg font-semibold text-purple-300 mb-3';
+    h2.textContent = levelTitle;
+    div.appendChild(h2);
+    const ul = document.createElement('ul');
+    ul.className = 'space-y-2';
+    savedTasks.filter(t => t.level === levelNum).forEach(task => {
+      const li = document.createElement('li');
+      li.className = 'flex items-center bg-gray-600 rounded p-2';
+      li.innerHTML = `
+        <input type="checkbox" class="mr-3 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+        <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+      `;
+      ul.appendChild(li);
+    });
+    div.appendChild(ul);
+    levelsContainer.appendChild(div);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const completedCount = savedTasks.filter(t => t.completed).length;
+  const totalCount = savedTasks.length;
+  const percent = Math.round((completedCount / totalCount) * 100);
+  progressBar.style.width = `${percent}%`;
+  progressText.textContent = `${completedCount}/${totalCount} tasks completed (${percent}%)`;
+}
+
+document.body.addEventListener('change', e => {
+  if (e.target.matches('.task-checkbox')) {
+    const id = e.target.dataset.id;
+    const task = savedTasks.find(t => t.id === id);
+    if (task) {
+      task.completed = e.target.checked;
+      localStorage.setItem('bedrock_tasks', JSON.stringify(savedTasks));
+      renderLevels();
+    }
+  }
+  if (e.target.matches('[data-book]')) {
+    const idx = parseInt(e.target.dataset.book, 10);
+    savedBooks[idx] = e.target.checked;
+    localStorage.setItem('bedrock_books', JSON.stringify(savedBooks));
+  }
+  if (e.target.matches('[data-podcast]')) {
+    const idx = parseInt(e.target.dataset.podcast, 10);
+    savedPodcasts[idx] = e.target.checked;
+    localStorage.setItem('bedrock_podcasts', JSON.stringify(savedPodcasts));
+  }
+});
+
+function renderBooks() {
+  savedBooks.forEach((checked, i) => {
+    const el = booksList.querySelector(`[data-book="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+function renderPodcasts() {
+  savedPodcasts.forEach((checked, i) => {
+    const el = podcastsList.querySelector(`[data-podcast="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+
+renderLevels();
+renderBooks();
+renderPodcasts();
+</script>
+</body>
+</html>

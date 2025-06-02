@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AWS IAM Wizardry RPG Tracker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .completed { text-decoration: line-through; color: #888; }
+</style>
+</head>
+<body class="p-6 max-w-7xl mx-auto">
+<h1 class="text-4xl font-extrabold text-yellow-400 mb-6">🔐 AWS IAM Wizardry RPG Tracker</h1>
+<p class="mb-8 text-gray-400">Master AWS Identity and Access Management by completing tasks, reading key books, and tuning into popular podcasts!</p>
+
+<div class="flex flex-col md:flex-row gap-8">
+  <section class="flex-1 space-y-6" id="levelsContainer"></section>
+
+  <aside class="w-full md:w-96 bg-gray-800 rounded p-6 space-y-8">
+    <div>
+      <h2 class="text-xl font-bold text-yellow-300 mb-3">📚 10 Must-Read AWS IAM & Security Books</h2>
+      <ul id="booksList" class="space-y-2">
+        <li><label><input type="checkbox" data-book="0" class="mr-2" />AWS Identity and Access Management: User Guide</label></li>
+        <li><label><input type="checkbox" data-book="1" class="mr-2" />AWS Certified Security Specialty Official Study Guide</label></li>
+        <li><label><input type="checkbox" data-book="2" class="mr-2" />AWS Security Best Practices</label></li>
+        <li><label><input type="checkbox" data-book="3" class="mr-2" />AWS Well-Architected Framework - Security Pillar</label></li>
+        <li><label><input type="checkbox" data-book="4" class="mr-2" />Practical AWS Security</label></li>
+        <li><label><input type="checkbox" data-book="5" class="mr-2" />Cloud Security and Compliance</label></li>
+        <li><label><input type="checkbox" data-book="6" class="mr-2" />Mastering AWS Security</label></li>
+        <li><label><input type="checkbox" data-book="7" class="mr-2" />AWS Lambda Security</label></li>
+        <li><label><input type="checkbox" data-book="8" class="mr-2" />Terraform Security Best Practices</label></li>
+        <li><label><input type="checkbox" data-book="9" class="mr-2" />Cloud Security Automation</label></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-yellow-300 mb-3">🎧 5 Popular AWS & Security Podcasts</h2>
+      <ul id="podcastsList" class="space-y-2">
+        <li><label><input type="checkbox" data-podcast="0" class="mr-2" />AWS Security Podcast</label></li>
+        <li><label><input type="checkbox" data-podcast="1" class="mr-2" />Risky Business</label></li>
+        <li><label><input type="checkbox" data-podcast="2" class="mr-2" />Security Now</label></li>
+        <li><label><input type="checkbox" data-podcast="3" class="mr-2" />Cloud Security Podcast</label></li>
+        <li><label><input type="checkbox" data-podcast="4" class="mr-2" />Smashing Security</label></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<div class="mt-8">
+  <p class="text-gray-400 mb-2">Overall Progress:</p>
+  <div class="h-5 bg-gray-700 rounded overflow-hidden">
+    <div id="progressBar" class="h-5 bg-yellow-500 transition-all duration-300"></div>
+  </div>
+  <p id="progressText" class="text-sm text-gray-400 mt-1"></p>
+</div>
+
+<script>
+const levels = [
+  "Level 1: IAM Basics & Concepts",
+  "Level 2: Users, Groups & Policies",
+  "Level 3: Roles & Temporary Credentials",
+  "Level 4: Permissions Boundaries & SCPs",
+  "Level 5: MFA & Access Keys Management",
+  "Level 6: IAM Security Best Practices",
+  "Level 7: Integrating IAM with AWS Services",
+  "Level 8: Advanced Policy Writing & Conditions",
+  "Level 9: Auditing & Monitoring IAM",
+  "Level 10: IAM Automation & Governance"
+];
+
+const levelTasks = [
+  [
+    "Understand AWS IAM concepts and terminology",
+    "Create IAM users",
+    "Create IAM groups",
+    "Attach managed policies to users and groups",
+    "Understand IAM policy structure",
+    "Use IAM policy simulator",
+    "Create custom inline policies",
+    "Set up AWS CLI with IAM user",
+    "Understand difference between root account and IAM users",
+    "Explore IAM dashboard"
+  ],
+  [
+    "Manage IAM user permissions",
+    "Add users to groups",
+    "Attach managed policies to groups",
+    "Create and attach customer managed policies",
+    "Use policy variables",
+    "Set permissions for console access",
+    "Enable programmatic access with access keys",
+    "Rotate access keys securely",
+    "Delete inactive users",
+    "Review policy evaluation logic"
+  ],
+  [
+    "Create IAM roles for EC2",
+    "Create roles for Lambda functions",
+    "Assign roles to ECS tasks",
+    "Use temporary credentials with STS",
+    "Understand AssumeRole API",
+    "Create cross-account roles",
+    "Set up trust policies",
+    "Implement role chaining",
+    "Use Web Identity Federation",
+    "Review role session policies"
+  ],
+  [
+    "Understand permission boundaries",
+    "Create permission boundaries for users",
+    "Use Service Control Policies (SCPs) with AWS Organizations",
+    "Set SCPs to restrict account permissions",
+    "Apply SCPs to organizational units",
+    "Understand differences between SCPs and IAM policies",
+    "Test permission boundaries with IAM policy simulator",
+    "Combine SCPs and permission boundaries",
+    "Use AWS Organizations effectively",
+    "Audit SCP effects"
+  ],
+  [
+    "Enable MFA for IAM users",
+    "Use virtual MFA devices",
+    "Create MFA policies",
+    "Require MFA for sensitive actions",
+    "Manage IAM access keys securely",
+    "Disable unused keys",
+    "Use AWS Secrets Manager for keys",
+    "Use session policies with MFA",
+    "Monitor access key usage",
+    "Educate users on MFA importance"
+  ],
+  [
+    "Implement least privilege principle",
+    "Enable IAM Access Analyzer",
+    "Use AWS Config rules for IAM",
+    "Set up IAM credential reports",
+    "Monitor for unused permissions",
+    "Use service-linked roles",
+    "Understand IAM quotas and limits",
+    "Clean up stale roles and users",
+    "Use tags to organize IAM entities",
+    "Review IAM best practices checklist"
+  ],
+  [
+    "Integrate IAM with S3 bucket policies",
+    "Use IAM roles with RDS",
+    "Use IAM for API Gateway authorizers",
+    "Set permissions for CloudWatch actions",
+    "Use IAM roles with CodeBuild and CodeDeploy",
+    "Attach policies to Lambda execution roles",
+    "Integrate IAM with ECS and EKS",
+    "Use federated login with IAM",
+    "Manage permissions for AWS Secrets Manager",
+    "Use IAM for CloudTrail access control"
+  ],
+  [
+    "Write complex IAM policies with conditions",
+    "Use policy elements: Effect, Action, Resource",
+    "Leverage policy variables and wildcards",
+    "Use conditions for IP, MFA, date",
+    "Restrict access by tag",
+    "Combine multiple statements",
+    "Use NotAction and NotResource",
+    "Test policies extensively",
+    "Use policy versioning",
+    "Document IAM policies"
+  ],
+  [
+    "Set up CloudTrail for IAM auditing",
+    "Analyze IAM API calls with Athena",
+    "Use AWS CloudWatch logs for monitoring",
+    "Enable AWS Config rules for IAM changes",
+    "Create alerts for privilege escalations",
+    "Monitor unused credentials",
+    "Use Access Advisor to review permissions",
+    "Audit cross-account access",
+    "Use GuardDuty to detect anomalies",
+    "Create compliance reports"
+  ],
+  [
+    "Automate IAM user and role creation with Terraform",
+    "Use CloudFormation for IAM stacks",
+    "Implement CI/CD pipeline for IAM changes",
+    "Automate access key rotation",
+    "Set up notification for policy changes",
+    "Use Lambda functions for remediation",
+    "Manage IAM via AWS SDKs",
+    "Use infrastructure as code for governance",
+    "Integrate IAM automation with Security Hub",
+    "Create IAM policies as code"
+  ]
+];
+
+const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+  tasksInLevel.map(desc => ({
+    id: `${levelIndex}-${desc}`,
+    description: desc,
+    level: levelIndex + 1,
+    completed: false
+  }))
+);
+
+const savedTasks = JSON.parse(localStorage.getItem('iam_tasks')) || tasks;
+const savedBooks = JSON.parse(localStorage.getItem('iam_books')) || Array(10).fill(false);
+const savedPodcasts = JSON.parse(localStorage.getItem('iam_podcasts')) || Array(5).fill(false);
+
+const levelsContainer = document.getElementById('levelsContainer');
+const booksList = document.getElementById('booksList');
+const podcastsList = document.getElementById('podcastsList');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+
+function renderLevels() {
+  levelsContainer.innerHTML = '';
+  levels.forEach((levelTitle, i) => {
+    const levelNum = i + 1;
+    const div = document.createElement('section');
+    div.className = 'bg-gray-700 rounded p-4';
+    const h2 = document.createElement('h2');
+    h2.className = 'text-lg font-semibold text-yellow-300 mb-3';
+    h2.textContent = levelTitle;
+    div.appendChild(h2);
+    const ul = document.createElement('ul');
+    ul.className = 'space-y-2';
+    savedTasks.filter(t => t.level === levelNum).forEach(task => {
+      const li = document.createElement('li');
+      li.className = 'flex items-center bg-gray-600 rounded p-2';
+      li.innerHTML = `
+        <input type="checkbox" class="mr-3 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+        <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+      `;
+      ul.appendChild(li);
+    });
+    div.appendChild(ul);
+    levelsContainer.appendChild(div);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const completedCount = savedTasks.filter(t => t.completed).length;
+  const totalCount = savedTasks.length;
+  const percent = Math.round((completedCount / totalCount) * 100);
+  progressBar.style.width = `${percent}%`;
+  progressText.textContent = `${completedCount}/${totalCount} tasks completed (${percent}%)`;
+}
+
+document.body.addEventListener('change', e => {
+  if (e.target.matches('.task-checkbox')) {
+    const id = e.target.dataset.id;
+    const task = savedTasks.find(t => t.id === id);
+    if (task) {
+      task.completed = e.target.checked;
+      localStorage.setItem('iam_tasks', JSON.stringify(savedTasks));
+      renderLevels();
+    }
+  }
+  if (e.target.matches('[data-book]')) {
+    const idx = parseInt(e.target.dataset.book, 10);
+    savedBooks[idx] = e.target.checked;
+    localStorage.setItem('iam_books', JSON.stringify(savedBooks));
+  }
+  if (e.target.matches('[data-podcast]')) {
+    const idx = parseInt(e.target.dataset.podcast, 10);
+    savedPodcasts[idx] = e.target.checked;
+    localStorage.setItem('iam_podcasts', JSON.stringify(savedPodcasts));
+  }
+});
+
+function renderBooks() {
+  savedBooks.forEach((checked, i) => {
+    const el = booksList.querySelector(`[data-book="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+function renderPodcasts() {
+  savedPodcasts.forEach((checked, i) => {
+    const el = podcastsList.querySelector(`[data-podcast="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+
+renderLevels();
+renderBooks();
+renderPodcasts();
+</script>
+</body>
+</html>

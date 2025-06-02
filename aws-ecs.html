@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AWS ECS Wizardry RPG Tracker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .completed { text-decoration: line-through; color: #888; }
+</style>
+</head>
+<body class="p-6 max-w-7xl mx-auto">
+<h1 class="text-4xl font-extrabold text-yellow-400 mb-6">🚢 AWS ECS Wizardry RPG Tracker</h1>
+<p class="mb-8 text-gray-400">Level up your AWS ECS skills by completing tasks, reading essential books, and tuning into top AWS and DevOps podcasts!</p>
+
+<div class="flex flex-col md:flex-row gap-8">
+  <section class="flex-1 space-y-6" id="levelsContainer"></section>
+
+  <aside class="w-full md:w-96 bg-gray-800 rounded p-6 space-y-8">
+    <div>
+      <h2 class="text-xl font-bold text-yellow-300 mb-3">📚 10 Must-Read AWS & ECS Books</h2>
+      <ul id="booksList" class="space-y-2">
+        <li><label><input type="checkbox" data-book="0" class="mr-2" />Amazon Web Services in Action</label></li>
+        <li><label><input type="checkbox" data-book="1" class="mr-2" />AWS Certified Solutions Architect Official Study Guide</label></li>
+        <li><label><input type="checkbox" data-book="2" class="mr-2" />AWS Lambda in Action</label></li>
+        <li><label><input type="checkbox" data-book="3" class="mr-2" />Docker Deep Dive</label></li>
+        <li><label><input type="checkbox" data-book="4" class="mr-2" />Kubernetes Up & Running</label></li>
+        <li><label><input type="checkbox" data-book="5" class="mr-2" />Learning Amazon Web Services (AWS)</label></li>
+        <li><label><input type="checkbox" data-book="6" class="mr-2" />Terraform: Up & Running</label></li>
+        <li><label><input type="checkbox" data-book="7" class="mr-2" />AWS Certified Developer Official Study Guide</label></li>
+        <li><label><input type="checkbox" data-book="8" class="mr-2" />Infrastructure as Code</label></li>
+        <li><label><input type="checkbox" data-book="9" class="mr-2" />Cloud Native DevOps with Kubernetes</label></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-yellow-300 mb-3">🎧 5 Popular AWS & DevOps Podcasts</h2>
+      <ul id="podcastsList" class="space-y-2">
+        <li><label><input type="checkbox" data-podcast="0" class="mr-2" />AWS Podcast</label></li>
+        <li><label><input type="checkbox" data-podcast="1" class="mr-2" />The Cloudcast</label></li>
+        <li><label><input type="checkbox" data-podcast="2" class="mr-2" />Serverless Chats</label></li>
+        <li><label><input type="checkbox" data-podcast="3" class="mr-2" />DevOps Cafe</label></li>
+        <li><label><input type="checkbox" data-podcast="4" class="mr-2" />Software Engineering Daily</label></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<div class="mt-8">
+  <p class="text-gray-400 mb-2">Overall Progress:</p>
+  <div class="h-5 bg-gray-700 rounded overflow-hidden">
+    <div id="progressBar" class="h-5 bg-yellow-500 transition-all duration-300"></div>
+  </div>
+  <p id="progressText" class="text-sm text-gray-400 mt-1"></p>
+</div>
+
+<script>
+const levels = [
+  "Level 1: ECS Foundations & Setup",
+  "Level 2: Containerizing Applications",
+  "Level 3: Task Definitions & Services",
+  "Level 4: Networking & Load Balancing",
+  "Level 5: Scaling & Scheduling",
+  "Level 6: Security & IAM Roles",
+  "Level 7: Monitoring & Logging",
+  "Level 8: Deployment Strategies",
+  "Level 9: Integration with Other AWS Services",
+  "Level 10: Advanced ECS Architectures"
+];
+
+const levelTasks = [
+  [
+    "Understand ECS architecture and components",
+    "Set up AWS CLI and configure credentials",
+    "Create your first ECS cluster",
+    "Learn ECS launch types: EC2 and Fargate",
+    "Create an IAM role for ECS tasks",
+    "Understand ECS task lifecycle",
+    "Deploy a sample container to ECS",
+    "Use AWS Management Console for ECS",
+    "Explore ECS limits and quotas",
+    "Review ECS pricing model"
+  ],
+  [
+    "Containerize an app using Docker",
+    "Write a Dockerfile for your app",
+    "Build and test a local Docker image",
+    "Push your Docker image to Amazon ECR",
+    "Understand container networking basics",
+    "Use multi-stage Docker builds",
+    "Implement environment variables in Docker",
+    "Manage Docker volumes and data persistence",
+    "Scan Docker images for vulnerabilities",
+    "Clean up unused Docker images"
+  ],
+  [
+    "Define ECS task definitions with JSON",
+    "Set container CPU and memory limits",
+    "Configure container ports and protocols",
+    "Set up environment variables in tasks",
+    "Understand task role permissions",
+    "Create and update ECS services",
+    "Use service discovery with ECS",
+    "Manage task placement strategies",
+    "Configure task health checks",
+    "Register task definitions versioning"
+  ],
+  [
+    "Configure VPC and subnets for ECS",
+    "Create and attach security groups",
+    "Use Application Load Balancers with ECS",
+    "Understand ECS service networking modes",
+    "Set up service discovery using Route 53",
+    "Configure private and public networking",
+    "Handle container-to-container networking",
+    "Understand network ACLs and firewalls",
+    "Use ENIs and IP address management",
+    "Troubleshoot common networking issues"
+  ],
+  [
+    "Set up auto scaling for ECS services",
+    "Use CloudWatch alarms for scaling triggers",
+    "Understand ECS scheduling strategies",
+    "Configure minimum and maximum task counts",
+    "Implement capacity providers",
+    "Use spot instances with ECS",
+    "Test service scaling with load",
+    "Implement task draining",
+    "Manage deployment circuit breakers",
+    "Tune scheduler behavior"
+  ],
+  [
+    "Apply IAM roles to ECS tasks and services",
+    "Use task execution roles securely",
+    "Understand and configure secrets management",
+    "Use AWS Secrets Manager with ECS",
+    "Enable encryption at rest for volumes",
+    "Configure security group rules carefully",
+    "Implement least privilege for ECS IAM roles",
+    "Use parameter store with ECS",
+    "Audit ECS IAM policies",
+    "Follow best security practices"
+  ],
+  [
+    "Enable CloudWatch Container Insights",
+    "Configure centralized logging to CloudWatch Logs",
+    "Use AWS X-Ray for tracing ECS apps",
+    "Monitor ECS task and service health",
+    "Set alarms for failed tasks",
+    "Visualize ECS metrics in CloudWatch dashboards",
+    "Use third-party monitoring tools",
+    "Collect Docker container logs",
+    "Analyze ECS resource utilization",
+    "Set up notifications for ECS events"
+  ],
+  [
+    "Use Blue/Green deployment with ECS",
+    "Implement rolling updates",
+    "Configure deployment circuit breakers",
+    "Use CodeDeploy with ECS",
+    "Test deployment rollback strategies",
+    "Manage task updates without downtime",
+    "Use task set feature in ECS",
+    "Automate deployments with CI/CD",
+    "Use AWS CodePipeline for ECS",
+    "Document deployment processes"
+  ],
+  [
+    "Integrate ECS with RDS and DynamoDB",
+    "Use AWS Lambda alongside ECS",
+    "Connect ECS with S3 buckets",
+    "Set up API Gateway with ECS backend",
+    "Use SNS and SQS with ECS",
+    "Implement caching with ElastiCache",
+    "Understand ECS and CloudFormation integration",
+    "Use Terraform to manage ECS infrastructure",
+    "Monitor costs and billing",
+    "Explore ECS with Service Mesh (App Mesh)"
+  ],
+  [
+    "Design multi-cluster ECS architectures",
+    "Use ECS with Kubernetes (EKS)",
+    "Deploy microservices on ECS",
+    "Build hybrid ECS and on-prem setups",
+    "Use ECS Anywhere",
+    "Implement canary deployments",
+    "Manage large ECS deployments efficiently",
+    "Optimize costs with right-sizing",
+    "Automate ECS with Infrastructure as Code",
+    "Lead an ECS migration project"
+  ]
+];
+
+const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+  tasksInLevel.map(desc => ({
+    id: `${levelIndex}-${desc}`,
+    description: desc,
+    level: levelIndex + 1,
+    completed: false
+  }))
+);
+
+const savedTasks = JSON.parse(localStorage.getItem('ecs_tasks')) || tasks;
+const savedBooks = JSON.parse(localStorage.getItem('ecs_books')) || Array(10).fill(false);
+const savedPodcasts = JSON.parse(localStorage.getItem('ecs_podcasts')) || Array(5).fill(false);
+
+const levelsContainer = document.getElementById('levelsContainer');
+const booksList = document.getElementById('booksList');
+const podcastsList = document.getElementById('podcastsList');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+
+function renderLevels() {
+  levelsContainer.innerHTML = '';
+  levels.forEach((levelTitle, i) => {
+    const levelNum = i + 1;
+    const div = document.createElement('section');
+    div.className = 'bg-gray-700 rounded p-4';
+    const h2 = document.createElement('h2');
+    h2.className = 'text-lg font-semibold text-yellow-300 mb-3';
+    h2.textContent = levelTitle;
+    div.appendChild(h2);
+    const ul = document.createElement('ul');
+    ul.className = 'space-y-2';
+    savedTasks.filter(t => t.level === levelNum).forEach(task => {
+      const li = document.createElement('li');
+      li.className = 'flex items-center bg-gray-600 rounded p-2';
+      li.innerHTML = `
+        <input type="checkbox" class="mr-3 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+        <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+      `;
+      ul.appendChild(li);
+    });
+    div.appendChild(ul);
+    levelsContainer.appendChild(div);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const completedCount = savedTasks.filter(t => t.completed).length;
+  const totalCount = savedTasks.length;
+  const percent = Math.round((completedCount / totalCount) * 100);
+  progressBar.style.width = `${percent}%`;
+  progressText.textContent = `${completedCount}/${totalCount} tasks completed (${percent}%)`;
+}
+
+document.body.addEventListener('change', e => {
+  if (e.target.matches('.task-checkbox')) {
+    const id = e.target.dataset.id;
+    const task = savedTasks.find(t => t.id === id);
+    if (task) {
+      task.completed = e.target.checked;
+      localStorage.setItem('ecs_tasks', JSON.stringify(savedTasks));
+      renderLevels();
+    }
+  }
+  if (e.target.matches('[data-book]')) {
+    const idx = parseInt(e.target.dataset.book, 10);
+    savedBooks[idx] = e.target.checked;
+    localStorage.setItem('ecs_books', JSON.stringify(savedBooks));
+  }
+  if (e.target.matches('[data-podcast]')) {
+    const idx = parseInt(e.target.dataset.podcast, 10);
+    savedPodcasts[idx] = e.target.checked;
+    localStorage.setItem('ecs_podcasts', JSON.stringify(savedPodcasts));
+  }
+});
+
+function renderBooks() {
+  savedBooks.forEach((checked, i) => {
+    const el = booksList.querySelector(`[data-book="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+function renderPodcasts() {
+  savedPodcasts.forEach((checked, i) => {
+    const el = podcastsList.querySelector(`[data-podcast="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+
+renderLevels();
+renderBooks();
+renderPodcasts();
+</script>
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AWS CloudFormation Wizardry RPG Tracker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .completed { text-decoration: line-through; color: #888; }
+</style>
+</head>
+<body class="p-6 max-w-7xl mx-auto">
+<h1 class="text-4xl font-extrabold text-blue-400 mb-6">🔮 AWS CloudFormation Wizardry RPG Tracker</h1>
+<p class="mb-8 text-gray-400">Master the art of infrastructure as code! Complete tasks, read books, and tune in to essential podcasts!</p>
+
+<div class="flex flex-col md:flex-row gap-8">
+  <section class="flex-1 space-y-6" id="levelsContainer"></section>
+
+  <aside class="w-full md:w-96 bg-gray-800 rounded p-6 space-y-8">
+    <div>
+      <h2 class="text-xl font-bold text-blue-300 mb-3">📚 10 Must-Read CloudFormation Books</h2>
+      <ul id="booksList" class="space-y-2">
+        <li><label><input type="checkbox" data-book="0" class="mr-2" />AWS CloudFormation User Guide</label></li>
+        <li><label><input type="checkbox" data-book="1" class="mr-2" />Infrastructure as Code by Kief Morris</label></li>
+        <li><label><input type="checkbox" data-book="2" class="mr-2" />AWS Certified Solutions Architect Study Guide</label></li>
+        <li><label><input type="checkbox" data-book="3" class="mr-2" />Mastering AWS CloudFormation</label></li>
+        <li><label><input type="checkbox" data-book="4" class="mr-2" />AWS CloudFormation Best Practices</label></li>
+        <li><label><input type="checkbox" data-book="5" class="mr-2" />Infrastructure as Code with AWS</label></li>
+        <li><label><input type="checkbox" data-book="6" class="mr-2" />DevOps on AWS</label></li>
+        <li><label><input type="checkbox" data-book="7" class="mr-2" />Terraform vs CloudFormation</label></li>
+        <li><label><input type="checkbox" data-book="8" class="mr-2" />CloudFormation Masterclass</label></li>
+        <li><label><input type="checkbox" data-book="9" class="mr-2" />AWS Well-Architected Framework</label></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-blue-300 mb-3">🎧 5 Popular CloudFormation Podcasts</h2>
+      <ul id="podcastsList" class="space-y-2">
+        <li><label><input type="checkbox" data-podcast="0" class="mr-2" />AWS Podcast</label></li>
+        <li><label><input type="checkbox" data-podcast="1" class="mr-2" />The Cloudcast</label></li>
+        <li><label><input type="checkbox" data-podcast="2" class="mr-2" />Screaming in the Cloud</label></li>
+        <li><label><input type="checkbox" data-podcast="3" class="mr-2" />AWS Developers Podcast</label></li>
+        <li><label><input type="checkbox" data-podcast="4" class="mr-2" />DevOps Chat</label></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<div class="mt-8">
+  <p class="text-gray-400 mb-2">Overall Progress:</p>
+  <div class="h-5 bg-gray-700 rounded overflow-hidden">
+    <div id="progressBar" class="h-5 bg-blue-500 transition-all duration-300"></div>
+  </div>
+  <p id="progressText" class="text-sm text-gray-400 mt-1"></p>
+</div>
+
+<script>
+const levels = [
+  "Level 1: CloudFormation Basics",
+  "Level 2: Templates & Resources",
+  "Level 3: Parameters & Outputs",
+  "Level 4: Mappings & Conditions",
+  "Level 5: Nested Stacks & Reusability",
+  "Level 6: Change Sets & Stack Updates",
+  "Level 7: Integrating with AWS Services",
+  "Level 8: Security & IAM in CloudFormation",
+  "Level 9: Monitoring & Troubleshooting",
+  "Level 10: Best Practices & Advanced Tips"
+];
+
+const levelTasks = [
+  [
+    "Set up AWS CLI and CloudFormation basics",
+    "Understand CloudFormation templates",
+    "Explore the CloudFormation console",
+    "Create a basic stack",
+    "Delete a stack",
+    "Understand stack lifecycle",
+    "Explore YAML vs JSON formats",
+    "Review CloudFormation documentation",
+    "Understand the resource types",
+    "Run a sample CloudFormation template"
+  ],
+  [
+    "Understand template structure",
+    "Define AWS resources in templates",
+    "Use logical IDs for resources",
+    "Define simple EC2 instance in CloudFormation",
+    "Explore intrinsic functions (e.g., Ref)",
+    "Add tags to resources in templates",
+    "Learn about resource dependencies",
+    "Manage resources with updates",
+    "Understand resource replacement",
+    "Create a stack using the AWS CLI"
+  ],
+  [
+    "Add parameters to a template",
+    "Use parameter constraints and descriptions",
+    "Add outputs to a template",
+    "Use pseudo parameters",
+    "Reference outputs across stacks",
+    "Use AWS-specific parameter types",
+    "Use dynamic references",
+    "Test parameterized deployments",
+    "Understand output export/import",
+    "Create a parameterized template in the console"
+  ],
+  [
+    "Understand mappings in CloudFormation",
+    "Use Fn::FindInMap intrinsic function",
+    "Define conditions in templates",
+    "Use Fn::If and condition functions",
+    "Create region-specific mappings",
+    "Use mappings for AMI selection",
+    "Simplify templates with conditions",
+    "Test conditions in deployments",
+    "Document template mappings",
+    "Debug conditional deployments"
+  ],
+  [
+    "Understand nested stacks",
+    "Break down large templates into modules",
+    "Create reusable templates",
+    "Use StackSets for multi-account deployments",
+    "Manage cross-stack references",
+    "Control nested stack updates",
+    "Explore the StackSet console",
+    "Document nested stack structure",
+    "Update nested stacks safely",
+    "Test nested stack deployments"
+  ],
+  [
+    "Use change sets to preview updates",
+    "Understand change set details",
+    "Apply change sets safely",
+    "Handle stack update failures",
+    "Use stack policies to prevent unwanted changes",
+    "Automate stack updates with CLI",
+    "Rollback failed updates",
+    "Handle stack drift detection",
+    "Test change set deployment",
+    "Document stack update strategy"
+  ],
+  [
+    "Use CloudFormation with Lambda",
+    "Create S3 buckets with CloudFormation",
+    "Deploy RDS instances using templates",
+    "Integrate with SNS and SQS",
+    "Set up CloudWatch alarms via templates",
+    "Use AWS::Include transform macro",
+    "Explore CloudFormation modules",
+    "Deploy ECS and EKS resources",
+    "Integrate API Gateway and Lambda",
+    "Test integrated service deployments"
+  ],
+  [
+    "Use IAM roles for stack creation",
+    "Add resource-level permissions in templates",
+    "Use AWS KMS for encryption in templates",
+    "Apply stack policies for security",
+    "Use parameter no-echo for sensitive data",
+    "Enable encryption for stack resources",
+    "Understand resource access control",
+    "Monitor stack security with CloudTrail",
+    "Audit templates for security issues",
+    "Follow Well-Architected security best practices"
+  ],
+  [
+    "Enable stack notifications with SNS",
+    "Monitor stack events in the console",
+    "Handle common deployment errors",
+    "Use CloudFormation Drift Detection",
+    "Debug template syntax issues",
+    "Use Stack Events and Logs",
+    "Test rollback and recovery",
+    "Understand stack statuses",
+    "Explore CloudFormation metrics",
+    "Document stack troubleshooting steps"
+  ],
+  [
+    "Follow CloudFormation best practices",
+    "Use AWS Well-Architected Framework",
+    "Design reusable and modular templates",
+    "Minimize hard-coded values",
+    "Version control your templates",
+    "Automate deployments with CI/CD",
+    "Validate templates with cfn-lint",
+    "Use CloudFormation Guard for compliance",
+    "Plan for cost optimization",
+    "Stay updated with CloudFormation features"
+  ]
+];
+
+const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+  tasksInLevel.map(desc => ({
+    id: `${levelIndex}-${desc}`,
+    description: desc,
+    level: levelIndex + 1,
+    completed: false
+  }))
+);
+
+const savedTasks = JSON.parse(localStorage.getItem('cfn_tasks')) || tasks;
+const savedBooks = JSON.parse(localStorage.getItem('cfn_books')) || Array(10).fill(false);
+const savedPodcasts = JSON.parse(localStorage.getItem('cfn_podcasts')) || Array(5).fill(false);
+
+const levelsContainer = document.getElementById('levelsContainer');
+const booksList = document.getElementById('booksList');
+const podcastsList = document.getElementById('podcastsList');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+
+function renderLevels() {
+  levelsContainer.innerHTML = '';
+  levels.forEach((levelTitle, i) => {
+    const levelNum = i + 1;
+    const div = document.createElement('section');
+    div.className = 'bg-gray-700 rounded p-4';
+    const h2 = document.createElement('h2');
+    h2.className = 'text-lg font-semibold text-blue-300 mb-3';
+    h2.textContent = levelTitle;
+    div.appendChild(h2);
+    const ul = document.createElement('ul');
+    ul.className = 'space-y-2';
+    savedTasks.filter(t => t.level === levelNum).forEach(task => {
+      const li = document.createElement('li');
+      li.className = 'flex items-center bg-gray-600 rounded p-2';
+      li.innerHTML = `
+        <input type="checkbox" class="mr-3 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+        <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+      `;
+      ul.appendChild(li);
+    });
+    div.appendChild(ul);
+    levelsContainer.appendChild(div);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const completedCount = savedTasks.filter(t => t.completed).length;
+  const totalCount = savedTasks.length;
+  const percent = Math.round((completedCount / totalCount) * 100);
+  progressBar.style.width = `${percent}%`;
+  progressText.textContent = `${completedCount}/${totalCount} tasks completed (${percent}%)`;
+}
+
+document.body.addEventListener('change', e => {
+  if (e.target.matches('.task-checkbox')) {
+    const id = e.target.dataset.id;
+    const task = savedTasks.find(t => t.id === id);
+    if (task) {
+      task.completed = e.target.checked;
+      localStorage.setItem('cfn_tasks', JSON.stringify(savedTasks));
+      renderLevels();
+    }
+  }
+  if (e.target.matches('[data-book]')) {
+    const idx = parseInt(e.target.dataset.book, 10);
+    savedBooks[idx] = e.target.checked;
+    localStorage.setItem('cfn_books', JSON.stringify(savedBooks));
+  }
+  if (e.target.matches('[data-podcast]')) {
+    const idx = parseInt(e.target.dataset.podcast, 10);
+    savedPodcasts[idx] = e.target.checked;
+    localStorage.setItem('cfn_podcasts', JSON.stringify(savedPodcasts));
+  }
+});
+
+function renderBooks() {
+  savedBooks.forEach((checked, i) => {
+    const el = booksList.querySelector(`[data-book="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+function renderPodcasts() {
+  savedPodcasts.forEach((checked, i) => {
+    const el = podcastsList.querySelector(`[data-podcast="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+
+renderLevels();
+renderBooks();
+renderPodcasts();
+</script>
+</body>
+</html>
