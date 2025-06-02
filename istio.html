@@ -1,229 +1,299 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-gray-900 text-white">
+<html lang="en" class="bg-gray-900 text-gray-100">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Istio Mastery RPG</title>
+  <title>Istio RPG Progress Tracker</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .task-item.completed {
+    .completed {
       text-decoration: line-through;
-      color: #22c55e;
+      color: #aaa;
     }
   </style>
 </head>
-<body class="p-8">
+<body class="p-4">
+  <h1 class="text-3xl font-bold text-yellow-400 mb-4">🌐 Istio Wizardry - RPG Progress Tracker</h1>
+  <p class="mb-4 text-sm text-gray-400">Master Istio’s service mesh magic across 10 levels. Track your progress, books, and podcasts to become an Istio wizard!</p>
 
-  <div class="max-w-3xl mx-auto bg-gray-800 rounded-2xl shadow-lg p-6">
-    <h1 class="text-3xl font-bold mb-4 text-cyan-400">🌊 Istio Mastery RPG</h1>
-    <p class="mb-4 text-gray-300">Complete these challenges and master Istio service mesh wizardry!</p>
+  <div class="flex flex-col md:flex-row gap-4">
+    <!-- Tasks Section -->
+    <div class="flex-1 space-y-4" id="levelsContainer"></div>
 
-    <div id="tasks"></div>
+    <!-- Books & Podcasts Section -->
+    <div class="w-full md:w-1/3 bg-gray-800 rounded p-4 space-y-6">
+      <div>
+        <h2 class="text-lg font-bold text-yellow-300 mb-2">📚 8 Must-Read Istio & Service Mesh Books</h2>
+        <ul id="booksList" class="space-y-2">
+          <li><label><input type="checkbox" data-book="0" class="mr-2" />Istio: Up and Running</label></li>
+          <li><label><input type="checkbox" data-book="1" class="mr-2" />The Service Mesh Primer</label></li>
+          <li><label><input type="checkbox" data-book="2" class="mr-2" />Kubernetes Patterns</label></li>
+          <li><label><input type="checkbox" data-book="3" class="mr-2" />Cloud Native Infrastructure</label></li>
+          <li><label><input type="checkbox" data-book="4" class="mr-2" />Programming Kubernetes</label></li>
+          <li><label><input type="checkbox" data-book="5" class="mr-2" />Distributed Systems Observability</label></li>
+          <li><label><input type="checkbox" data-book="6" class="mr-2" />Microservices Security in Action</label></li>
+          <li><label><input type="checkbox" data-book="7" class="mr-2" />Kubernetes Up & Running</label></li>
+        </ul>
+      </div>
 
-    <div class="mt-8">
-      <h2 class="text-2xl font-bold text-cyan-400 mb-2">📚 Must-Read Istio Books</h2>
-      <ul class="list-disc pl-5 text-gray-300">
-        <li>Istio: Up and Running - Lee Calcote & Zack Butcher</li>
-        <li>Learning Istio - Rahul Sharma</li>
-        <li>Service Mesh for Mere Mortals - Christian Posta</li>
-        <li>Cloud Native DevOps with Kubernetes - Justin Garrison & Kris Nova (Istio sections)</li>
-        <li>Mastering Service Mesh - Ankit Sharma</li>
-        <li>Hands-On Service Mesh with Istio - Subhrajit Roy</li>
-        <li>Kubernetes Patterns - Bilgin Ibryam & Roland Huß (mesh patterns)</li>
-        <li>Microservices Patterns - Chris Richardson (related service mesh concepts)</li>
-        <li>Istio Security - Chris Bailey (O'Reilly)</li>
-        <li>Istio Cookbook - Packt Publishing</li>
-      </ul>
-
-      <h2 class="text-2xl font-bold text-cyan-400 mt-6 mb-2">🎧 Popular Istio & Service Mesh Podcasts</h2>
-      <ul class="list-disc pl-5 text-gray-300">
-        <li>Service Mesh Weekly</li>
-        <li>Kubernetes Podcast from Google</li>
-        <li>The InfoQ Podcast</li>
-        <li>Software Engineering Daily</li>
-        <li>The New Stack Podcast</li>
-      </ul>
+      <div>
+        <h2 class="text-lg font-bold text-yellow-300 mb-2">🎧 5 Popular Istio & Service Mesh Podcasts</h2>
+        <ul id="podcastsList" class="space-y-2">
+          <li><label><input type="checkbox" data-podcast="0" class="mr-2" />The Service Mesh Podcast</label></li>
+          <li><label><input type="checkbox" data-podcast="1" class="mr-2" />Kubernetes Podcast from Google</label></li>
+          <li><label><input type="checkbox" data-podcast="2" class="mr-2" />Cloud Native Conversations</label></li>
+          <li><label><input type="checkbox" data-podcast="3" class="mr-2" />Masters of Kubernetes</label></li>
+          <li><label><input type="checkbox" data-podcast="4" class="mr-2" />Software Engineering Daily - Service Mesh episodes</label></li>
+        </ul>
+      </div>
     </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="mt-4">
+    <p class="text-sm text-gray-400 mb-1">Overall Progress:</p>
+    <div class="h-4 bg-gray-700 rounded overflow-hidden">
+      <div id="progressBar" class="h-4 bg-yellow-400 transition-all duration-300"></div>
+    </div>
+    <p id="progressText" class="text-xs text-gray-400 mt-1"></p>
   </div>
 
   <script>
     const levels = [
-      {
-        level: 1,
-        tasks: [
-          "Install Istio CLI (istioctl)",
-          "Install Istio on a Kubernetes cluster",
-          "Verify Istio installation with istioctl verify-install",
-          "Deploy a sample application (Bookinfo)",
-          "Understand Istio architecture components",
-          "Configure automatic sidecar injection",
-          "Check sidecar proxies are running",
-          "Access Istio dashboard with Kiali",
-          "Use Istio’s default Gateway to expose apps",
-          "Use kubectl to inspect Istio custom resources"
-        ]
-      },
-      {
-        level: 2,
-        tasks: [
-          "Understand and configure DestinationRules",
-          "Create and use VirtualServices for routing",
-          "Use HTTP routing rules (path, headers)",
-          "Implement traffic shifting between versions",
-          "Configure retries and timeouts for services",
-          "Implement fault injection (abort, delay)",
-          "Use mirroring to test new versions",
-          "Understand sidecar proxy Envoy filters",
-          "View metrics with Prometheus integration",
-          "Explore logs with Fluentd and ELK stack"
-        ]
-      },
-      {
-        level: 3,
-        tasks: [
-          "Configure mutual TLS between services",
-          "Understand and use AuthorizationPolicies",
-          "Apply PeerAuthentication for security",
-          "Set up JWT validation with RequestAuthentication",
-          "Enable auditing of Istio traffic",
-          "Use Istio’s telemetry to monitor traffic",
-          "Create custom metrics with Mixer (if applicable)",
-          "Understand Istio’s policy and telemetry model",
-          "Use Grafana dashboards for Istio metrics",
-          "Explore tracing with Jaeger integration"
-        ]
-      },
-      {
-        level: 4,
-        tasks: [
-          "Configure egress traffic rules",
-          "Control ingress traffic with Gateways and VirtualServices",
-          "Use TLS origination and termination at Gateways",
-          "Manage multiple gateways for multi-tenant clusters",
-          "Understand and configure ServiceEntries",
-          "Implement circuit breaking with OutlierDetection",
-          "Use EnvoyFilters to customize proxy behavior",
-          "Implement traffic shadowing",
-          "Understand Istio’s sidecar proxy lifecycle",
-          "Debug Istio proxy with istioctl proxy-status"
-        ]
-      },
-      {
-        level: 5,
-        tasks: [
-          "Use Helm or Operator for Istio installation",
-          "Configure Resource Quotas for Istio components",
-          "Understand control plane scaling best practices",
-          "Manage Istio upgrades with zero downtime",
-          "Enable and configure Istio’s Pilot",
-          "Set up multi-cluster Istio service mesh",
-          "Use Istio with service mesh federation",
-          "Monitor Istio control plane health",
-          "Set up Prometheus alerting for Istio metrics",
-          "Implement network policies alongside Istio"
-        ]
-      },
-      {
-        level: 6,
-        tasks: [
-          "Use Istio with EnvoyFilter extensions",
-          "Implement custom Envoy WASM filters",
-          "Use Istio’s Mixer-less telemetry with Telemetry API",
-          "Customize Istio dashboards with Grafana",
-          "Build custom adapters if still applicable",
-          "Use Istio with service mesh gateways for external APIs",
-          "Configure rate limiting with Istio",
-          "Manage request headers and transformations",
-          "Understand Istio RBAC and integrate with Kubernetes RBAC",
-          "Implement Istio multi-tenancy"
-        ]
-      },
-      {
-        level: 7,
-        tasks: [
-          "Use Istio with external authentication services",
-          "Configure OPA Gatekeeper with Istio",
-          "Implement secure ingress with JWT and OAuth2",
-          "Understand Istio’s interaction with service discovery",
-          "Manage DNS and ServiceEntries for external services",
-          "Implement fine-grained telemetry",
-          "Set up Istio with virtual machines (VMs)",
-          "Integrate Istio with API gateways",
-          "Understand Istio’s sidecar auto-injection templates",
-          "Perform Istio configuration validation"
-        ]
-      },
-      {
-        level: 8,
-        tasks: [
-          "Debug Istio networking issues with tcpdump",
-          "Profile Istio proxy performance",
-          "Use distributed tracing effectively",
-          "Create advanced traffic routing scenarios",
-          "Test fault injection in production safely",
-          "Handle cross-cluster Istio deployments",
-          "Implement custom service mesh policies",
-          "Use Istio with gRPC services",
-          "Understand Envoy proxy advanced config",
-          "Participate in Istio community and contribute"
-        ]
-      },
-      {
-        level: 9,
-        tasks: [
-          "Use Istio’s experimental features",
-          "Customize sidecar injection with templates",
-          "Manage service mesh at scale",
-          "Automate Istio configurations via GitOps",
-          "Integrate Istio with CI/CD pipelines",
-          "Secure Istio control plane communication",
-          "Manage secrets in Istio with Kubernetes Secrets and Vault",
-          "Use Envoy proxy tracing with OpenTelemetry",
-          "Analyze Istio service mesh cost implications",
-          "Design resilient microservices architecture with Istio"
-        ]
-      },
-      {
-        level: 10,
-        tasks: [
-          "Master Istio service mesh security architecture",
-          "Design multi-cluster, multi-mesh topologies",
-          "Implement zero-trust networking with Istio",
-          "Optimize Istio performance and resource usage",
-          "Create custom Istio extensions",
-          "Develop Istio operators and controllers",
-          "Contribute to Istio open source",
-          "Host Istio workshops and trainings",
-          "Maintain large-scale Istio deployments",
-          "Celebrate your Istio mastery! 🎉"
-        ]
-      }
+      "Level 1: Introduction to Istio",
+      "Level 2: Installing Istio",
+      "Level 3: Envoy Proxy Basics",
+      "Level 4: Traffic Management",
+      "Level 5: Security & Mutual TLS",
+      "Level 6: Observability & Telemetry",
+      "Level 7: Policy Enforcement",
+      "Level 8: Advanced Routing",
+      "Level 9: Service Mesh Scaling",
+      "Level 10: Istio in Production"
     ];
 
-    const tasksContainer = document.getElementById("tasks");
-    levels.forEach(level => {
-      const levelHeader = document.createElement("h2");
-      levelHeader.className = "text-xl font-bold text-cyan-400 mt-4 mb-2";
-      levelHeader.textContent = `Level ${level.level}`;
-      tasksContainer.appendChild(levelHeader);
+    const levelTasks = [
+      [
+        "Understand what Istio is and why use it",
+        "Learn the components of Istio",
+        "Explore basic service mesh concepts",
+        "Understand sidecar proxies",
+        "Review Istio architecture overview",
+        "Watch Istio introductory videos",
+        "Join the Istio community forums",
+        "Read the official Istio documentation",
+        "Install Istio CLI (istioctl)",
+        "Understand the service mesh control plane"
+      ],
+      [
+        "Set up a Kubernetes cluster",
+        "Install Istio using istioctl",
+        "Verify Istio components are running",
+        "Enable automatic sidecar injection",
+        "Deploy a sample app with Istio",
+        "Understand the Istio namespace labeling",
+        "Configure Istio gateway",
+        "Use Helm or operator to install Istio",
+        "Upgrade Istio versions",
+        "Uninstall Istio cleanly"
+      ],
+      [
+        "Learn about Envoy proxy role",
+        "Explore Envoy architecture",
+        "Understand Envoy filters",
+        "Inspect Envoy proxy logs",
+        "Configure Envoy via Istio",
+        "Understand sidecar lifecycle",
+        "Use Envoy Admin interface",
+        "Debug Envoy proxy issues",
+        "Manage Envoy certificates",
+        "Observe Envoy metrics"
+      ],
+      [
+        "Create VirtualService resources",
+        "Define DestinationRules",
+        "Configure routing rules",
+        "Implement canary deployments",
+        "Use traffic shifting",
+        "Apply fault injection",
+        "Configure retries and timeouts",
+        "Understand circuit breakers",
+        "Use weighted routing",
+        "Test routing rules"
+      ],
+      [
+        "Enable mutual TLS",
+        "Understand Istio Citadel",
+        "Configure authentication policies",
+        "Implement authorization policies",
+        "Manage service identities",
+        "Rotate certificates",
+        "Understand RBAC in Istio",
+        "Use AuthorizationPolicy resource",
+        "Use JWT authentication",
+        "Secure ingress and egress"
+      ],
+      [
+        "Enable telemetry collection",
+        "Use Prometheus with Istio",
+        "Configure Grafana dashboards",
+        "Set up Jaeger tracing",
+        "Analyze distributed traces",
+        "Use Kiali for visualization",
+        "Collect Envoy metrics",
+        "Set up log aggregation",
+        "Monitor service mesh health",
+        "Create custom metrics"
+      ],
+      [
+        "Write and enforce policies",
+        "Use Mixer (or its alternatives)",
+        "Configure quotas and rate limits",
+        "Implement access control",
+        "Use WebAssembly plugins",
+        "Monitor policy violations",
+        "Audit service mesh policies",
+        "Test policy enforcement",
+        "Apply admission control",
+        "Understand policy lifecycle"
+      ],
+      [
+        "Use advanced routing features",
+        "Create TCP routes",
+        "Configure gateway routing",
+        "Use subset routing",
+        "Set up traffic mirroring",
+        "Implement header manipulation",
+        "Use fault injection scenarios",
+        "Understand retries and timeouts deeply",
+        "Use Envoy extensions",
+        "Test complex routing rules"
+      ],
+      [
+        "Scale Istio control plane",
+        "Manage Envoy proxy resources",
+        "Optimize resource usage",
+        "Use multi-cluster Istio",
+        "Implement failover strategies",
+        "Configure sidecar resource limits",
+        "Manage Istio upgrades in prod",
+        "Use canary upgrades for Istio itself",
+        "Monitor performance impact",
+        "Implement disaster recovery"
+      ],
+      [
+        "Design production-ready Istio setup",
+        "Implement security best practices",
+        "Automate Istio deployment",
+        "Use CI/CD pipelines with Istio",
+        "Monitor and alert on Istio metrics",
+        "Perform capacity planning",
+        "Document Istio architecture",
+        "Train team on Istio usage",
+        "Contribute to Istio open source",
+        "Run Istio in high availability mode"
+      ]
+    ];
 
-      const ul = document.createElement("ul");
-      ul.className = "list-disc pl-5 mb-4";
-      level.tasks.forEach((task, idx) => {
-        const li = document.createElement("li");
-        li.textContent = task;
-        li.className = "task-item cursor-pointer text-gray-300 hover:text-white";
-        li.dataset.key = `istio-level-${level.level}-task-${idx}`;
-        li.onclick = () => {
-          li.classList.toggle("completed");
-          localStorage.setItem(li.dataset.key, li.classList.contains("completed"));
+    const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+      tasksInLevel.map(description => ({
+        id: `${levelIndex}-${description}`,
+        description,
+        level: levelIndex + 1,
+        completed: false
+      }))
+    );
+
+    const savedTasks = JSON.parse(localStorage.getItem('istio_tasks')) || tasks;
+    const savedBooks = JSON.parse(localStorage.getItem('istio_books')) || Array(8).fill(false);
+    const savedPodcasts = JSON.parse(localStorage.getItem('istio_podcasts')) || Array(5).fill(false);
+
+    const levelsContainer = document.getElementById('levelsContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+
+    function renderLevels() {
+      levelsContainer.innerHTML = '';
+      for(let i = 0; i < levels.length; i++) {
+        const levelDiv = document.createElement('div');
+        levelDiv.className = 'bg-gray-800 rounded p-4';
+
+        levelDiv.innerHTML = `<h2 class="font-bold text-yellow-400 mb-2">${levels[i]}</h2>`;
+        const ul = document.createElement('ul');
+        ul.className = 'list-disc pl-5 space-y-1';
+
+        savedTasks
+          .filter(t => t.level === i + 1)
+          .forEach(task => {
+            const li = document.createElement('li');
+            li.className = task.completed ? 'completed' : '';
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = task.completed;
+            checkbox.className = 'mr-2';
+            checkbox.onchange = () => toggleTask(task.id);
+            li.appendChild(checkbox);
+            li.appendChild(document.createTextNode(task.description));
+            ul.appendChild(li);
+          });
+
+        levelDiv.appendChild(ul);
+        levelsContainer.appendChild(levelDiv);
+      }
+    }
+
+    function toggleTask(id) {
+      const task = savedTasks.find(t => t.id === id);
+      if (task) {
+        task.completed = !task.completed;
+        localStorage.setItem('istio_tasks', JSON.stringify(savedTasks));
+        renderLevels();
+        updateProgress();
+      }
+    }
+
+    function renderBooks() {
+      const booksList = document.getElementById('booksList');
+      booksList.querySelectorAll('input[type="checkbox"]').forEach(input => {
+        const index = Number(input.getAttribute('data-book'));
+        input.checked = savedBooks[index];
+        input.onchange = () => {
+          savedBooks[index] = input.checked;
+          localStorage.setItem('istio_books', JSON.stringify(savedBooks));
+          updateProgress();
         };
-        if(localStorage.getItem(li.dataset.key) === "true") li.classList.add("completed");
-        ul.appendChild(li);
       });
-      tasksContainer.appendChild(ul);
-    });
-  </script>
+    }
 
+    function renderPodcasts() {
+      const podcastsList = document.getElementById('podcastsList');
+      podcastsList.querySelectorAll('input[type="checkbox"]').forEach(input => {
+        const index = Number(input.getAttribute('data-podcast'));
+        input.checked = savedPodcasts[index];
+        input.onchange = () => {
+          savedPodcasts[index] = input.checked;
+          localStorage.setItem('istio_podcasts', JSON.stringify(savedPodcasts));
+          updateProgress();
+        };
+      });
+    }
+
+    function updateProgress() {
+      const totalTasks = savedTasks.length + savedBooks.length + savedPodcasts.length;
+      const completedTasks =
+        savedTasks.filter(t => t.completed).length +
+        savedBooks.filter(b => b).length +
+        savedPodcasts.filter(p => p).length;
+
+      const percent = Math.round((completedTasks / totalTasks) * 100);
+      progressBar.style.width = percent + '%';
+      progressText.textContent = `${percent}% completed (${completedTasks} of ${totalTasks} tasks)`;
+    }
+
+    renderLevels();
+    renderBooks();
+    renderPodcasts();
+    updateProgress();
+  </script>
 </body>
 </html>
