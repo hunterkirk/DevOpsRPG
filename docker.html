@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Docker RPG Progress Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .completed {
+      text-decoration: line-through;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body class="p-4">
+  <h1 class="text-3xl font-bold text-blue-400 mb-4">🐳 Docker Mastery - RPG Progress Tracker</h1>
+  <p class="mb-4 text-sm text-gray-400">Complete all 100 tasks across 10 levels to become a Docker Wizard! Track your progress, books, and podcasts.</p>
+
+  <div class="flex flex-col md:flex-row gap-4">
+    <!-- Tasks Section -->
+    <div class="flex-1 space-y-4" id="levelsContainer"></div>
+
+    <!-- Books & Podcasts Section -->
+    <div class="w-full md:w-1/3 bg-gray-800 rounded p-4 space-y-6">
+      <div>
+        <h2 class="text-lg font-bold text-blue-300 mb-2">📚 10 Must-Read Docker & Container Books</h2>
+        <ul id="booksList" class="space-y-2">
+          <li><label><input type="checkbox" data-book="0" class="mr-2" />Docker Deep Dive (Nigel Poulton)</label></li>
+          <li><label><input type="checkbox" data-book="1" class="mr-2" />The Docker Book (James Turnbull)</label></li>
+          <li><label><input type="checkbox" data-book="2" class="mr-2" />Kubernetes: Up & Running (Brendan Burns)</label></li>
+          <li><label><input type="checkbox" data-book="3" class="mr-2" />Docker in Practice (Ian Miell)</label></li>
+          <li><label><input type="checkbox" data-book="4" class="mr-2" />Learning Docker (Pethuru Raj)</label></li>
+          <li><label><input type="checkbox" data-book="5" class="mr-2" />Mastering Docker (Russ McKendrick)</label></li>
+          <li><label><input type="checkbox" data-book="6" class="mr-2" />Container Security (Liz Rice)</label></li>
+          <li><label><input type="checkbox" data-book="7" class="mr-2" />Docker Cookbook (Sebastien Goasguen)</label></li>
+          <li><label><input type="checkbox" data-book="8" class="mr-2" />Using Docker (Adrian Mouat)</label></li>
+          <li><label><input type="checkbox" data-book="9" class="mr-2" />The DevOps 2.3 Toolkit: Kubernetes (Viktor Farcic)</label></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-blue-300 mb-2">🎧 5 Popular Docker Podcasts</h2>
+        <ul id="podcastsList" class="space-y-2">
+          <li><label><input type="checkbox" data-podcast="0" class="mr-2" />Docker Blog Podcast</label></li>
+          <li><label><input type="checkbox" data-podcast="1" class="mr-2" />The Container Solutions Podcast</label></li>
+          <li><label><input type="checkbox" data-podcast="2" class="mr-2" />Kubernetes Podcast from Google</label></li>
+          <li><label><input type="checkbox" data-podcast="3" class="mr-2" />The Changelog</label></li>
+          <li><label><input type="checkbox" data-podcast="4" class="mr-2" />Ship It! Podcast</label></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="mt-4">
+    <p class="text-sm text-gray-400 mb-1">Overall Progress:</p>
+    <div class="h-4 bg-gray-700 rounded overflow-hidden">
+      <div id="progressBar" class="h-4 bg-blue-400 transition-all duration-300"></div>
+    </div>
+    <p id="progressText" class="text-xs text-gray-400 mt-1"></p>
+  </div>
+
+  <script>
+    const levels = [
+      "Level 1: Docker Basics",
+      "Level 2: Working with Images",
+      "Level 3: Containers & Volumes",
+      "Level 4: Networking",
+      "Level 5: Docker Compose",
+      "Level 6: Docker Swarm",
+      "Level 7: Security & Best Practices",
+      "Level 8: CI/CD Integration",
+      "Level 9: Monitoring & Logging",
+      "Level 10: Advanced Docker & Orchestration"
+    ];
+
+    const levelTasks = [
+      [
+        "Install Docker Engine on your OS",
+        "Understand Docker architecture",
+        "Run your first container",
+        "Understand Docker CLI commands",
+        "Learn difference between container and VM",
+        "Stop, start, and remove containers",
+        "Inspect running containers",
+        "View container logs",
+        "Understand container lifecycle",
+        "Use Docker Hub to pull images"
+      ],
+      [
+        "Build a Docker image from Dockerfile",
+        "Understand layers and caching",
+        "Use .dockerignore file effectively",
+        "Tag and push images to Docker Hub",
+        "Pull specific image versions",
+        "Use multi-stage builds",
+        "Understand image registries",
+        "Manage local image cache",
+        "Use docker history to analyze images",
+        "Use labels in Dockerfile"
+      ],
+      [
+        "Run containers with volumes",
+        "Persist data with named volumes",
+        "Use bind mounts for local development",
+        "Backup and restore volumes",
+        "Understand tmpfs volumes",
+        "Share volumes between containers",
+        "Use volume drivers",
+        "Manage volume lifecycle",
+        "Inspect volume details",
+        "Clean up unused volumes"
+      ],
+      [
+        "Understand Docker networking basics",
+        "Use bridge network driver",
+        "Create custom networks",
+        "Connect multiple containers with networks",
+        "Expose container ports",
+        "Use host and none network drivers",
+        "Inspect network settings",
+        "Use Docker network commands",
+        "Configure container DNS",
+        "Manage network lifecycle"
+      ],
+      [
+        "Write Docker Compose files",
+        "Define multiple services",
+        "Set environment variables",
+        "Use volumes and networks in Compose",
+        "Scale services with Compose",
+        "Use Compose override files",
+        "Use healthchecks in Compose",
+        "Build images in Compose",
+        "Use depends_on and restart policies",
+        "Deploy Compose apps"
+      ],
+      [
+        "Understand Docker Swarm mode",
+        "Initialize Swarm cluster",
+        "Add nodes to Swarm",
+        "Deploy services with Swarm",
+        "Use overlay networks",
+        "Scale Swarm services",
+        "Perform rolling updates",
+        "Manage secrets in Swarm",
+        "Use configs in Swarm",
+        "Monitor Swarm cluster"
+      ],
+      [
+        "Implement Docker image security best practices",
+        "Use minimal base images",
+        "Scan images for vulnerabilities",
+        "Sign Docker images",
+        "Use user namespaces",
+        "Run containers with least privilege",
+        "Use Docker Content Trust",
+        "Isolate containers securely",
+        "Configure resource limits",
+        "Audit Docker daemon"
+      ],
+      [
+        "Integrate Docker with Jenkins CI",
+        "Use Docker in GitLab CI pipelines",
+        "Automate image builds",
+        "Use Docker layer caching in CI",
+        "Deploy containers automatically",
+        "Run tests inside containers",
+        "Use Docker registry in CI/CD",
+        "Implement blue-green deployments",
+        "Automate security scans",
+        "Notify on build failures"
+      ],
+      [
+        "Monitor containers with Prometheus",
+        "Use cAdvisor for metrics",
+        "Collect logs with ELK stack",
+        "Use Fluentd for logging",
+        "Analyze container health",
+        "Set up alerting rules",
+        "Visualize metrics with Grafana",
+        "Use Docker events for monitoring",
+        "Profile container resource usage",
+        "Debug container networking issues"
+      ],
+      [
+        "Use Kubernetes with Docker containers",
+        "Deploy multi-container apps",
+        "Understand Docker APIs",
+        "Use Docker plugins",
+        "Build custom Docker CLI tools",
+        "Create Docker extensions",
+        "Contribute to Docker open source",
+        "Understand container runtimes",
+        "Optimize Docker builds",
+        "Use Docker with serverless frameworks"
+      ]
+    ];
+
+    const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+      tasksInLevel.map(description => ({
+        id: `${levelIndex}-${description}`,
+        description,
+        level: levelIndex + 1,
+        completed: false
+      }))
+    );
+
+    const savedTasks = JSON.parse(localStorage.getItem('docker_tasks')) || tasks;
+    const savedBooks = JSON.parse(localStorage.getItem('docker_books')) || Array(10).fill(false);
+    const savedPodcasts = JSON.parse(localStorage.getItem('docker_podcasts')) || Array(5).fill(false);
+
+    const levelsContainer = document.getElementById('levelsContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const booksList = document.getElementById('booksList');
+    const podcastsList = document.getElementById('podcastsList');
+
+    function renderLevels() {
+      levelsContainer.innerHTML = '';
+      levels.forEach((levelTitle, i) => {
+        const levelNumber = i + 1;
+        const levelEl = document.createElement('div');
+        levelEl.className = 'bg-gray-700 rounded p-4';
+
+        const header = document.createElement('h2');
+        header.className = 'text-lg font-bold text-blue-300 mb-2';
+        header.textContent = levelTitle;
+        levelEl.appendChild(header);
+
+        const ul = document.createElement('ul');
+        ul.className = 'space-y-2';
+
+        savedTasks
+          .filter(task => task.level === levelNumber)
+          .forEach(task => {
+            const li = document.createElement('li');
+            li.className = 'flex items-center bg-gray-600 rounded p-2';
+            li.innerHTML = `
+              <input type="checkbox" class="mr-2 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+              <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+            `;
+            ul.appendChild(li);
+          });
+
+        levelEl.appendChild(ul);
+        levelsContainer.appendChild(levelEl);
+      });
+      updateTaskProgress();
+    }
+
+    function updateTaskProgress() {
+      const completed = savedTasks.filter(task => task.completed).length;
+      const total = savedTasks.length;
+      const percent = Math.floor((completed / total) * 100);
+      progressBar.style.width = `${percent}%`;
+      progressText.textContent = `${completed}/${total} tasks completed (${percent}%)`;
+    }
+
+    document.body.addEventListener('change', e => {
+      if (e.target.matches('.task-checkbox')) {
+        const id = e.target.dataset.id;
+        const task = savedTasks.find(t => t.id === id);
+        if (task) {
+          task.completed = e.target.checked;
+          localStorage.setItem('docker_tasks', JSON.stringify(savedTasks));
+          renderLevels();
+        }
+      }
+      if (e.target.matches('[data-book]')) {
+        const bookId = parseInt(e.target.dataset.book, 10);
+        savedBooks[bookId] = e.target.checked;
+        localStorage.setItem('docker_books', JSON.stringify(savedBooks));
+      }
+      if (e.target.matches('[data-podcast]')) {
+        const podcastId = parseInt(e.target.dataset.podcast, 10);
+        savedPodcasts[podcastId] = e.target.checked;
+        localStorage.setItem('docker_podcasts', JSON.stringify(savedPodcasts));
+      }
+    });
+
+    function renderBooks() {
+      savedBooks.forEach((checked, i) => {
+        const input = booksList.querySelector(`[data-book="${i}"]`);
+        if (input) input.checked = checked;
+      });
+    }
+
+    function renderPodcasts() {
+      savedPodcasts.forEach((checked, i) => {
+        const input = podcastsList.querySelector(`[data-podcast="${i}"]`);
+        if (input) input.checked = checked;
+      });
+    }
+
+    renderLevels();
+    renderBooks();
+    renderPodcasts();
+  </script>
+</body>
+</html>

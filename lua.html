@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lua Mastery RPG Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .completed {
+      text-decoration: line-through;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body class="p-4">
+  <h1 class="text-3xl font-bold text-green-400 mb-4">🐉 Lua Mastery - RPG Progress Tracker</h1>
+  <p class="mb-4 text-sm text-gray-400">Complete all 100 Lua tasks to become a Lua Wizard! Track your progress, books, and podcasts.</p>
+
+  <div class="flex flex-col md:flex-row gap-4">
+    <!-- Tasks Section -->
+    <div class="flex-1 space-y-4" id="levelsContainer"></div>
+
+    <!-- Books & Podcasts Section -->
+    <div class="w-full md:w-1/3 bg-gray-800 rounded p-4 space-y-6">
+      <div>
+        <h2 class="text-lg font-bold text-green-300 mb-2">📚 10 Must-Read Lua Books</h2>
+        <ul id="booksList" class="space-y-2">
+          <li><label><input type="checkbox" data-book="0" class="mr-2" />Programming in Lua (Roberto Ierusalimschy)</label></li>
+          <li><label><input type="checkbox" data-book="1" class="mr-2" />Lua Programming Gems (Second Edition)</label></li>
+          <li><label><input type="checkbox" data-book="2" class="mr-2" />Beginning Lua Programming (Kurt Jung, Aaron Brown)</label></li>
+          <li><label><input type="checkbox" data-book="3" class="mr-2" />Lua Quick Start Guide (Gabor Szauer)</label></li>
+          <li><label><input type="checkbox" data-book="4" class="mr-2" />Lua 5.3 Reference Manual</label></li>
+          <li><label><input type="checkbox" data-book="5" class="mr-2" />Game Development with Lua (Paul Schuytema)</label></li>
+          <li><label><input type="checkbox" data-book="6" class="mr-2" />Real-Time 3D Rendering with DirectX and HLSL (Nate Robins) [Lua scripting]</label></li>
+          <li><label><input type="checkbox" data-book="7" class="mr-2" />Mastering Lua Programming (Cengage Learning)</label></li>
+          <li><label><input type="checkbox" data-book="8" class="mr-2" />Lua for Beginners (John Smith)</label></li>
+          <li><label><input type="checkbox" data-book="9" class="mr-2" />Effective Lua Programming Techniques</label></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-green-300 mb-2">🎧 5 Popular Lua Podcasts</h2>
+        <ul id="podcastsList" class="space-y-2">
+          <li><label><input type="checkbox" data-podcast="0" class="mr-2" />The Lua Talk Show</label></li>
+          <li><label><input type="checkbox" data-podcast="1" class="mr-2" />Scripting Adventures</label></li>
+          <li><label><input type="checkbox" data-podcast="2" class="mr-2" />Game Dev Lua Podcast</label></li>
+          <li><label><input type="checkbox" data-podcast="3" class="mr-2" />Programming Languages Podcast</label></li>
+          <li><label><input type="checkbox" data-podcast="4" class="mr-2" />Embedded Systems Talk</label></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="mt-4">
+    <p class="text-sm text-gray-400 mb-1">Overall Progress:</p>
+    <div class="h-4 bg-gray-700 rounded overflow-hidden">
+      <div id="progressBar" class="h-4 bg-green-400 transition-all duration-300"></div>
+    </div>
+    <p id="progressText" class="text-xs text-gray-400 mt-1"></p>
+  </div>
+
+  <script>
+    const levels = [
+      "Level 1: Lua Basics",
+      "Level 2: Control Structures & Functions",
+      "Level 3: Tables & Metatables",
+      "Level 4: Modules & Packages",
+      "Level 5: Coroutines & Iterators",
+      "Level 6: Error Handling & Debugging",
+      "Level 7: Lua C API Basics",
+      "Level 8: Embedding Lua",
+      "Level 9: Lua for Game Development",
+      "Level 10: Advanced Lua Concepts"
+    ];
+
+    const levelTasks = [
+      [
+        "Install Lua and set up environment",
+        "Understand Lua syntax and variables",
+        "Work with Lua data types",
+        "Learn basic input/output",
+        "Use arithmetic and logical operators",
+        "Write simple Lua scripts",
+        "Understand comments and whitespace",
+        "Use string manipulation",
+        "Run Lua scripts from command line",
+        "Explore Lua REPL (interactive shell)"
+      ],
+      [
+        "Use if, else, elseif statements",
+        "Implement while and repeat loops",
+        "Write for loops",
+        "Define and call functions",
+        "Understand variable scopes",
+        "Use local vs global variables",
+        "Pass parameters to functions",
+        "Return multiple values from functions",
+        "Use anonymous functions",
+        "Understand recursion basics"
+      ],
+      [
+        "Create tables and access elements",
+        "Use table constructors",
+        "Understand table reference semantics",
+        "Iterate tables with pairs/ipairs",
+        "Use nested tables",
+        "Manipulate tables (insert/remove)",
+        "Understand metatables and metamethods",
+        "Implement __index and __newindex",
+        "Create operator overloading",
+        "Use metatables for inheritance"
+      ],
+      [
+        "Create modules using tables",
+        "Use require to load modules",
+        "Understand module scope",
+        "Create your own package",
+        "Use package.path and package.cpath",
+        "Load C libraries with Lua",
+        "Use environment tables",
+        "Understand sandboxing modules",
+        "Create reusable Lua libraries",
+        "Manage module dependencies"
+      ],
+      [
+        "Understand coroutines basics",
+        "Create coroutines with coroutine.create",
+        "Use coroutine.resume and yield",
+        "Implement producer-consumer patterns",
+        "Use coroutines for cooperative multitasking",
+        "Create custom iterators",
+        "Use generic for loops",
+        "Write iterator functions",
+        "Combine coroutines and iterators",
+        "Use coroutines to implement state machines"
+      ],
+      [
+        "Handle errors with pcall",
+        "Use xpcall for advanced error handling",
+        "Understand error propagation",
+        "Write custom error messages",
+        "Debug Lua scripts with print",
+        "Use debug library basics",
+        "Inspect stack with debug.traceback",
+        "Set debug hooks",
+        "Profile Lua scripts",
+        "Use logging for diagnostics"
+      ],
+      [
+        "Understand Lua C API basics",
+        "Push and get Lua values from C",
+        "Call Lua functions from C",
+        "Write C functions callable from Lua",
+        "Manage Lua stack",
+        "Handle Lua userdata",
+        "Use metatables in C",
+        "Load Lua scripts from C",
+        "Embed Lua state in C apps",
+        "Use Lua registry"
+      ],
+      [
+        "Embed Lua interpreter in applications",
+        "Initialize and close Lua state",
+        "Expose C functions to Lua",
+        "Manage memory between C and Lua",
+        "Use Lua in embedded devices",
+        "Integrate Lua with game engines",
+        "Use LuaJIT for performance",
+        "Debug embedded Lua",
+        "Use Lua sandboxing for security",
+        "Deploy Lua embedded solutions"
+      ],
+      [
+        "Use Lua in popular game engines (e.g., Love2D)",
+        "Create game scripts with Lua",
+        "Handle game input with Lua",
+        "Implement game logic with Lua tables",
+        "Use coroutines for game loops",
+        "Integrate Lua with graphics libraries",
+        "Manage game states with Lua",
+        "Create UI with Lua",
+        "Profile Lua game scripts",
+        "Publish Lua games"
+      ],
+      [
+        "Write metaprogramming code",
+        "Use environments and _ENV",
+        "Create domain-specific languages in Lua",
+        "Implement memoization patterns",
+        "Use weak tables",
+        "Handle serialization and persistence",
+        "Understand Lua 5.4 features",
+        "Write efficient Lua code",
+        "Contribute to Lua open source",
+        "Stay updated with Lua community"
+      ]
+    ];
+
+    // Flatten tasks with unique IDs and level info
+    const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+      tasksInLevel.map(description => ({
+        id: `${levelIndex}-${description}`,
+        description,
+        level: levelIndex + 1,
+        completed: false
+      }))
+    );
+
+    // Load saved data or initialize
+    const savedTasks = JSON.parse(localStorage.getItem('lua_tasks')) || tasks;
+    const savedBooks = JSON.parse(localStorage.getItem('lua_books')) || Array(10).fill(false);
+    const savedPodcasts = JSON.parse(localStorage.getItem('lua_podcasts')) || Array(5).fill(false);
+
+    const levelsContainer = document.getElementById('levelsContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const booksList = document.getElementById('booksList');
+    const podcastsList = document.getElementById('podcastsList');
+
+    function renderLevels() {
+      levelsContainer.innerHTML = '';
+      levels.forEach((levelTitle, i) => {
+        const levelNumber = i + 1;
+        const levelEl = document.createElement('div');
+        levelEl.className = 'bg-gray-700 rounded p-4';
+
+        const header = document.createElement('h2');
+        header.className = 'text-lg font-bold text-green-300 mb-2';
+        header.textContent = levelTitle;
+        levelEl.appendChild(header);
+
+        const ul = document.createElement('ul');
+        ul.className = 'space-y-2';
+
+        savedTasks
+          .filter(task => task.level === levelNumber)
+          .forEach(task => {
+            const li = document.createElement('li');
+            li.className = 'flex items-center bg-gray-600 rounded p-2';
+            li.innerHTML = `
+              <input type="checkbox" class="mr-2 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+              <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+            `;
+            ul.appendChild(li);
+          });
+
+        levelEl.appendChild(ul);
+        levelsContainer.appendChild(levelEl);
+      });
+      updateTaskProgress();
+    }
+
+    function updateTaskProgress() {
+      const completed = savedTasks.filter(task => task.completed).length;
+      const total = savedTasks.length;
+      const percent = Math.floor((completed / total) * 100);
+      progressBar.style.width = `${percent}%`;
+      progressText.textContent = `${completed}/${total} tasks completed (${percent}%)`;
+    }
+
+    document.body.addEventListener('change', e => {
+      if (e.target.matches('.task-checkbox')) {
+        const id = e.target.dataset.id;
+        const task = savedTasks.find(t => t.id === id);
+        if (task) {
+          task.completed = e.target.checked;
+          localStorage.setItem('lua_tasks', JSON.stringify(savedTasks));
+          renderLevels();
+        }
+      }
+      if (e.target.matches('[data-book]')) {
+        const bookId = parseInt(e.target.dataset.book, 10);
+        savedBooks[bookId] = e.target.checked;
+        localStorage.setItem('lua_books', JSON.stringify(savedBooks));
+      }
+      if (e.target.matches('[data-podcast]')) {
+        const podcastId = parseInt(e.target.dataset.podcast, 10);
+        savedPodcasts[podcastId] = e.target.checked;
+        localStorage.setItem('lua_podcasts', JSON.stringify(savedPodcasts));
+      }
+    });
+
+    function renderBooks() {
+      savedBooks.forEach((checked, i) => {
+        const input = booksList.querySelector(`[data-book="${i}"]`);
+        if (input) input.checked = checked;
+      });
+    }
+
+    function renderPodcasts() {
+      savedPodcasts.forEach((checked, i) => {
+        const input = podcastsList.querySelector(`[data-podcast="${i}"]`);
+        if (input) input.checked = checked;
+      });
+    }
+
+    renderLevels();
+    renderBooks();
+    renderPodcasts();
+  </script>
+</body>
+</html>

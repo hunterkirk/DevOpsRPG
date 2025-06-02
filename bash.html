@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bash RPG Progress Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .completed {
+      text-decoration: line-through;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body class="p-4">
+  <h1 class="text-3xl font-bold text-yellow-400 mb-4">🐚 Bash Wizardry - RPG Progress Tracker</h1>
+  <p class="mb-4 text-sm text-gray-400">Complete all 100 tasks across 10 levels to become a Bash Shell Wizard! Track your progress, books, and podcasts.</p>
+
+  <div class="flex flex-col md:flex-row gap-4">
+    <!-- Tasks Section -->
+    <div class="flex-1 space-y-4" id="levelsContainer"></div>
+
+    <!-- Books & Podcasts Section -->
+    <div class="w-full md:w-1/3 bg-gray-800 rounded p-4 space-y-6">
+      <div>
+        <h2 class="text-lg font-bold text-yellow-300 mb-2">📚 10 Must-Read Bash & Shell Books</h2>
+        <ul id="booksList" class="space-y-2">
+          <li><label><input type="checkbox" data-book="0" class="mr-2" />Classic Shell Scripting</label></li>
+          <li><label><input type="checkbox" data-book="1" class="mr-2" />Learning the bash Shell</label></li>
+          <li><label><input type="checkbox" data-book="2" class="mr-2" />Pro Bash Programming</label></li>
+          <li><label><input type="checkbox" data-book="3" class="mr-2" />Bash Cookbook</label></li>
+          <li><label><input type="checkbox" data-book="4" class="mr-2" />Wicked Cool Shell Scripts</label></li>
+          <li><label><input type="checkbox" data-book="5" class="mr-2" />Shell Scripting: Expert Recipes</label></li>
+          <li><label><input type="checkbox" data-book="6" class="mr-2" />Unix Shell Programming</label></li>
+          <li><label><input type="checkbox" data-book="7" class="mr-2" />Linux Command Line and Shell Scripting Bible</label></li>
+          <li><label><input type="checkbox" data-book="8" class="mr-2" />Sed & Awk</label></li>
+          <li><label><input type="checkbox" data-book="9" class="mr-2" />Advanced Bash-Scripting Guide</label></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-yellow-300 mb-2">🎧 5 Popular Bash/Shell Podcasts</h2>
+        <ul id="podcastsList" class="space-y-2">
+          <li><label><input type="checkbox" data-podcast="0" class="mr-2" />Command Line Heroes</label></li>
+          <li><label><input type="checkbox" data-podcast="1" class="mr-2" />Linux Action News</label></li>
+          <li><label><input type="checkbox" data-podcast="2" class="mr-2" />Shell Talk</label></li>
+          <li><label><input type="checkbox" data-podcast="3" class="mr-2" />The Linux Link Tech Show</label></li>
+          <li><label><input type="checkbox" data-podcast="4" class="mr-2" />Command Line Heroes: Season 3</label></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="mt-4">
+    <p class="text-sm text-gray-400 mb-1">Overall Progress:</p>
+    <div class="h-4 bg-gray-700 rounded overflow-hidden">
+      <div id="progressBar" class="h-4 bg-yellow-400 transition-all duration-300"></div>
+    </div>
+    <p id="progressText" class="text-xs text-gray-400 mt-1"></p>
+  </div>
+
+  <script>
+    const levels = [
+      "Level 1: Bash Basics",
+      "Level 2: Variables & Parameters",
+      "Level 3: Conditionals & Loops",
+      "Level 4: Functions & Scripts",
+      "Level 5: File & Text Processing",
+      "Level 6: Process Management",
+      "Level 7: Shell Scripting Best Practices",
+      "Level 8: Debugging & Error Handling",
+      "Level 9: Advanced Shell Features",
+      "Level 10: Automation & Integration"
+    ];
+
+    const levelTasks = [
+      [
+        "Open your terminal and check Bash version",
+        "Understand Bash prompt and shell environment",
+        "Run simple commands like ls, echo, pwd",
+        "Create and navigate directories",
+        "Use man pages to get help",
+        "Understand shell built-ins",
+        "Use comments in scripts",
+        "Create your first Bash script",
+        "Make script executable",
+        "Run script with ./ and bash"
+      ],
+      [
+        "Set and read variables",
+        "Use positional parameters",
+        "Understand special variables ($?, $$, $0)",
+        "Use environment variables",
+        "Export variables to child processes",
+        "Use command substitution",
+        "Understand variable scope",
+        "Perform arithmetic operations",
+        "Use arrays in Bash",
+        "Read input from user"
+      ],
+      [
+        "Use if-then-else statements",
+        "Use test and [[ ]] for conditions",
+        "Use case statements",
+        "Write while loops",
+        "Write for loops",
+        "Use until loops",
+        "Use break and continue",
+        "Combine conditions with && and ||",
+        "Use string comparison",
+        "Use numeric comparison"
+      ],
+      [
+        "Write and call functions",
+        "Pass arguments to functions",
+        "Return values from functions",
+        "Use local variables",
+        "Use traps and signals",
+        "Source scripts with . and source",
+        "Use here documents",
+        "Use command line arguments",
+        "Create reusable scripts",
+        "Add usage/help messages"
+      ],
+      [
+        "Use redirection (> , >> , <)",
+        "Pipe commands with |",
+        "Use grep for searching text",
+        "Use sed for text replacement",
+        "Use awk for data extraction",
+        "Sort and uniq commands",
+        "Use cut and paste",
+        "Process logs with tail and head",
+        "Use xargs to build command lines",
+        "Use find to locate files"
+      ],
+      [
+        "Understand process IDs and jobs",
+        "Run background jobs (&)",
+        "Bring jobs to foreground (fg)",
+        "Use wait command",
+        "Kill processes by PID",
+        "Use ps and top commands",
+        "Use nohup for persistent jobs",
+        "Use traps to handle signals",
+        "Monitor resource usage",
+        "Schedule jobs with cron"
+      ],
+      [
+        "Write clean and readable scripts",
+        "Use shellcheck for linting",
+        "Add error checking",
+        "Use set -e and set -u",
+        "Use getopts for options parsing",
+        "Write modular scripts",
+        "Avoid hardcoding paths",
+        "Use functions to reduce repetition",
+        "Document your scripts",
+        "Use version control for scripts"
+      ],
+      [
+        "Use bash debugging mode (set -x)",
+        "Print debug info with echo",
+        "Check exit status of commands",
+        "Trap errors and exit cleanly",
+        "Use verbose mode (set -v)",
+        "Debug loops and conditionals",
+        "Analyze core dumps",
+        "Use strace for system calls",
+        "Check memory leaks",
+        "Test scripts with different inputs"
+      ],
+      [
+        "Use associative arrays",
+        "Use process substitution",
+        "Use coprocesses",
+        "Use arithmetic for advanced tasks",
+        "Understand Bash internals",
+        "Use extended globbing",
+        "Use brace expansion",
+        "Handle signals and interrupts",
+        "Create dynamic scripts",
+        "Write scripts for portability"
+      ],
+      [
+        "Automate backups with scripts",
+        "Create deployment scripts",
+        "Integrate with systemd services",
+        "Use scripts for monitoring",
+        "Automate package updates",
+        "Create installer scripts",
+        "Integrate with Git hooks",
+        "Use Bash with Docker",
+        "Use Bash for CI/CD pipelines",
+        "Build a complete Bash automation project"
+      ]
+    ];
+
+    const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+      tasksInLevel.map(description => ({
+        id: `${levelIndex}-${description}`,
+        description,
+        level: levelIndex + 1,
+        completed: false
+      }))
+    );
+
+    const savedTasks = JSON.parse(localStorage.getItem('bash_tasks')) || tasks;
+    const savedBooks = JSON.parse(localStorage.getItem('bash_books')) || Array(10).fill(false);
+    const savedPodcasts = JSON.parse(localStorage.getItem('bash_podcasts')) || Array(5).fill(false);
+
+    const levelsContainer = document.getElementById('levelsContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const booksList = document.getElementById('booksList');
+    const podcastsList = document.getElementById('podcastsList');
+
+    function renderLevels() {
+      levelsContainer.innerHTML = '';
+      levels.forEach((levelTitle, i) => {
+        const levelNumber = i + 1;
+        const levelEl = document.createElement('div');
+        levelEl.className = 'bg-gray-700 rounded p-4';
+
+        const header = document.createElement('h2');
+        header.className = 'text-lg font-bold text-yellow-300 mb-2';
+        header.textContent = levelTitle;
+        levelEl.appendChild(header);
+
+        const ul = document.createElement('ul');
+        ul.className = 'space-y-2';
+
+        savedTasks
+          .filter(task => task.level === levelNumber)
+          .forEach(task => {
+            const li = document.createElement('li');
+            li.className = 'flex items-center bg-gray-600 rounded p-2';
+            li.innerHTML = `
+              <input type="checkbox" class="mr-2 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+              <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+            `;
+            ul.appendChild(li);
+          });
+
+        levelEl.appendChild(ul);
+        levelsContainer.appendChild(levelEl);
+      });
+      updateTaskProgress();
+    }
+
+    function updateTaskProgress() {
+      const completed = savedTasks.filter(task => task.completed).length;
+      const total = savedTasks.length;
+      const percent = Math.floor((completed / total) * 100);
+      progressBar.style.width = `${percent}%`;
+      progressText.textContent = `${completed}/${total} tasks completed (${percent}%)`;
+    }
+
+    document.body.addEventListener('change', e => {
+      if (e.target.matches('.task-checkbox')) {
+        const id = e.target.dataset.id;
+        const task = savedTasks.find(t => t.id === id);
+        if (task) {
+          task.completed = e.target.checked;
+          localStorage.setItem('bash_tasks', JSON.stringify(savedTasks));
+          renderLevels();
+        }
+      }
+      if (e.target.matches('[data-book]')) {
+        const bookId = parseInt(e.target.dataset.book, 10);
+        savedBooks[bookId] = e.target.checked;
+        localStorage.setItem('bash_books', JSON.stringify(savedBooks));
+      }
+      if (e.target.matches('[data-podcast]')) {
+        const podcastId = parseInt(e.target.dataset.podcast, 10);
+        savedPodcasts[podcastId] = e.target.checked;
+        localStorage.setItem('bash_podcasts', JSON.stringify(savedPodcasts));
+      }
+    });
+
+    function renderBooks() {
+      savedBooks.forEach((checked, i) => {
+        const input = booksList.querySelector(`[data-book="${i}"]`);
+        if (input) input.checked = checked;
+      });
+    }
+
+    function renderPodcasts() {
+      savedPodcasts.forEach((checked, i) => {
+        const input = podcastsList.querySelector(`[data-podcast="${i}"]`);
+        if (input) input.checked = checked;
+      });
+    }
+
+    renderLevels();
+    renderBooks();
+    renderPodcasts();
+  </script>
+</body>
+</html>

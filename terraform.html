@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Terraform RPG Progress Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .completed {
+      text-decoration: line-through;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body class="p-4">
+  <h1 class="text-3xl font-bold text-green-400 mb-4">🌍 Terraform Mastery - RPG Progress Tracker</h1>
+  <p class="mb-4 text-sm text-gray-400">Complete all 100 tasks across 10 levels to become a Terraform Wizard! Track your progress, books, and podcasts.</p>
+
+  <div class="flex flex-col md:flex-row gap-4">
+    <!-- Tasks Section -->
+    <div class="flex-1 space-y-4" id="levelsContainer"></div>
+
+    <!-- Books & Podcasts Section -->
+    <div class="w-full md:w-1/3 bg-gray-800 rounded p-4 space-y-6">
+      <div>
+        <h2 class="text-lg font-bold text-green-300 mb-2">📚 10 Must-Read Terraform & IaC Books</h2>
+        <ul id="booksList" class="space-y-2">
+          <li><label><input type="checkbox" data-book="0" class="mr-2" />Terraform: Up & Running (Yevgeniy Brikman)</label></li>
+          <li><label><input type="checkbox" data-book="1" class="mr-2" />Infrastructure as Code (Kief Morris)</label></li>
+          <li><label><input type="checkbox" data-book="2" class="mr-2" />Learning Terraform (Yevgeniy Brikman)</label></li>
+          <li><label><input type="checkbox" data-book="3" class="mr-2" />Terraform Cookbook (Sebastien Goasguen)</label></li>
+          <li><label><input type="checkbox" data-book="4" class="mr-2" />Hands-On Infrastructure Automation with Terraform (Tamas Foldi)</label></li>
+          <li><label><input type="checkbox" data-book="5" class="mr-2" />Managing Infrastructure with Terraform (James Turnbull)</label></li>
+          <li><label><input type="checkbox" data-book="6" class="mr-2" />Mastering Terraform (Martin Atkins)</label></li>
+          <li><label><input type="checkbox" data-book="7" class="mr-2" />Terraform in Action (Scott Winkler)</label></li>
+          <li><label><input type="checkbox" data-book="8" class="mr-2" />Effective Terraform (Thomas Wawrzynczak)</label></li>
+          <li><label><input type="checkbox" data-book="9" class="mr-2" />Cloud Native Infrastructure (Justin Garrison & Kris Nova)</label></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-green-300 mb-2">🎧 5 Popular Terraform Podcasts</h2>
+        <ul id="podcastsList" class="space-y-2">
+          <li><label><input type="checkbox" data-podcast="0" class="mr-2" />Terraform Up & Running Podcast</label></li>
+          <li><label><input type="checkbox" data-podcast="1" class="mr-2" />HashiCorp Podcast</label></li>
+          <li><label><input type="checkbox" data-podcast="2" class="mr-2" />Infrastructure Weekly</label></li>
+          <li><label><input type="checkbox" data-podcast="3" class="mr-2" />The Cloudcast</label></li>
+          <li><label><input type="checkbox" data-podcast="4" class="mr-2" />Screaming in the Cloud</label></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="mt-4">
+    <p class="text-sm text-gray-400 mb-1">Overall Progress:</p>
+    <div class="h-4 bg-gray-700 rounded overflow-hidden">
+      <div id="progressBar" class="h-4 bg-green-400 transition-all duration-300"></div>
+    </div>
+    <p id="progressText" class="text-xs text-gray-400 mt-1"></p>
+  </div>
+
+  <script>
+    const levels = [
+      "Level 1: Terraform Basics",
+      "Level 2: Writing Terraform Configuration",
+      "Level 3: Variables and Outputs",
+      "Level 4: State Management",
+      "Level 5: Modules",
+      "Level 6: Provisioners & Resources",
+      "Level 7: Remote Backends",
+      "Level 8: Workspaces & Environments",
+      "Level 9: Terraform Cloud & Enterprise",
+      "Level 10: Advanced Terraform & Best Practices"
+    ];
+
+    const levelTasks = [
+      [
+        "Install Terraform CLI",
+        "Understand IaC and Terraform's role",
+        "Initialize Terraform in a directory",
+        "Write a basic configuration file",
+        "Use terraform plan command",
+        "Apply Terraform configuration",
+        "Destroy infrastructure with terraform destroy",
+        "Understand providers and plugins",
+        "Learn Terraform CLI commands",
+        "Read Terraform official documentation"
+      ],
+      [
+        "Define AWS EC2 instance resource",
+        "Use resource blocks for GCP Compute Engine",
+        "Manage Azure resources with Terraform",
+        "Use Terraform Registry modules",
+        "Write multiple resource blocks",
+        "Understand resource dependencies",
+        "Use interpolation syntax",
+        "Use data sources",
+        "Import existing resources",
+        "Format and validate config files"
+      ],
+      [
+        "Use input variables with defaults",
+        "Create variable descriptions and types",
+        "Override variables via CLI and files",
+        "Use output variables",
+        "Reference outputs in other modules",
+        "Use maps and lists variables",
+        "Understand variable scoping",
+        "Use sensitive variables",
+        "Create variable validation rules",
+        "Work with complex variable types"
+      ],
+      [
+        "Understand Terraform state files",
+        "Manage local state",
+        "Use terraform state commands",
+        "Use remote state backend",
+        "Lock state for concurrency",
+        "Manually edit state files",
+        "Recover lost state",
+        "State file versioning",
+        "Use state outputs in workflows",
+        "Back up state files"
+      ],
+      [
+        "Create reusable modules",
+        "Use modules from Registry",
+        "Pass variables to modules",
+        "Use outputs from modules",
+        "Manage module versions",
+        "Structure modules directory",
+        "Test modules locally",
+        "Publish custom modules",
+        "Use modules for environments",
+        "Use module composition"
+      ],
+      [
+        "Use provisioners for configuration",
+        "Use local-exec and remote-exec",
+        "Manage resource lifecycle",
+        "Create null_resource for scripts",
+        "Understand resource meta-arguments",
+        "Handle resource dependencies",
+        "Manage resource timeouts",
+        "Use count and for_each",
+        "Use dynamic blocks",
+        "Understand lifecycle ignore_changes"
+      ],
+      [
+        "Configure remote backend (S3, GCS, Azure Blob)",
+        "Use Consul backend",
+        "Set up backend encryption",
+        "Configure backend locking",
+        "Migrate backend state",
+        "Troubleshoot backend issues",
+        "Use Terraform Cloud as backend",
+        "Secure backend credentials",
+        "Understand backend locking mechanisms",
+        "Test backend configurations"
+      ],
+      [
+        "Create and manage workspaces",
+        "Use workspaces for environments",
+        "Switch between workspaces",
+        "Use workspace-specific variables",
+        "Manage workspace state files",
+        "Automate workspace creation",
+        "Use workspaces in CI/CD",
+        "Limit workspace permissions",
+        "Clean up unused workspaces",
+        "Use workspace outputs"
+      ],
+      [
+        "Understand Terraform Cloud features",
+        "Set up Terraform Cloud organization",
+        "Use remote runs and plans",
+        "Manage variables in Terraform Cloud",
+        "Use Sentinel policies",
+        "Integrate VCS with Terraform Cloud",
+        "Manage team access",
+        "Use Terraform Cloud CLI",
+        "Monitor runs and logs",
+        "Automate workflows with Terraform Cloud"
+      ],
+      [
+        "Optimize Terraform runs",
+        "Use Terragrunt for automation",
+        "Create custom providers",
+        "Contribute to Terraform OSS",
+        "Use testing frameworks (terraform-compliance)",
+        "Manage multi-cloud deployments",
+        "Handle drift detection",
+        "Create reusable policy sets",
+        "Implement infrastructure security",
+        "Stay updated with Terraform releases"
+      ]
+    ];
+
+    const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+      tasksInLevel.map(description => ({
+        id: `${levelIndex}-${description}`,
+        description,
+        level: levelIndex + 1,
+        completed: false
+      }))
+    );
+
+    const savedTasks = JSON.parse(localStorage.getItem('terraform_tasks')) || tasks;
+    const savedBooks = JSON.parse(localStorage.getItem('terraform_books')) || Array(10).fill(false);
+    const savedPodcasts = JSON.parse(localStorage.getItem('terraform_podcasts')) || Array(5).fill(false);
+
+    const levelsContainer = document.getElementById('levelsContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const booksList = document.getElementById('booksList');
+    const podcastsList = document.getElementById('podcastsList');
+
+    function renderLevels() {
+      levelsContainer.innerHTML = '';
+      levels.forEach((levelTitle, i) => {
+        const levelNumber = i + 1;
+        const levelEl = document.createElement('div');
+        levelEl.className = 'bg-gray-700 rounded p-4';
+
+        const header = document.createElement('h2');
+        header.className = 'text-lg font-bold text-green-300 mb-2';
+        header.textContent = levelTitle;
+        levelEl.appendChild(header);
+
+        const ul = document.createElement('ul');
+        ul.className = 'space-y-2';
+
+        savedTasks
+          .filter(task => task.level === levelNumber)
+          .forEach(task => {
+            const li = document.createElement('li');
+            li.className = 'flex items-center bg-gray-600 rounded p-2';
+            li.innerHTML = `
+              <input type="checkbox" class="mr-2 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+              <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+            `;
+            ul.appendChild(li);
+          });
+
+        levelEl.appendChild(ul);
+        levelsContainer.appendChild(levelEl);
+      });
+      updateTaskProgress();
+    }
+
+    function updateTaskProgress() {
+      const completed = savedTasks.filter(task => task.completed).length;
+      const total = savedTasks.length;
+      const percent = Math.floor((completed / total) * 100);
+      progressBar.style.width = `${percent}%`;
+      progressText.textContent = `${completed}/${total} tasks completed (${percent}%)`;
+    }
+
+    document.body.addEventListener('change', e => {
+      if (e.target.matches('.task-checkbox')) {
+        const id = e.target.dataset.id;
+        const task = savedTasks.find(t => t.id === id);
+        if (task) {
+          task.completed = e.target.checked;
+          localStorage.setItem('terraform_tasks', JSON.stringify(savedTasks));
+          renderLevels();
+        }
+      }
+      if (e.target.matches('[data-book]')) {
+        const bookId = parseInt(e.target.dataset.book, 10);
+        savedBooks[bookId] = e.target.checked;
+        localStorage.setItem('terraform_books', JSON.stringify(savedBooks));
+      }
+      if (e.target.matches('[data-podcast]')) {
+        const podcastId = parseInt(e.target.dataset.podcast, 10);
+        savedPodcasts[podcastId] = e.target.checked;
+        localStorage.setItem('terraform_podcasts', JSON.stringify(savedPodcasts));
+      }
+    });
+
+    function renderBooks() {
+      savedBooks.forEach((checked, i) => {
+        const input = booksList.querySelector(`[data-book="${i}"]`);
+        if (input) input.checked = checked;
+      });
+    }
+
+    function renderPodcasts() {
+      savedPodcasts.forEach((checked, i) => {
+        const input = podcastsList.querySelector(`[data-podcast="${i}"]`);
+        if (input) input.checked = checked;
+      });
+    }
+
+    renderLevels();
+    renderBooks();
+    renderPodcasts();
+  </script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kubernetes RPG Progress Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .completed {
+      text-decoration: line-through;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body class="p-4">
+  <h1 class="text-3xl font-bold text-cyan-400 mb-4">☸️ Kubernetes Mastery - RPG Progress Tracker</h1>
+  <p class="mb-4 text-sm text-gray-400">Complete all 100 tasks across 10 levels to become a Kubernetes Wizard! Track your progress, books, and podcasts.</p>
+
+  <div class="flex flex-col md:flex-row gap-4">
+    <!-- Tasks Section -->
+    <div class="flex-1 space-y-4" id="levelsContainer"></div>
+
+    <!-- Books & Podcasts Section -->
+    <div class="w-full md:w-1/3 bg-gray-800 rounded p-4 space-y-6">
+      <div>
+        <h2 class="text-lg font-bold text-cyan-300 mb-2">📚 10 Must-Read Kubernetes Books</h2>
+        <ul id="booksList" class="space-y-2">
+          <li><label><input type="checkbox" data-book="0" class="mr-2" />Kubernetes Up & Running (Kelsey Hightower)</label></li>
+          <li><label><input type="checkbox" data-book="1" class="mr-2" />The Kubernetes Book (Nigel Poulton)</label></li>
+          <li><label><input type="checkbox" data-book="2" class="mr-2" />Cloud Native DevOps with Kubernetes (John Arundel)</label></li>
+          <li><label><input type="checkbox" data-book="3" class="mr-2" />Kubernetes Patterns (Bilgin Ibryam)</label></li>
+          <li><label><input type="checkbox" data-book="4" class="mr-2" />Kubernetes in Action (Marko Lukša)</label></li>
+          <li><label><input type="checkbox" data-book="5" class="mr-2" />Programming Kubernetes (Michael Hausenblas)</label></li>
+          <li><label><input type="checkbox" data-book="6" class="mr-2" />The DevOps 2.3 Toolkit: Kubernetes (Viktor Farcic)</label></li>
+          <li><label><input type="checkbox" data-book="7" class="mr-2" />Kubernetes Best Practices (Brendan Burns)</label></li>
+          <li><label><input type="checkbox" data-book="8" class="mr-2" />Managing Kubernetes (Brendan Burns)</label></li>
+          <li><label><input type="checkbox" data-book="9" class="mr-2" />Kubernetes Cookbook (Sébas...)</label></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-cyan-300 mb-2">🎧 5 Popular Kubernetes & Cloud Native Podcasts</h2>
+        <ul id="podcastsList" class="space-y-2">
+          <li><label><input type="checkbox" data-podcast="0" class="mr-2" />The Kubernetes Podcast</label></li>
+          <li><label><input type="checkbox" data-podcast="1" class="mr-2" />Cloud Native Podcast</label></li>
+          <li><label><input type="checkbox" data-podcast="2" class="mr-2" />PodCTL</label></li>
+          <li><label><input type="checkbox" data-podcast="3" class="mr-2" />Software Engineering Daily</label></li>
+          <li><label><input type="checkbox" data-podcast="4" class="mr-2" />The Changelog</label></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="mt-4">
+    <p class="text-sm text-gray-400 mb-1">Overall Progress:</p>
+    <div class="h-4 bg-gray-700 rounded overflow-hidden">
+      <div id="progressBar" class="h-4 bg-cyan-400 transition-all duration-300"></div>
+    </div>
+    <p id="progressText" class="text-xs text-gray-400 mt-1"></p>
+  </div>
+
+  <script>
+    const levels = [
+      "Level 1: Kubernetes Basics",
+      "Level 2: Pods & Containers",
+      "Level 3: Services & Networking",
+      "Level 4: ConfigMaps & Secrets",
+      "Level 5: Deployments & StatefulSets",
+      "Level 6: Storage & Volumes",
+      "Level 7: Security & RBAC",
+      "Level 8: Monitoring & Logging",
+      "Level 9: Scaling & Autoscaling",
+      "Level 10: Advanced Cluster Management"
+    ];
+
+    const levelTasks = [
+      [
+        "Install kubectl and verify version",
+        "Understand Kubernetes architecture",
+        "Create your first cluster (Minikube or Kind)",
+        "Use kubectl to get cluster info",
+        "Understand namespaces and contexts",
+        "Explore cluster nodes and pods",
+        "Learn kubectl explain command",
+        "Create your first Pod YAML manifest",
+        "Apply manifest and check pod status",
+        "Delete resources properly"
+      ],
+      [
+        "Understand container lifecycle in Pods",
+        "Work with multi-container Pods",
+        "Use init containers",
+        "Define resource requests and limits",
+        "Use labels and selectors",
+        "Inspect Pod logs",
+        "Execute commands inside Pods",
+        "Understand Pod readiness and liveness probes",
+        "Use ephemeral containers for debugging",
+        "Handle Pod restarts"
+      ],
+      [
+        "Create ClusterIP Service",
+        "Expose Pods via NodePort",
+        "Use LoadBalancer Services",
+        "Understand DNS in Kubernetes",
+        "Create Ingress resources",
+        "Configure Ingress Controllers",
+        "Use Network Policies",
+        "Understand service discovery",
+        "Troubleshoot networking issues",
+        "Use port forwarding"
+      ],
+      [
+        "Create ConfigMaps",
+        "Use ConfigMaps as env variables",
+        "Mount ConfigMaps as files",
+        "Create and use Secrets",
+        "Use secrets for sensitive info",
+        "Encrypt secrets at rest",
+        "Use Secrets in Pods",
+        "Rotate secrets safely",
+        "Manage ConfigMaps lifecycle",
+        "Understand ConfigMap limitations"
+      ],
+      [
+        "Create Deployments and update images",
+        "Rollback Deployments",
+        "Understand Deployment strategies",
+        "Create StatefulSets for stateful apps",
+        "Use PersistentVolumes with StatefulSets",
+        "Use DaemonSets",
+        "Understand ReplicaSets",
+        "Use Jobs and CronJobs",
+        "Use rollout status and history",
+        "Pause and resume rollouts"
+      ],
+      [
+        "Understand PersistentVolumes and PersistentVolumeClaims",
+        "Use different storage classes",
+        "Attach storage to Pods",
+        "Use dynamic provisioning",
+        "Manage storage capacity",
+        "Use VolumeSnapshots",
+        "Backup and restore volumes",
+        "Understand storage access modes",
+        "Configure local storage",
+        "Use CSI drivers"
+      ],
+      [
+        "Understand Kubernetes security model",
+        "Configure RBAC roles and bindings",
+        "Use ServiceAccounts",
+        "Implement NetworkPolicies",
+        "Use Pod Security Policies (PSP) or Pod Security Standards",
+        "Manage secrets securely",
+        "Use admission controllers",
+        "Use TLS encryption in clusters",
+        "Audit Kubernetes API access",
+        "Use tools for vulnerability scanning"
+      ],
+      [
+        "Set up Prometheus monitoring",
+        "Use Grafana dashboards",
+        "Monitor cluster health",
+        "Collect logs with Fluentd or Loki",
+        "Use ELK stack for log analysis",
+        "Set up alerting rules",
+        "Analyze metrics and logs",
+        "Monitor resource usage",
+        "Use tracing tools",
+        "Integrate monitoring with Slack/email"
+      ],
+      [
+        "Scale Deployments manually",
+        "Use Horizontal Pod Autoscaler",
+        "Use Vertical Pod Autoscaler",
+        "Use Cluster Autoscaler",
+        "Understand pod disruption budgets",
+        "Use taints and tolerations",
+        "Manage node autoscaling",
+        "Balance load across nodes",
+        "Handle resource quota limits",
+        "Test scaling under load"
+      ],
+      [
+        "Upgrade Kubernetes cluster safely",
+        "Manage multi-cluster environments",
+        "Use Helm for package management",
+        "Configure custom controllers",
+        "Use Operators",
+        "Backup and disaster recovery",
+        "Use Federation for multi-cluster",
+        "Implement GitOps workflows",
+        "Secure cluster networking",
+        "Build Kubernetes automation pipelines"
+      ]
+    ];
+
+    const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+      tasksInLevel.map(description => ({
+        id: `${levelIndex}-${description}`,
+        description,
+        level: levelIndex + 1,
+        completed: false
+      }))
+    );
+
+    const savedTasks = JSON.parse(localStorage.getItem('k8s_tasks')) || tasks;
+    const savedBooks = JSON.parse(localStorage.getItem('k8s_books')) || Array(10).fill(false);
+    const savedPodcasts = JSON.parse(localStorage.getItem('k8s_podcasts')) || Array(5).fill(false);
+
+    const levelsContainer = document.getElementById('levelsContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const booksList = document.getElementById('booksList');
+    const podcastsList = document.getElementById('podcastsList');
+
+    function renderLevels() {
+      levelsContainer.innerHTML = '';
+      levels.forEach((levelTitle, i) => {
+        const levelNumber = i + 1;
+        const levelEl = document.createElement('div');
+        levelEl.className = 'bg-gray-700 rounded p-4';
+
+        const header = document.createElement('h2');
+        header.className = 'text-lg font-bold text-cyan-300 mb-2';
+        header.textContent = levelTitle;
+        levelEl.appendChild(header);
+
+        const ul = document.createElement('ul');
+        ul.className = 'space-y-2';
+
+        savedTasks
+          .filter(task => task.level === levelNumber)
+          .forEach(task => {
+            const li = document.createElement('li');
+            li.className = 'flex items-center bg-gray-600 rounded p-2';
+            li.innerHTML = `
+              <input type="checkbox" class="mr-2 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+              <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+            `;
+            ul.appendChild(li);
+          });
+
+        levelEl.appendChild(ul);
+        levelsContainer.appendChild(levelEl);
+      });
+      updateTaskProgress();
+    }
+
+    function updateTaskProgress() {
+      const completed = savedTasks.filter(task => task.completed).length;
+      const total = savedTasks.length;
+      const percent = Math.floor((completed / total) * 100);
+      progressBar.style.width = `${percent}%`;
+      progressText.textContent = `${completed}/${total} tasks completed (${percent}%)`;
+    }
+
+    document.body.addEventListener('change', e => {
+      if (e.target.matches('.task-checkbox')) {
+        const id = e.target.dataset.id;
+        const task = savedTasks.find(t => t.id === id);
+        if (task) {
+          task.completed = e.target.checked;
+          localStorage.setItem('k8s_tasks', JSON.stringify(savedTasks));
+          renderLevels();
+        }
+      }
+      if (e.target.matches('[data-book]')) {
+        const bookId = parseInt(e.target.dataset.book, 10);
+        savedBooks[bookId] = e.target.checked;
+        localStorage.setItem('k8s_books', JSON.stringify(savedBooks));
+      }
+      if (e.target.matches('[data-podcast]')) {
+        const podcastId = parseInt(e.target.dataset.podcast, 10);
+        savedPodcasts[podcastId] = e.target.checked;
+        localStorage.setItem('k8s_podcasts', JSON.stringify(savedPodcasts));
+      }
+    });
+
+    function renderBooks() {
+      savedBooks.forEach((checked, i) => {
+        const input = booksList.querySelector(`[data-book="${i}"]`);
+        if (input) input.checked = checked;
+      });
+    }
+
+    function renderPodcasts() {
+      savedPodcasts.forEach((checked, i) => {
+        const input = podcastsList.querySelector(`[data-podcast="${i}"]`);
+        if (input) input.checked = checked;
+      });
+    }
+
+    renderLevels();
+    renderBooks();
+    renderPodcasts();
+  </script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Grafana RPG Progress Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .completed {
+      text-decoration: line-through;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body class="p-4">
+  <h1 class="text-3xl font-bold text-orange-400 mb-4">📊 Grafana Mastery - RPG Progress Tracker</h1>
+  <p class="mb-4 text-sm text-gray-400">Complete all 100 tasks across 10 levels to become a Grafana Wizard! Track your progress, books, and podcasts.</p>
+
+  <div class="flex flex-col md:flex-row gap-4">
+    <!-- Tasks Section -->
+    <div class="flex-1 space-y-4" id="levelsContainer"></div>
+
+    <!-- Books & Podcasts Section -->
+    <div class="w-full md:w-1/3 bg-gray-800 rounded p-4 space-y-6">
+      <div>
+        <h2 class="text-lg font-bold text-orange-300 mb-2">📚 10 Must-Read Grafana & Observability Books</h2>
+        <ul id="booksList" class="space-y-2">
+          <li><label><input type="checkbox" data-book="0" class="mr-2" />Learning Grafana (Eric Salituro)</label></li>
+          <li><label><input type="checkbox" data-book="1" class="mr-2" />Observability Engineering ( Charity Majors)</label></li>
+          <li><label><input type="checkbox" data-book="2" class="mr-2" />Site Reliability Engineering (Niall Richard Murphy et al.)</label></li>
+          <li><label><input type="checkbox" data-book="3" class="mr-2" />Monitoring with Prometheus (James Turnbull)</label></li>
+          <li><label><input type="checkbox" data-book="4" class="mr-2" />The Art of Monitoring (James Turnbull)</label></li>
+          <li><label><input type="checkbox" data-book="5" class="mr-2" />Distributed Systems Observability (Cindy Sridharan)</label></li>
+          <li><label><input type="checkbox" data-book="6" class="mr-2" />Cloud Native DevOps with Kubernetes (Justin Garrison & Kris Nova)</label></li>
+          <li><label><input type="checkbox" data-book="7" class="mr-2" />Prometheus: Up & Running (Brian Brazil)</label></li>
+          <li><label><input type="checkbox" data-book="8" class="mr-2" />The DevOps Handbook (Gene Kim et al.)</label></li>
+          <li><label><input type="checkbox" data-book="9" class="mr-2" />Mastering Grafana (Rahul Sharma)</label></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-orange-300 mb-2">🎧 5 Popular Grafana & Monitoring Podcasts</h2>
+        <ul id="podcastsList" class="space-y-2">
+          <li><label><input type="checkbox" data-podcast="0" class="mr-2" />The Grafana Podcast</label></li>
+          <li><label><input type="checkbox" data-podcast="1" class="mr-2" />Monitoring Weekly</label></li>
+          <li><label><input type="checkbox" data-podcast="2" class="mr-2" />Observability Engineering Podcast</label></li>
+          <li><label><input type="checkbox" data-podcast="3" class="mr-2" />The DevOps Lab</label></li>
+          <li><label><input type="checkbox" data-podcast="4" class="mr-2" />Screaming in the Cloud</label></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="mt-4">
+    <p class="text-sm text-gray-400 mb-1">Overall Progress:</p>
+    <div class="h-4 bg-gray-700 rounded overflow-hidden">
+      <div id="progressBar" class="h-4 bg-orange-400 transition-all duration-300"></div>
+    </div>
+    <p id="progressText" class="text-xs text-gray-400 mt-1"></p>
+  </div>
+
+  <script>
+    const levels = [
+      "Level 1: Grafana Basics",
+      "Level 2: Installing & Configuring Grafana",
+      "Level 3: Creating Dashboards",
+      "Level 4: Working with Data Sources",
+      "Level 5: Visualization Techniques",
+      "Level 6: Alerting & Notifications",
+      "Level 7: User Management & Security",
+      "Level 8: Plugins & Extensions",
+      "Level 9: Performance & Scalability",
+      "Level 10: Advanced Grafana & Observability"
+    ];
+
+    const levelTasks = [
+      [
+        "Understand what Grafana is",
+        "Install Grafana on local machine",
+        "Access Grafana UI",
+        "Explore Grafana default dashboards",
+        "Understand Grafana concepts: dashboards, panels",
+        "Create a simple dashboard",
+        "Understand Grafana panels and visualization types",
+        "Use basic queries in panels",
+        "Save and share dashboards",
+        "Explore Grafana documentation"
+      ],
+      [
+        "Install Grafana on Docker",
+        "Configure Grafana to start on boot",
+        "Set up Grafana config file",
+        "Run Grafana as a service",
+        "Understand Grafana data sources configuration",
+        "Configure Prometheus as a data source",
+        "Configure Loki as a data source",
+        "Configure InfluxDB as a data source",
+        "Test data sources connectivity",
+        "Secure Grafana HTTP port"
+      ],
+      [
+        "Create multiple dashboards",
+        "Add different panel types (Graph, Table, Gauge)",
+        "Use templating in dashboards",
+        "Create dashboard variables",
+        "Use repeating panels",
+        "Add annotations to dashboards",
+        "Import dashboards from Grafana community",
+        "Export dashboards",
+        "Share dashboards with users",
+        "Version control dashboards"
+      ],
+      [
+        "Understand data source plugins",
+        "Configure Elasticsearch data source",
+        "Configure MySQL data source",
+        "Use Loki for logs visualization",
+        "Use Tempo for traces visualization",
+        "Query data sources using query editors",
+        "Use transformations on query results",
+        "Aggregate data in panels",
+        "Use mixed data sources in one dashboard",
+        "Troubleshoot data source issues"
+      ],
+      [
+        "Use Graph panel advanced features",
+        "Create heatmaps",
+        "Use histograms",
+        "Create bar charts",
+        "Use pie charts",
+        "Create alerts in panels",
+        "Customize panel styles",
+        "Use thresholds and overrides",
+        "Use plugins for advanced visualizations",
+        "Build dashboard themes"
+      ],
+      [
+        "Create alert rules",
+        "Configure notification channels",
+        "Integrate Slack for alerts",
+        "Integrate Email for alerts",
+        "Set up PagerDuty integration",
+        "Use alert evaluation intervals",
+        "Mute and pause alerts",
+        "Use alert history",
+        "Manage alert silences",
+        "Automate alerting workflows"
+      ],
+      [
+        "Create users and teams",
+        "Assign roles and permissions",
+        "Use LDAP for authentication",
+        "Configure OAuth providers",
+        "Enable two-factor authentication",
+        "Audit user activities",
+        "Manage API tokens",
+        "Use Organizations feature",
+        "Secure Grafana with HTTPS",
+        "Backup and restore user configs"
+      ],
+      [
+        "Install official plugins",
+        "Install community plugins",
+        "Develop a simple plugin",
+        "Use plugins for data sources",
+        "Use plugins for panels",
+        "Manage plugin updates",
+        "Configure plugin permissions",
+        "Troubleshoot plugin issues",
+        "Use plugin analytics",
+        "Contribute to Grafana plugin ecosystem"
+      ],
+      [
+        "Optimize dashboard load times",
+        "Use caching in Grafana",
+        "Scale Grafana with clustering",
+        "Use Grafana Enterprise features",
+        "Monitor Grafana performance metrics",
+        "Tune database backend",
+        "Configure high availability",
+        "Use Grafana Cloud",
+        "Troubleshoot scaling issues",
+        "Capacity planning for Grafana"
+      ],
+      [
+        "Integrate Grafana with Kubernetes",
+        "Use Grafana for service mesh observability",
+        "Create custom data source plugins",
+        "Automate dashboard provisioning",
+        "Use Grafana API",
+        "Build custom Grafana apps",
+        "Use Grafana for business metrics",
+        "Implement enterprise security policies",
+        "Contribute to Grafana OSS",
+        "Stay updated on Grafana releases"
+      ]
+    ];
+
+    const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+      tasksInLevel.map(description => ({
+        id: `${levelIndex}-${description}`,
+        description,
+        level: levelIndex + 1,
+        completed: false
+      }))
+    );
+
+    const savedTasks = JSON.parse(localStorage.getItem('grafana_tasks')) || tasks;
+    const savedBooks = JSON.parse(localStorage.getItem('grafana_books')) || Array(10).fill(false);
+    const savedPodcasts = JSON.parse(localStorage.getItem('grafana_podcasts')) || Array(5).fill(false);
+
+    const levelsContainer = document.getElementById('levelsContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const booksList = document.getElementById('booksList');
+    const podcastsList = document.getElementById('podcastsList');
+
+    function renderLevels() {
+      levelsContainer.innerHTML = '';
+      levels.forEach((levelTitle, i) => {
+        const levelNumber = i + 1;
+        const levelEl = document.createElement('div');
+        levelEl.className = 'bg-gray-700 rounded p-4';
+
+        const header = document.createElement('h2');
+        header.className = 'text-lg font-bold text-orange-300 mb-2';
+        header.textContent = levelTitle;
+        levelEl.appendChild(header);
+
+        const ul = document.createElement('ul');
+        ul.className = 'space-y-2';
+
+        savedTasks
+          .filter(task => task.level === levelNumber)
+          .forEach(task => {
+            const li = document.createElement('li');
+            li.className = 'flex items-center bg-gray-600 rounded p-2';
+            li.innerHTML = `
+              <input type="checkbox" class="mr-2 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+              <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+            `;
+            ul.appendChild(li);
+          });
+
+        levelEl.appendChild(ul);
+        levelsContainer.appendChild(levelEl);
+      });
+      updateTaskProgress();
+    }
+
+    function updateTaskProgress() {
+      const completed = savedTasks.filter(task => task.completed).length;
+      const total = savedTasks.length;
+      const percent = Math.floor((completed / total) * 100);
+      progressBar.style.width = `${percent}%`;
+      progressText.textContent = `${completed}/${total} tasks completed (${percent}%)`;
+    }
+
+    document.body.addEventListener('change', e => {
+      if (e.target.matches('.task-checkbox')) {
+        const id = e.target.dataset.id;
+        const task = savedTasks.find(t => t.id === id);
+        if (task) {
+          task.completed = e.target.checked;
+          localStorage.setItem('grafana_tasks', JSON.stringify(savedTasks));
+          renderLevels();
+        }
+      }
+      if (e.target.matches('[data-book]')) {
+        const bookId = parseInt(e.target.dataset.book, 10);
+        savedBooks[bookId] = e.target.checked;
+        localStorage.setItem('grafana_books', JSON.stringify(savedBooks));
+      }
+      if (e.target.matches('[data-podcast]')) {
+        const podcastId = parseInt(e.target.dataset.podcast, 10);
+        savedPodcasts[podcastId] = e.target.checked;
+        localStorage.setItem('grafana_podcasts', JSON.stringify(savedPodcasts));
+      }
+    });
+
+    function renderBooks() {
+      savedBooks.forEach((checked, i) => {
+        const input = booksList.querySelector(`[data-book="${i}"]`);
+        if (input) input.checked = checked;
+      });
+    }
+
+    function renderPodcasts() {
+      savedPodcasts.forEach((checked, i) => {
+        const input = podcastsList.querySelector(`[data-podcast="${i}"]`);
+        if (input) input.checked = checked;
+      });
+    }
+
+    renderLevels();
+    renderBooks();
+    renderPodcasts();
+  </script>
+</body>
+</html>

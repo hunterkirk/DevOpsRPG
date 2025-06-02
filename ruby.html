@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ruby RPG Progress Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .completed {
+      text-decoration: line-through;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body class="p-4">
+  <h1 class="text-3xl font-bold text-red-400 mb-4">💎 Ruby Mastery - RPG Progress Tracker</h1>
+  <p class="mb-4 text-sm text-gray-400">Complete all 100 tasks across 10 levels to become a Ruby Wizard! Track your progress, books, and podcasts.</p>
+
+  <div class="flex flex-col md:flex-row gap-4">
+    <!-- Tasks Section -->
+    <div class="flex-1 space-y-4" id="levelsContainer"></div>
+
+    <!-- Books & Podcasts Section -->
+    <div class="w-full md:w-1/3 bg-gray-800 rounded p-4 space-y-6">
+      <div>
+        <h2 class="text-lg font-bold text-red-300 mb-2">📚 10 Must-Read Ruby Books</h2>
+        <ul id="booksList" class="space-y-2">
+          <li><label><input type="checkbox" data-book="0" class="mr-2" />The Well-Grounded Rubyist (David A. Black)</label></li>
+          <li><label><input type="checkbox" data-book="1" class="mr-2" />Eloquent Ruby (Russ Olsen)</label></li>
+          <li><label><input type="checkbox" data-book="2" class="mr-2" />Practical Object-Oriented Design in Ruby (Sandi Metz)</label></li>
+          <li><label><input type="checkbox" data-book="3" class="mr-2" />Metaprogramming Ruby (Paolo Perrotta)</label></li>
+          <li><label><input type="checkbox" data-book="4" class="mr-2" />Ruby Under a Microscope (Pat Shaughnessy)</label></li>
+          <li><label><input type="checkbox" data-book="5" class="mr-2" />Confident Ruby (Avdi Grimm)</label></li>
+          <li><label><input type="checkbox" data-book="6" class="mr-2" />Rails 5 Way (Obie Fernandez)</label></li>
+          <li><label><input type="checkbox" data-book="7" class="mr-2" />Agile Web Development with Rails (Sam Ruby)</label></li>
+          <li><label><input type="checkbox" data-book="8" class="mr-2" />Ruby Performance Optimization (Alexander Dymo)</label></li>
+          <li><label><input type="checkbox" data-book="9" class="mr-2" />Ruby Science (Joe Ferris)</label></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-red-300 mb-2">🎧 5 Popular Ruby Podcasts</h2>
+        <ul id="podcastsList" class="space-y-2">
+          <li><label><input type="checkbox" data-podcast="0" class="mr-2" />Ruby Rogues</label></li>
+          <li><label><input type="checkbox" data-podcast="1" class="mr-2" />The Ruby on Rails Podcast</label></li>
+          <li><label><input type="checkbox" data-podcast="2" class="mr-2" />Remote Ruby</label></li>
+          <li><label><input type="checkbox" data-podcast="3" class="mr-2" />Bikeshed.fm</label></li>
+          <li><label><input type="checkbox" data-podcast="4" class="mr-2" />CodeNewbie</label></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="mt-4">
+    <p class="text-sm text-gray-400 mb-1">Overall Progress:</p>
+    <div class="h-4 bg-gray-700 rounded overflow-hidden">
+      <div id="progressBar" class="h-4 bg-red-400 transition-all duration-300"></div>
+    </div>
+    <p id="progressText" class="text-xs text-gray-400 mt-1"></p>
+  </div>
+
+  <script>
+    const levels = [
+      "Level 1: Ruby Basics",
+      "Level 2: Control Structures & Methods",
+      "Level 3: Collections & Enumerables",
+      "Level 4: Object-Oriented Ruby",
+      "Level 5: Modules & Mixins",
+      "Level 6: Error Handling & Testing",
+      "Level 7: Metaprogramming",
+      "Level 8: Ruby on Rails Basics",
+      "Level 9: Performance & Optimization",
+      "Level 10: Advanced Ruby Concepts"
+    ];
+
+    const levelTasks = [
+      [
+        "Install Ruby and set up environment",
+        "Understand IRB and basic syntax",
+        "Write your first Ruby script",
+        "Use variables and data types",
+        "Perform basic arithmetic operations",
+        "Work with strings and interpolation",
+        "Understand Ruby comments",
+        "Use gets.chomp for input",
+        "Output with puts and print",
+        "Use basic debugging with p and puts"
+      ],
+      [
+        "Use if, else, elsif statements",
+        "Write and call methods",
+        "Understand method parameters and return values",
+        "Use loops: while, until, for",
+        "Use iterators like times and upto",
+        "Understand case statements",
+        "Use break and next in loops",
+        "Understand variable scope",
+        "Write recursive methods",
+        "Understand default and keyword arguments"
+      ],
+      [
+        "Work with arrays and hashes",
+        "Use Enumerable methods: each, map, select",
+        "Sort and filter collections",
+        "Understand ranges and their usage",
+        "Use array and hash manipulation methods",
+        "Use blocks and Procs",
+        "Understand symbols",
+        "Use splat and double splat operators",
+        "Use map with blocks",
+        "Chain enumerable methods"
+      ],
+      [
+        "Define classes and create objects",
+        "Understand instance variables and methods",
+        "Use attr_accessor, attr_reader, attr_writer",
+        "Understand self keyword",
+        "Use class variables and methods",
+        "Use inheritance",
+        "Override methods",
+        "Understand method_missing",
+        "Use initialize method",
+        "Understand object state and behavior"
+      ],
+      [
+        "Create and include modules",
+        "Use mixins to share behavior",
+        "Understand namespaces with modules",
+        "Use extend and include",
+        "Understand constants in modules",
+        "Use Module#prepend",
+        "Avoid name clashes with modules",
+        "Create your own mixin modules",
+        "Use refinements",
+        "Understand method lookup path"
+      ],
+      [
+        "Handle exceptions with begin/rescue",
+        "Raise custom exceptions",
+        "Use ensure and else clauses",
+        "Write unit tests with Minitest",
+        "Write tests with RSpec basics",
+        "Use mocks and stubs",
+        "Understand Test-Driven Development",
+        "Use assertions effectively",
+        "Organize tests with setup and teardown",
+        "Use continuous testing tools"
+      ],
+      [
+        "Understand metaprogramming basics",
+        "Use define_method dynamically",
+        "Use method_missing for dynamic calls",
+        "Create DSLs with Ruby",
+        "Use class_eval and instance_eval",
+        "Understand Ruby’s object model deeply",
+        "Use method hooks (included, extended)",
+        "Generate methods dynamically",
+        "Use refinements in metaprogramming",
+        "Use singleton methods and classes"
+      ],
+      [
+        "Create your first Rails app",
+        "Understand MVC architecture",
+        "Use Rails generators",
+        "Create models and migrations",
+        "Build simple controllers and views",
+        "Use Rails routing basics",
+        "Understand Active Record basics",
+        "Use validations and callbacks",
+        "Work with Rails console",
+        "Deploy a simple Rails app"
+      ],
+      [
+        "Profile Ruby code performance",
+        "Use Benchmark module",
+        "Understand garbage collection",
+        "Optimize memory usage",
+        "Use Ruby Prof gem",
+        "Use memoization techniques",
+        "Refactor for speed",
+        "Avoid common performance pitfalls",
+        "Use just-in-time compilation (MJIT)",
+        "Understand threading and concurrency"
+      ],
+      [
+        "Understand Ruby internals",
+        "Use C extensions",
+        "Understand fiber and enumerator internals",
+        "Create gems and libraries",
+        "Use RubyGems effectively",
+        "Contribute to Ruby core or gems",
+        "Understand JRuby and alternative implementations",
+        "Write concurrent Ruby code",
+        "Understand the Global Interpreter Lock (GIL)",
+        "Build complex DSLs"
+      ]
+    ];
+
+    const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+      tasksInLevel.map(description => ({
+        id: `${levelIndex}-${description}`,
+        description,
+        level: levelIndex + 1,
+        completed: false
+      }))
+    );
+
+    const savedTasks = JSON.parse(localStorage.getItem('ruby_tasks')) || tasks;
+    const savedBooks = JSON.parse(localStorage.getItem('ruby_books')) || Array(10).fill(false);
+    const savedPodcasts = JSON.parse(localStorage.getItem('ruby_podcasts')) || Array(5).fill(false);
+
+    const levelsContainer = document.getElementById('levelsContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const booksList = document.getElementById('booksList');
+    const podcastsList = document.getElementById('podcastsList');
+
+    function renderLevels() {
+      levelsContainer.innerHTML = '';
+      levels.forEach((levelTitle, i) => {
+        const levelNumber = i + 1;
+        const levelEl = document.createElement('div');
+        levelEl.className = 'bg-gray-700 rounded p-4';
+
+        const header = document.createElement('h2');
+        header.className = 'text-lg font-bold text-red-300 mb-2';
+        header.textContent = levelTitle;
+        levelEl.appendChild(header);
+
+        const ul = document.createElement('ul');
+        ul.className = 'space-y-2';
+
+        savedTasks
+          .filter(task => task.level === levelNumber)
+          .forEach(task => {
+            const li = document.createElement('li');
+            li.className = 'flex items-center bg-gray-600 rounded p-2';
+            li.innerHTML = `
+              <input type="checkbox" class="mr-2 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+              <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+            `;
+            ul.appendChild(li);
+          });
+
+        levelEl.appendChild(ul);
+        levelsContainer.appendChild(levelEl);
+      });
+      updateTaskProgress();
+    }
+
+    function updateTaskProgress() {
+      const completed = savedTasks.filter(task => task.completed).length;
+      const total = savedTasks.length;
+      const percent = Math.floor((completed / total) * 100);
+      progressBar.style.width = `${percent}%`;
+      progressText.textContent = `${completed}/${total} tasks completed (${percent}%)`;
+    }
+
+    document.body.addEventListener('change', e => {
+      if (e.target.matches('.task-checkbox')) {
+        const id = e.target.dataset.id;
+        const task = savedTasks.find(t => t.id === id);
+        if (task) {
+          task.completed = e.target.checked;
+          localStorage.setItem('ruby_tasks', JSON.stringify(savedTasks));
+          renderLevels();
+        }
+      }
+      if (e.target.matches('[data-book]')) {
+        const bookId = parseInt(e.target.dataset.book, 10);
+        savedBooks[bookId] = e.target.checked;
+        localStorage.setItem('ruby_books', JSON.stringify(savedBooks));
+      }
+      if (e.target.matches('[data-podcast]')) {
+        const podcastId = parseInt(e.target.dataset.podcast, 10);
+        savedPodcasts[podcastId] = e.target.checked;
+        localStorage.setItem('ruby_podcasts', JSON.stringify(savedPodcasts));
+      }
+    });
+
+    function renderBooks() {
+      savedBooks.forEach((checked, i) => {
+        const input = booksList.querySelector(`[data-book="${i}"]`);
+        if (input) input.checked = checked;
+      });
+    }
+
+    function renderPodcasts() {
+      savedPodcasts.forEach((checked, i) => {
+        const input = podcastsList.querySelector(`[data-podcast="${i}"]`);
+        if (input) input.checked = checked;
+      });
+    }
+
+    renderLevels();
+    renderBooks();
+    renderPodcasts();
+  </script>
+</body>
+</html>

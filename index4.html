@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevOps RPG Progress Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .completed {
+      text-decoration: line-through;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body class="p-4">
+  <h1 class="text-3xl font-bold text-purple-400 mb-4">DevOps Wizardry - RPG Progress Tracker</h1>
+  <p class="mb-4 text-sm text-gray-400">Complete all 100 tasks across 10 levels to become a DevOps Wizard! Track your progress and the 10 must-read books.</p>
+
+  <div class="flex flex-col md:flex-row gap-4">
+    <!-- Tasks Section -->
+    <div class="flex-1 space-y-4" id="levelsContainer"></div>
+
+    <!-- Book Tracking Section -->
+    <div class="w-full md:w-1/3 bg-gray-800 rounded p-4">
+      <h2 class="text-lg font-bold text-purple-300 mb-2">📚 10 Must-Read DevOps Books</h2>
+      <ul id="booksList" class="space-y-2">
+        <li><label><input type="checkbox" data-book="0" class="mr-2">The Phoenix Project</label></li>
+        <li><label><input type="checkbox" data-book="1" class="mr-2">Site Reliability Engineering</label></li>
+        <li><label><input type="checkbox" data-book="2" class="mr-2">The DevOps Handbook</label></li>
+        <li><label><input type="checkbox" data-book="3" class="mr-2">Accelerate</label></li>
+        <li><label><input type="checkbox" data-book="4" class="mr-2">Infrastructure as Code</label></li>
+        <li><label><input type="checkbox" data-book="5" class="mr-2">Kubernetes Up & Running</label></li>
+        <li><label><input type="checkbox" data-book="6" class="mr-2">Terraform: Up & Running</label></li>
+        <li><label><input type="checkbox" data-book="7" class="mr-2">Pro Git</label></li>
+        <li><label><input type="checkbox" data-book="8" class="mr-2">The Art of Monitoring</label></li>
+        <li><label><input type="checkbox" data-book="9" class="mr-2">Continuous Delivery</label></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="mt-4">
+    <p class="text-sm text-gray-400 mb-1">Overall Progress:</p>
+    <div class="h-4 bg-gray-700 rounded overflow-hidden">
+      <div id="progressBar" class="h-4 bg-purple-500 transition-all duration-300"></div>
+    </div>
+    <p id="progressText" class="text-xs text-gray-400 mt-1"></p>
+  </div>
+
+  <script>
+    // Task definitions
+    const levels = Array.from({ length: 10 }, (_, i) => `Level ${i + 1}: DevOps Mastery`);
+    const tasks = Array.from({ length: 100 }, (_, i) => ({
+      id: i,
+      description: `Task ${i + 1}: ${getTaskDescription(i + 1)}`,
+      level: Math.floor(i / 10) + 1,
+      completed: false
+    }));
+
+    // Helper for task descriptions
+    function getTaskDescription(n) {
+      const sampleTasks = [
+        "Learn Git basics",
+        "Set up CI/CD pipeline",
+        "Understand containers (Docker)",
+        "Master Kubernetes",
+        "Implement Infrastructure as Code (IaC)",
+        "Set up monitoring tools",
+        "Learn log aggregation",
+        "Implement alerting and incident response",
+        "Automate security scans",
+        "Benchmark application performance"
+      ];
+      return sampleTasks[(n - 1) % 10];
+    }
+
+    // Load tasks from local storage or initialize
+    const savedTasks = JSON.parse(localStorage.getItem('tasks')) || tasks;
+    const savedBooks = JSON.parse(localStorage.getItem('books')) || Array(10).fill(false);
+
+    const levelsContainer = document.getElementById('levelsContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const booksList = document.getElementById('booksList');
+
+    // Render levels and tasks
+    function renderLevels() {
+      levelsContainer.innerHTML = '';
+      levels.forEach((levelTitle, i) => {
+        const levelNumber = i + 1;
+        const levelEl = document.createElement('div');
+        levelEl.className = 'bg-gray-700 rounded p-4';
+
+        const header = document.createElement('h2');
+        header.className = 'text-lg font-bold text-purple-300 mb-2';
+        header.textContent = levelTitle;
+        levelEl.appendChild(header);
+
+        const ul = document.createElement('ul');
+        ul.className = 'space-y-2';
+
+        savedTasks
+          .filter(task => task.level === levelNumber)
+          .forEach(task => {
+            const li = document.createElement('li');
+            li.className = 'flex items-center bg-gray-600 rounded p-2';
+            li.innerHTML = `
+              <input type="checkbox" class="mr-2 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''}>
+              <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+            `;
+            ul.appendChild(li);
+          });
+
+        levelEl.appendChild(ul);
+        levelsContainer.appendChild(levelEl);
+      });
+      updateTaskProgress();
+    }
+
+    // Update progress
+    function updateTaskProgress() {
+      const completed = savedTasks.filter(task => task.completed).length;
+      const total = savedTasks.length;
+      const percent = Math.floor((completed / total) * 100);
+      progressBar.style.width = `${percent}%`;
+      progressText.textContent = `${completed}/${total} tasks completed (${percent}%)`;
+    }
+
+    // Handle task checkbox change
+    document.body.addEventListener('change', e => {
+      if (e.target.matches('.task-checkbox')) {
+        const id = parseInt(e.target.dataset.id);
+        const task = savedTasks.find(t => t.id === id);
+        task.completed = e.target.checked;
+        localStorage.setItem('tasks', JSON.stringify(savedTasks));
+        renderLevels();
+      }
+      if (e.target.matches('[data-book]')) {
+        const bookId = parseInt(e.target.dataset.book);
+        savedBooks[bookId] = e.target.checked;
+        localStorage.setItem('books', JSON.stringify(savedBooks));
+      }
+    });
+
+    // Render books
+    function renderBooks() {
+      savedBooks.forEach((checked, i) => {
+        booksList.querySelector(`[data-book="${i}"]`).checked = checked;
+      });
+    }
+
+    // Initialize
+    renderLevels();
+    renderBooks();
+  </script>
+</body>
+</html>

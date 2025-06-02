@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Node.js RPG Progress Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .completed {
+      text-decoration: line-through;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body class="p-4">
+  <h1 class="text-3xl font-bold text-green-400 mb-4">🟢 Node.js Wizardry - RPG Progress Tracker</h1>
+  <p class="mb-4 text-sm text-gray-400">Complete all 100 tasks across 10 levels to become a Node.js Wizard! Track your progress, books, and podcasts.</p>
+
+  <div class="flex flex-col md:flex-row gap-4">
+    <!-- Tasks Section -->
+    <div class="flex-1 space-y-4" id="levelsContainer"></div>
+
+    <!-- Books & Podcasts Section -->
+    <div class="w-full md:w-1/3 bg-gray-800 rounded p-4 space-y-6">
+      <div>
+        <h2 class="text-lg font-bold text-green-300 mb-2">📚 10 Must-Read Node.js Books</h2>
+        <ul id="booksList" class="space-y-2">
+          <li><label><input type="checkbox" data-book="0" class="mr-2" />Node.js Design Patterns</label></li>
+          <li><label><input type="checkbox" data-book="1" class="mr-2" />You Don’t Know JS Yet</label></li>
+          <li><label><input type="checkbox" data-book="2" class="mr-2" />Node.js in Action</label></li>
+          <li><label><input type="checkbox" data-book="3" class="mr-2" />Practical Node.js</label></li>
+          <li><label><input type="checkbox" data-book="4" class="mr-2" />Mastering Node.js</label></li>
+          <li><label><input type="checkbox" data-book="5" class="mr-2" />Node.js Web Development</label></li>
+          <li><label><input type="checkbox" data-book="6" class="mr-2" />Learning Node.js Development</label></li>
+          <li><label><input type="checkbox" data-book="7" class="mr-2" />Node.js 8 the Right Way</label></li>
+          <li><label><input type="checkbox" data-book="8" class="mr-2" />Beginning Node.js</label></li>
+          <li><label><input type="checkbox" data-book="9" class="mr-2" />Node Cookbook</label></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-green-300 mb-2">🎧 5 Node.js Podcasts</h2>
+        <ul id="podcastsList" class="space-y-2">
+          <li><label><input type="checkbox" data-podcast="0" class="mr-2" />NodeUp</label></li>
+          <li><label><input type="checkbox" data-podcast="1" class="mr-2" />JS Party</label></li>
+          <li><label><input type="checkbox" data-podcast="2" class="mr-2" />The Changelog (Node.js episodes)</label></li>
+          <li><label><input type="checkbox" data-podcast="3" class="mr-2" />Syntax</label></li>
+          <li><label><input type="checkbox" data-podcast="4" class="mr-2" />The Node.js Podcast</label></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="mt-4">
+    <p class="text-sm text-gray-400 mb-1">Overall Progress:</p>
+    <div class="h-4 bg-gray-700 rounded overflow-hidden">
+      <div id="progressBar" class="h-4 bg-green-500 transition-all duration-300"></div>
+    </div>
+    <p id="progressText" class="text-xs text-gray-400 mt-1"></p>
+  </div>
+
+  <script>
+    const levels = [
+      "Level 1: Node.js Basics",
+      "Level 2: Modules & Packages",
+      "Level 3: Asynchronous Programming",
+      "Level 4: File System & Streams",
+      "Level 5: HTTP & Web Servers",
+      "Level 6: Express.js Framework",
+      "Level 7: Databases & Persistence",
+      "Level 8: Testing & Debugging",
+      "Level 9: Security & Deployment",
+      "Level 10: Advanced Node.js Topics"
+    ];
+
+    const levelTasks = [
+      [
+        "Install Node.js and npm",
+        "Run your first Node.js script",
+        "Understand the event loop",
+        "Use console.log for debugging",
+        "Work with global objects",
+        "Use process object",
+        "Understand Node.js REPL",
+        "Explore package.json basics",
+        "Write basic JavaScript for Node.js",
+        "Understand callbacks"
+      ],
+      [
+        "Use CommonJS modules",
+        "Export and import modules",
+        "Understand ES modules in Node.js",
+        "Manage dependencies with npm",
+        "Use package-lock.json",
+        "Semantic versioning basics",
+        "Understand local vs global packages",
+        "Use npm scripts",
+        "Explore node_modules folder",
+        "Publish a package to npm"
+      ],
+      [
+        "Use setTimeout and setInterval",
+        "Understand Promises",
+        "Use async/await",
+        "Handle errors in async code",
+        "Work with EventEmitter",
+        "Understand process.nextTick",
+        "Use timers module",
+        "Handle asynchronous streams",
+        "Use the util.promisify function",
+        "Create custom async functions"
+      ],
+      [
+        "Read files with fs module",
+        "Write files asynchronously",
+        "Use streams to read/write data",
+        "Pipe streams together",
+        "Handle stream events",
+        "Work with Buffer class",
+        "Use fs.promises API",
+        "Monitor file changes",
+        "Use zlib for compression",
+        "Create read and write streams"
+      ],
+      [
+        "Create a basic HTTP server",
+        "Handle HTTP requests and responses",
+        "Use HTTP status codes",
+        "Serve static files",
+        "Handle query strings",
+        "Work with URL module",
+        "Implement routing manually",
+        "Understand headers and cookies",
+        "Use HTTPS module",
+        "Create RESTful endpoints"
+      ],
+      [
+        "Set up Express.js",
+        "Create routes and middleware",
+        "Handle requests and responses",
+        "Serve static assets with Express",
+        "Use template engines",
+        "Implement error handling middleware",
+        "Parse JSON and URL-encoded bodies",
+        "Manage sessions and cookies",
+        "Use Express Router",
+        "Deploy Express app locally"
+      ],
+      [
+        "Connect to MongoDB",
+        "Use Mongoose for schemas",
+        "Perform CRUD operations",
+        "Use PostgreSQL with node-postgres",
+        "Use SQLite with better-sqlite3",
+        "Work with Redis caching",
+        "Understand database connection pooling",
+        "Use ORM/ODM tools",
+        "Handle database migrations",
+        "Secure database connections"
+      ],
+      [
+        "Write unit tests with Mocha",
+        "Use Chai for assertions",
+        "Write integration tests",
+        "Use Jest for testing",
+        "Debug with Node Inspector",
+        "Use console.trace",
+        "Test asynchronous code",
+        "Use coverage tools",
+        "Mock dependencies",
+        "Run tests with npm scripts"
+      ],
+      [
+        "Implement JWT authentication",
+        "Use OAuth2 basics",
+        "Sanitize user input",
+        "Prevent SQL Injection",
+        "Use Helmet for security headers",
+        "Secure HTTP with HTTPS",
+        "Rate limiting and throttling",
+        "Handle CORS issues",
+        "Log and monitor security events",
+        "Deploy securely to production"
+      ],
+      [
+        "Use cluster module for scaling",
+        "Implement worker threads",
+        "Optimize performance",
+        "Use Node.js profiler",
+        "Understand memory leaks",
+        "Use PM2 process manager",
+        "Create Docker containers for Node.js",
+        "Deploy to cloud services",
+        "Monitor app health",
+        "Build a production-ready app"
+      ]
+    ];
+
+    const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+      tasksInLevel.map(description => ({
+        id: `${levelIndex}-${description}`,
+        description,
+        level: levelIndex + 1,
+        completed: false
+      }))
+    );
+
+    const savedTasks = JSON.parse(localStorage.getItem('node_tasks')) || tasks;
+    const savedBooks = JSON.parse(localStorage.getItem('node_books')) || Array(10).fill(false);
+    const savedPodcasts = JSON.parse(localStorage.getItem('node_podcasts')) || Array(5).fill(false);
+
+    const levelsContainer = document.getElementById('levelsContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const booksList = document.getElementById('booksList');
+    const podcastsList = document.getElementById('podcastsList');
+
+    function renderLevels() {
+      levelsContainer.innerHTML = '';
+      levels.forEach((levelTitle, i) => {
+        const levelNumber = i + 1;
+        const levelEl = document.createElement('div');
+        levelEl.className = 'bg-gray-700 rounded p-4';
+
+        const header = document.createElement('h2');
+        header.className = 'text-lg font-bold text-green-300 mb-2';
+        header.textContent = levelTitle;
+        levelEl.appendChild(header);
+
+        const ul = document.createElement('ul');
+        ul.className = 'space-y-2';
+
+        savedTasks
+          .filter(task => task.level === levelNumber)
+          .forEach(task => {
+            const li = document.createElement('li');
+            li.className = 'flex items-center bg-gray-600 rounded p-2';
+            li.innerHTML = `
+              <input type="checkbox" class="mr-2 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+              <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+            `;
+            ul.appendChild(li);
+          });
+
+        levelEl.appendChild(ul);
+        levelsContainer.appendChild(levelEl);
+      });
+      updateTaskProgress();
+    }
+
+    function updateTaskProgress() {
+      const completed = savedTasks.filter(task => task.completed).length;
+      const total = savedTasks.length;
+      const percent = Math.floor((completed / total) * 100);
+      progressBar.style.width = `${percent}%`;
+      progressText.textContent = `${completed}/${total} tasks completed (${percent}%)`;
+    }
+
+    document.body.addEventListener('change', e => {
+      if (e.target.matches('.task-checkbox')) {
+        const id = e.target.dataset.id;
+        const task = savedTasks.find(t => t.id === id);
+        if (task) {
+          task.completed = e.target.checked;
+          localStorage.setItem('node_tasks', JSON.stringify(savedTasks));
+          renderLevels();
+        }
+      }
+      if (e.target.matches('[data-book]')) {
+        const bookId = parseInt(e.target.dataset.book, 10);
+        savedBooks[bookId] = e.target.checked;
+        localStorage.setItem('node_books', JSON.stringify(savedBooks));
+      }
+      if (e.target.matches('[data-podcast]')) {
+        const podcastId = parseInt(e.target.dataset.podcast, 10);
+        savedPodcasts[podcastId] = e.target.checked;
+        localStorage.setItem('node_podcasts', JSON.stringify(savedPodcasts));
+      }
+    });
+
+    function renderBooks() {
+      savedBooks.forEach((checked, i) => {
+        const input = booksList.querySelector(`[data-book="${i}"]`);
+        if (input) input.checked = checked;
+      });
+    }
+
+    function renderPodcasts() {
+      savedPodcasts.forEach((checked, i) => {
+        const input = podcastsList.querySelector(`[data-podcast="${i}"]`);
+        if (input) input.checked = checked;
+      });
+    }
+
+    renderLevels();
+    renderBooks();
+    renderPodcasts();
+  </script>
+</body>
+</html>

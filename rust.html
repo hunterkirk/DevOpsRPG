@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rust RPG Progress Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .completed {
+      text-decoration: line-through;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body class="p-4">
+  <h1 class="text-3xl font-bold text-orange-400 mb-4">🦀 Rust Wizardry - RPG Progress Tracker</h1>
+  <p class="mb-4 text-sm text-gray-400">Complete all 100 tasks across 10 levels to become a Rust Wizard! Track your progress, books, and podcasts.</p>
+
+  <div class="flex flex-col md:flex-row gap-4">
+    <!-- Tasks Section -->
+    <div class="flex-1 space-y-4" id="levelsContainer"></div>
+
+    <!-- Books & Podcasts Section -->
+    <div class="w-full md:w-1/3 bg-gray-800 rounded p-4 space-y-6">
+      <div>
+        <h2 class="text-lg font-bold text-orange-300 mb-2">📚 10 Must-Read Rust Books</h2>
+        <ul id="booksList" class="space-y-2">
+          <li><label><input type="checkbox" data-book="0" class="mr-2" />The Rust Programming Language</label></li>
+          <li><label><input type="checkbox" data-book="1" class="mr-2" />Programming Rust</label></li>
+          <li><label><input type="checkbox" data-book="2" class="mr-2" />Rust by Example</label></li>
+          <li><label><input type="checkbox" data-book="3" class="mr-2" />Rust Cookbook</label></li>
+          <li><label><input type="checkbox" data-book="4" class="mr-2" />Rust in Action</label></li>
+          <li><label><input type="checkbox" data-book="5" class="mr-2" />Mastering Rust</label></li>
+          <li><label><input type="checkbox" data-book="6" class="mr-2" />Hands-On Concurrency with Rust</label></li>
+          <li><label><input type="checkbox" data-book="7" class="mr-2" />Zero To Production In Rust</label></li>
+          <li><label><input type="checkbox" data-book="8" class="mr-2" />Rust High Performance</label></li>
+          <li><label><input type="checkbox" data-book="9" class="mr-2" />Async Programming in Rust</label></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-orange-300 mb-2">🎧 5 Rust Podcasts</h2>
+        <ul id="podcastsList" class="space-y-2">
+          <li><label><input type="checkbox" data-podcast="0" class="mr-2" />New Rustacean</label></li>
+          <li><label><input type="checkbox" data-podcast="1" class="mr-2" />Rustacean Station</label></li>
+          <li><label><input type="checkbox" data-podcast="2" class="mr-2" />Rust Embedded Podcast</label></li>
+          <li><label><input type="checkbox" data-podcast="3" class="mr-2" />The Changelog (Rust episodes)</label></li>
+          <li><label><input type="checkbox" data-podcast="4" class="mr-2" />Ferris State</label></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="mt-4">
+    <p class="text-sm text-gray-400 mb-1">Overall Progress:</p>
+    <div class="h-4 bg-gray-700 rounded overflow-hidden">
+      <div id="progressBar" class="h-4 bg-orange-500 transition-all duration-300"></div>
+    </div>
+    <p id="progressText" class="text-xs text-gray-400 mt-1"></p>
+  </div>
+
+  <script>
+    const levels = [
+      "Level 1: Rust Basics",
+      "Level 2: Control Flow & Functions",
+      "Level 3: Data Types & Ownership",
+      "Level 4: Structs & Enums",
+      "Level 5: Error Handling & Testing",
+      "Level 6: Collections & Iterators",
+      "Level 7: Concurrency",
+      "Level 8: Traits & Generics",
+      "Level 9: Macros & Unsafe Rust",
+      "Level 10: Advanced Rust & Ecosystem"
+    ];
+
+    const levelTasks = [
+      [
+        "Install Rust and set up your toolchain",
+        "Write and run your first Rust program",
+        "Understand variables and mutability",
+        "Use basic data types (integers, floats, bools, char)",
+        "Understand shadowing",
+        "Use println! macro",
+        "Understand comments and documentation",
+        "Write basic expressions",
+        "Use constants and statics",
+        "Understand scalar and compound types"
+      ],
+      [
+        "Use if, else if, and else statements",
+        "Write loops: loop, while, for",
+        "Use match expressions",
+        "Write functions and call them",
+        "Understand function parameters and return values",
+        "Use statements and expressions",
+        "Understand the concept of blocks",
+        "Use the return keyword explicitly",
+        "Use early returns with ? operator",
+        "Write nested control flow"
+      ],
+      [
+        "Understand ownership rules",
+        "Use borrowing and references",
+        "Understand mutable references",
+        "Use slices",
+        "Understand lifetimes basics",
+        "Work with tuples",
+        "Use arrays",
+        "Understand string types (String vs &str)",
+        "Clone and copy traits",
+        "Understand move semantics"
+      ],
+      [
+        "Define and use structs",
+        "Use struct methods and associated functions",
+        "Understand tuple structs",
+        "Use unit structs",
+        "Define enums and variants",
+        "Use match with enums",
+        "Use Option and Result enums",
+        "Use pattern matching with enums",
+        "Understand struct update syntax",
+        "Implement Debug and Display traits"
+      ],
+      [
+        "Handle errors with Result type",
+        "Use panic! macro",
+        "Write tests with #[test]",
+        "Use assert macros",
+        "Write integration tests",
+        "Understand test organization",
+        "Use cargo test command",
+        "Use doc tests",
+        "Handle unwrap and expect",
+        "Write error handling best practices"
+      ],
+      [
+        "Use vectors",
+        "Work with hash maps",
+        "Use strings and string manipulation",
+        "Understand iterators and their traits",
+        "Use for loops with iterators",
+        "Chain iterator methods",
+        "Use map, filter, and collect",
+        "Understand ownership with collections",
+        "Use Option and Result with collections",
+        "Understand slices with collections"
+      ],
+      [
+        "Create threads with std::thread",
+        "Use message passing with channels",
+        "Understand Mutex and Arc",
+        "Use atomic types",
+        "Handle thread panics",
+        "Synchronize threads safely",
+        "Use thread pools",
+        "Understand Send and Sync traits",
+        "Use async/await basics",
+        "Write concurrent programs"
+      ],
+      [
+        "Define and implement traits",
+        "Use trait bounds",
+        "Write generic functions and types",
+        "Use lifetime parameters in generics",
+        "Understand where clauses",
+        "Use default implementations",
+        "Implement Drop trait",
+        "Use associated types",
+        "Understand trait objects",
+        "Use PhantomData"
+      ],
+      [
+        "Write declarative macros (macro_rules!)",
+        "Use procedural macros basics",
+        "Understand unsafe code blocks",
+        "Use raw pointers",
+        "Understand FFI basics",
+        "Use extern functions",
+        "Handle unsafe traits",
+        "Use unsafe code safely",
+        "Understand interior mutability",
+        "Use Cell and RefCell"
+      ],
+      [
+        "Understand Cargo workspace",
+        "Use features and conditional compilation",
+        "Write idiomatic Rust code",
+        "Use Clippy for linting",
+        "Profile Rust programs",
+        "Use benchmarking tools",
+        "Write async code with Tokio or async-std",
+        "Understand Rust ecosystem crates",
+        "Publish a crate to crates.io",
+        "Build a final Rust project"
+      ]
+    ];
+
+    const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+      tasksInLevel.map(description => ({
+        id: `${levelIndex}-${description}`,
+        description,
+        level: levelIndex + 1,
+        completed: false
+      }))
+    );
+
+    const savedTasks = JSON.parse(localStorage.getItem('rust_tasks')) || tasks;
+    const savedBooks = JSON.parse(localStorage.getItem('rust_books')) || Array(10).fill(false);
+    const savedPodcasts = JSON.parse(localStorage.getItem('rust_podcasts')) || Array(5).fill(false);
+
+    const levelsContainer = document.getElementById('levelsContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const booksList = document.getElementById('booksList');
+    const podcastsList = document.getElementById('podcastsList');
+
+    function renderLevels() {
+      levelsContainer.innerHTML = '';
+      levels.forEach((levelTitle, i) => {
+        const levelNumber = i + 1;
+        const levelEl = document.createElement('div');
+        levelEl.className = 'bg-gray-700 rounded p-4';
+
+        const header = document.createElement('h2');
+        header.className = 'text-lg font-bold text-orange-300 mb-2';
+        header.textContent = levelTitle;
+        levelEl.appendChild(header);
+
+        const ul = document.createElement('ul');
+        ul.className = 'space-y-2';
+
+        savedTasks
+          .filter(task => task.level === levelNumber)
+          .forEach(task => {
+            const li = document.createElement('li');
+            li.className = 'flex items-center bg-gray-600 rounded p-2';
+            li.innerHTML = `
+              <input type="checkbox" class="mr-2 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+              <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+            `;
+            ul.appendChild(li);
+          });
+
+        levelEl.appendChild(ul);
+        levelsContainer.appendChild(levelEl);
+      });
+      updateTaskProgress();
+    }
+
+    function updateTaskProgress() {
+      const completed = savedTasks.filter(task => task.completed).length;
+      const total = savedTasks.length;
+      const percent = Math.floor((completed / total) * 100);
+      progressBar.style.width = `${percent}%`;
+      progressText.textContent = `${completed}/${total} tasks completed (${percent}%)`;
+    }
+
+    document.body.addEventListener('change', e => {
+      if (e.target.matches('.task-checkbox')) {
+        const id = e.target.dataset.id;
+        const task = savedTasks.find(t => t.id === id);
+        if (task) {
+          task.completed = e.target.checked;
+          localStorage.setItem('rust_tasks', JSON.stringify(savedTasks));
+          renderLevels();
+        }
+      }
+      if (e.target.matches('[data-book]')) {
+        const bookId = parseInt(e.target.dataset.book, 10);
+        savedBooks[bookId] = e.target.checked;
+        localStorage.setItem('rust_books', JSON.stringify(savedBooks));
+      }
+      if (e.target.matches('[data-podcast]')) {
+        const podcastId = parseInt(e.target.dataset.podcast, 10);
+        savedPodcasts[podcastId] = e.target.checked;
+        localStorage.setItem('rust_podcasts', JSON.stringify(savedPodcasts));
+      }
+    });
+
+    function renderBooks() {
+      savedBooks.forEach((checked, i) => {
+        const input = booksList.querySelector(`[data-book="${i}"]`);
+        if (input) input.checked = checked;
+      });
+    }
+
+    function renderPodcasts() {
+      savedPodcasts.forEach((checked, i) => {
+        const input = podcastsList.querySelector(`[data-podcast="${i}"]`);
+        if (input) input.checked = checked;
+      });
+    }
+
+    renderLevels();
+    renderBooks();
+    renderPodcasts();
+  </script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Go Lang RPG Progress Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .completed {
+      text-decoration: line-through;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body class="p-4">
+  <h1 class="text-3xl font-bold text-green-400 mb-4">🐹 Go Lang Wizardry - RPG Progress Tracker</h1>
+  <p class="mb-4 text-sm text-gray-400">Complete all 100 tasks across 10 levels to become a Go Lang Wizard! Track your progress, books, and podcasts.</p>
+
+  <div class="flex flex-col md:flex-row gap-4">
+    <!-- Tasks Section -->
+    <div class="flex-1 space-y-4" id="levelsContainer"></div>
+
+    <!-- Books & Podcasts Section -->
+    <div class="w-full md:w-1/3 bg-gray-800 rounded p-4 space-y-6">
+      <div>
+        <h2 class="text-lg font-bold text-green-300 mb-2">📚 10 Must-Read Go Books</h2>
+        <ul id="booksList" class="space-y-2">
+          <li><label><input type="checkbox" data-book="0" class="mr-2" />The Go Programming Language</label></li>
+          <li><label><input type="checkbox" data-book="1" class="mr-2" />Go in Action</label></li>
+          <li><label><input type="checkbox" data-book="2" class="mr-2" />Concurrency in Go</label></li>
+          <li><label><input type="checkbox" data-book="3" class="mr-2" />Go Web Programming</label></li>
+          <li><label><input type="checkbox" data-book="4" class="mr-2" />Go Programming Blueprints</label></li>
+          <li><label><input type="checkbox" data-book="5" class="mr-2" />Black Hat Go</label></li>
+          <li><label><input type="checkbox" data-book="6" class="mr-2" />Mastering Go</label></li>
+          <li><label><input type="checkbox" data-book="7" class="mr-2" />Go Systems Programming</label></li>
+          <li><label><input type="checkbox" data-book="8" class="mr-2" />Network Programming with Go</label></li>
+          <li><label><input type="checkbox" data-book="9" class="mr-2" />Go Design Patterns</label></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-green-300 mb-2">🎧 5 Go Podcasts</h2>
+        <ul id="podcastsList" class="space-y-2">
+          <li><label><input type="checkbox" data-podcast="0" class="mr-2" />Go Time</label></li>
+          <li><label><input type="checkbox" data-podcast="1" class="mr-2" />The Gopher's Digest</label></li>
+          <li><label><input type="checkbox" data-podcast="2" class="mr-2" />GoLang Cafe</label></li>
+          <li><label><input type="checkbox" data-podcast="3" class="mr-2" />Talking Go</label></li>
+          <li><label><input type="checkbox" data-podcast="4" class="mr-2" />CodeNewbie (Go episodes)</label></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="mt-4">
+    <p class="text-sm text-gray-400 mb-1">Overall Progress:</p>
+    <div class="h-4 bg-gray-700 rounded overflow-hidden">
+      <div id="progressBar" class="h-4 bg-green-500 transition-all duration-300"></div>
+    </div>
+    <p id="progressText" class="text-xs text-gray-400 mt-1"></p>
+  </div>
+
+  <script>
+    const levels = [
+      "Level 1: Go Basics",
+      "Level 2: Control Structures & Functions",
+      "Level 3: Composite Types & Collections",
+      "Level 4: Concurrency",
+      "Level 5: Error Handling & Testing",
+      "Level 6: Standard Library Deep Dive",
+      "Level 7: Web Development with Go",
+      "Level 8: Advanced Go Features",
+      "Level 9: Performance & Optimization",
+      "Level 10: Go in Production & Final Challenge"
+    ];
+
+    const levelTasks = [
+      [
+        "Install Go and set up your workspace",
+        "Write and run your first Go program",
+        "Understand packages and imports",
+        "Use variables and constants",
+        "Learn basic types (int, float, string, bool)",
+        "Use fmt for formatted output",
+        "Write comments and documentation",
+        "Understand zero values",
+        "Use basic operators",
+        "Run Go programs from the command line"
+      ],
+      [
+        "Use if, else if, and else statements",
+        "Use switch statements",
+        "Write for loops",
+        "Use break and continue",
+        "Define and call functions",
+        "Understand function parameters and returns",
+        "Use named return values",
+        "Use defer statement",
+        "Understand variadic functions",
+        "Use anonymous functions"
+      ],
+      [
+        "Create and manipulate arrays",
+        "Create and manipulate slices",
+        "Use maps for key-value storage",
+        "Understand structs",
+        "Work with pointers",
+        "Use range loops",
+        "Understand how slices grow",
+        "Copy and append slices",
+        "Compare structs",
+        "Understand type aliases and new types"
+      ],
+      [
+        "Use goroutines for concurrency",
+        "Use channels for communication",
+        "Use buffered channels",
+        "Use select statement",
+        "Use WaitGroups for synchronization",
+        "Understand race conditions",
+        "Use mutexes for locking",
+        "Understand context package for cancellation",
+        "Use worker pools",
+        "Debug concurrency issues"
+      ],
+      [
+        "Handle errors with error type",
+        "Use panic and recover",
+        "Write basic tests with testing package",
+        "Use table-driven tests",
+        "Benchmark your code",
+        "Write example tests",
+        "Use testify for assertions",
+        "Use go test flags",
+        "Use code coverage tools",
+        "Write documentation comments"
+      ],
+      [
+        "Use strings package functions",
+        "Work with time package",
+        "Use io and ioutil for file operations",
+        "Use os package for system calls",
+        "Parse and format JSON",
+        "Use encoding/xml package",
+        "Use net/http package",
+        "Understand context in stdlib",
+        "Use log package effectively",
+        "Use flag package for CLI"
+      ],
+      [
+        "Create a basic HTTP server",
+        "Use net/http routing",
+        "Serve static files",
+        "Handle JSON API requests",
+        "Use middleware in HTTP handlers",
+        "Use Gorilla Mux router",
+        "Understand templates",
+        "Build RESTful services",
+        "Use websockets",
+        "Deploy a Go web app"
+      ],
+      [
+        "Understand interfaces",
+        "Use embedding for composition",
+        "Use reflection with reflect package",
+        "Understand empty interface (interface{})",
+        "Write custom error types",
+        "Use generics (Go 1.18+)",
+        "Understand Go modules",
+        "Write custom JSON marshal/unmarshal",
+        "Use build tags",
+        "Understand unsafe package basics"
+      ],
+      [
+        "Profile CPU usage",
+        "Profile memory usage",
+        "Use pprof for profiling",
+        "Use race detector",
+        "Optimize garbage collection",
+        "Tune GOMAXPROCS",
+        "Use inlining effectively",
+        "Write efficient algorithms",
+        "Use sync.Pool for optimization",
+        "Benchmark improvements"
+      ],
+      [
+        "Use logging best practices",
+        "Use configuration files",
+        "Write graceful shutdown logic",
+        "Use environment variables",
+        "Understand deployment patterns",
+        "Use Docker with Go apps",
+        "Write health checks",
+        "Use distributed tracing",
+        "Use metrics and monitoring",
+        "Build a final comprehensive project"
+      ]
+    ];
+
+    const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+      tasksInLevel.map(description => ({
+        id: `${levelIndex}-${description}`,
+        description,
+        level: levelIndex + 1,
+        completed: false
+      }))
+    );
+
+    const savedTasks = JSON.parse(localStorage.getItem('golang_tasks')) || tasks;
+    const savedBooks = JSON.parse(localStorage.getItem('golang_books')) || Array(10).fill(false);
+    const savedPodcasts = JSON.parse(localStorage.getItem('golang_podcasts')) || Array(5).fill(false);
+
+    const levelsContainer = document.getElementById('levelsContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const booksList = document.getElementById('booksList');
+    const podcastsList = document.getElementById('podcastsList');
+
+    function renderLevels() {
+      levelsContainer.innerHTML = '';
+      levels.forEach((levelTitle, i) => {
+        const levelNumber = i + 1;
+        const levelEl = document.createElement('div');
+        levelEl.className = 'bg-gray-700 rounded p-4';
+
+        const header = document.createElement('h2');
+        header.className = 'text-lg font-bold text-green-300 mb-2';
+        header.textContent = levelTitle;
+        levelEl.appendChild(header);
+
+        const ul = document.createElement('ul');
+        ul.className = 'space-y-2';
+
+        savedTasks
+          .filter(task => task.level === levelNumber)
+          .forEach(task => {
+            const li = document.createElement('li');
+            li.className = 'flex items-center bg-gray-600 rounded p-2';
+            li.innerHTML = `
+              <input type="checkbox" class="mr-2 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+              <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+            `;
+            ul.appendChild(li);
+          });
+
+        levelEl.appendChild(ul);
+        levelsContainer.appendChild(levelEl);
+      });
+      updateTaskProgress();
+    }
+
+    function updateTaskProgress() {
+      const completed = savedTasks.filter(task => task.completed).length;
+      const total = savedTasks.length;
+      const percent = Math.floor((completed / total) * 100);
+      progressBar.style.width = `${percent}%`;
+      progressText.textContent = `${completed}/${total} tasks completed (${percent}%)`;
+    }
+
+    document.body.addEventListener('change', e => {
+      if (e.target.matches('.task-checkbox')) {
+        const id = e.target.dataset.id;
+        const task = savedTasks.find(t => t.id === id);
+        if (task) {
+          task.completed = e.target.checked;
+          localStorage.setItem('golang_tasks', JSON.stringify(savedTasks));
+          renderLevels();
+        }
+      }
+      if (e.target.matches('[data-book]')) {
+        const bookId = parseInt(e.target.dataset.book, 10);
+        savedBooks[bookId] = e.target.checked;
+        localStorage.setItem('golang_books', JSON.stringify(savedBooks));
+      }
+      if (e.target.matches('[data-podcast]')) {
+        const podcastId = parseInt(e.target.dataset.podcast, 10);
+        savedPodcasts[podcastId] = e.target.checked;
+        localStorage.setItem('golang_podcasts', JSON.stringify(savedPodcasts));
+      }
+    });
+
+    function renderBooks() {
+      savedBooks.forEach((checked, i) => {
+        const input = booksList.querySelector(`[data-book="${i}"]`);
+        if (input) input.checked = checked;
+      });
+    }
+
+    function renderPodcasts() {
+      savedPodcasts.forEach((checked, i) => {
+        const input = podcastsList.querySelector(`[data-podcast="${i}"]`);
+        if (input) input.checked = checked;
+      });
+    }
+
+    renderLevels();
+    renderBooks();
+    renderPodcasts();
+  </script>
+</body>
+</html>

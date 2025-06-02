@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jenkins Mastery RPG Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .completed {
+      text-decoration: line-through;
+      color: #888;
+    }
+  </style>
+</head>
+<body class="p-6 max-w-7xl mx-auto">
+  <h1 class="text-4xl font-extrabold text-indigo-400 mb-6">🤖 Jenkins Mastery RPG Progress Tracker</h1>
+  <p class="mb-8 text-gray-400">Level up your Jenkins skills by completing tasks, reading must-have books, and listening to top CI/CD podcasts!</p>
+
+  <div class="flex flex-col md:flex-row gap-8">
+    <section class="flex-1 space-y-6" id="levelsContainer"></section>
+
+    <aside class="w-full md:w-96 bg-gray-800 rounded p-6 space-y-8">
+      <div>
+        <h2 class="text-xl font-bold text-indigo-300 mb-3">📚 10 Must-Read Jenkins & CI/CD Books</h2>
+        <ul id="booksList" class="space-y-2">
+          <li><label><input type="checkbox" data-book="0" class="mr-2" />Jenkins 2: Up and Running (O'Reilly, Brent Laster)</label></li>
+          <li><label><input type="checkbox" data-book="1" class="mr-2" />Learning Continuous Integration with Jenkins (Nikhil Pathania)</label></li>
+          <li><label><input type="checkbox" data-book="2" class="mr-2" />Pipeline as Code (O'Reilly, Mohamed Labouardy)</label></li>
+          <li><label><input type="checkbox" data-book="3" class="mr-2" />The DevOps 2.0 Toolkit (Viktor Farcic)</label></li>
+          <li><label><input type="checkbox" data-book="4" class="mr-2" />Continuous Delivery with Jenkins (Packt, Suresh Reddy)</label></li>
+          <li><label><input type="checkbox" data-book="5" class="mr-2" />Mastering Jenkins (Packt, Jonathan McAllister)</label></li>
+          <li><label><input type="checkbox" data-book="6" class="mr-2" />Jenkins 2.x Cookbook (Packt, Mitesh Soni)</label></li>
+          <li><label><input type="checkbox" data-book="7" class="mr-2" />Effective DevOps with Jenkins (Packt, Nazim Dermouche)</label></li>
+          <li><label><input type="checkbox" data-book="8" class="mr-2" />CI/CD with Jenkins (Udemy & community resources)</label></li>
+          <li><label><input type="checkbox" data-book="9" class="mr-2" />Hands-On Jenkins (Packt, Tushar Joshi)</label></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-bold text-indigo-300 mb-3">🎧 5 Popular Jenkins & DevOps Podcasts</h2>
+        <ul id="podcastsList" class="space-y-2">
+          <li><label><input type="checkbox" data-podcast="0" class="mr-2" />Jenkins Podcast</label></li>
+          <li><label><input type="checkbox" data-podcast="1" class="mr-2" />DevOps Cafe</label></li>
+          <li><label><input type="checkbox" data-podcast="2" class="mr-2" />The Ship Show</label></li>
+          <li><label><input type="checkbox" data-podcast="3" class="mr-2" />Continuous Delivery Podcast</label></li>
+          <li><label><input type="checkbox" data-podcast="4" class="mr-2" />The Cloudcast</label></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <div class="mt-8">
+    <p class="text-gray-400 mb-2">Overall Progress:</p>
+    <div class="h-5 bg-gray-700 rounded overflow-hidden">
+      <div id="progressBar" class="h-5 bg-indigo-500 transition-all duration-300"></div>
+    </div>
+    <p id="progressText" class="text-sm text-gray-400 mt-1"></p>
+  </div>
+
+<script>
+  const levels = [
+    "Level 1: Jenkins Setup & Basics",
+    "Level 2: Pipeline Fundamentals",
+    "Level 3: Managing Jenkins Jobs",
+    "Level 4: Plugins & Extensibility",
+    "Level 5: Continuous Integration Practices",
+    "Level 6: Continuous Delivery Pipelines",
+    "Level 7: Security & Access Control",
+    "Level 8: Scaling Jenkins",
+    "Level 9: Jenkins Automation & APIs",
+    "Level 10: Advanced Jenkins Administration"
+  ];
+
+  const levelTasks = [
+    [
+      "Install Jenkins on local machine",
+      "Access Jenkins dashboard",
+      "Create your first freestyle job",
+      "Configure Jenkins system settings",
+      "Set up Jenkins user accounts",
+      "Install essential plugins",
+      "Configure Jenkins executors",
+      "Explore Jenkins UI basics",
+      "Run your first build",
+      "View build logs"
+    ],
+    [
+      "Understand Jenkins Pipeline syntax",
+      "Write a simple declarative pipeline",
+      "Use scripted pipelines",
+      "Add stages to pipelines",
+      "Use environment variables",
+      "Implement parallel steps",
+      "Trigger builds with parameters",
+      "Handle pipeline failures",
+      "Use pipeline library functions",
+      "Visualize pipeline stages"
+    ],
+    [
+      "Create and manage multi-branch pipelines",
+      "Configure SCM triggers",
+      "Set up build triggers (polling/webhooks)",
+      "Manage build artifacts",
+      "Use Jenkins workspace effectively",
+      "Schedule periodic jobs",
+      "Configure post-build actions",
+      "Use Jenkins input steps",
+      "Archive build results",
+      "Clean workspace after build"
+    ],
+    [
+      "Find and install popular plugins",
+      "Configure plugin settings",
+      "Use Git plugin effectively",
+      "Use Docker plugin for builds",
+      "Integrate Slack notifications plugin",
+      "Set up email notifications",
+      "Use credentials plugin securely",
+      "Manage plugin dependencies",
+      "Update and rollback plugins",
+      "Debug plugin issues"
+    ],
+    [
+      "Set up continuous integration pipeline",
+      "Integrate Jenkins with GitHub",
+      "Run automated tests on builds",
+      "Use build matrices",
+      "Fail builds on test failure",
+      "Use Jenkinsfile for pipeline-as-code",
+      "Integrate static code analysis",
+      "Configure quality gates",
+      "Publish test reports",
+      "Use build badges"
+    ],
+    [
+      "Implement continuous delivery pipeline",
+      "Deploy builds to staging environment",
+      "Set up blue/green deployments",
+      "Use Jenkins to deploy to Kubernetes",
+      "Automate rollback on failures",
+      "Manage pipeline approval gates",
+      "Integrate with configuration management",
+      "Use Jenkins for release management",
+      "Track deployment metrics",
+      "Use pipeline visualization tools"
+    ],
+    [
+      "Configure role-based access control",
+      "Enable security realm and authorization",
+      "Set up LDAP or Active Directory",
+      "Manage secrets and credentials",
+      "Use audit logging",
+      "Implement agent security",
+      "Protect sensitive build data",
+      "Set up CSRF protection",
+      "Use plugin for security scanning",
+      "Create secure Jenkins backups"
+    ],
+    [
+      "Set up Jenkins master/slave architecture",
+      "Configure build agents",
+      "Manage distributed builds",
+      "Optimize Jenkins performance",
+      "Monitor Jenkins with metrics",
+      "Configure load balancing",
+      "Scale Jenkins with containers",
+      "Use Kubernetes plugin for dynamic agents",
+      "Troubleshoot scaling issues",
+      "Plan Jenkins backup strategies"
+    ],
+    [
+      "Use Jenkins REST API",
+      "Automate Jenkins job creation",
+      "Integrate Jenkins with ChatOps",
+      "Use Jenkins CLI",
+      "Create custom Jenkins scripts",
+      "Integrate Jenkins with third-party tools",
+      "Create custom plugins",
+      "Monitor Jenkins programmatically",
+      "Set up webhooks for automation",
+      "Schedule automated maintenance"
+    ],
+    [
+      "Upgrade Jenkins safely",
+      "Manage Jenkins configuration as code",
+      "Audit Jenkins usage",
+      "Document Jenkins pipelines",
+      "Train teams on Jenkins best practices",
+      "Handle Jenkins disaster recovery",
+      "Use Jenkins with enterprise tools",
+      "Implement advanced pipeline strategies",
+      "Customize Jenkins UI",
+      "Contribute to Jenkins community"
+    ],
+  ];
+
+  const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+    tasksInLevel.map(desc => ({
+      id: `${levelIndex}-${desc}`,
+      description: desc,
+      level: levelIndex + 1,
+      completed: false
+    }))
+  );
+
+  const savedTasks = JSON.parse(localStorage.getItem('jenkins_tasks')) || tasks;
+  const savedBooks = JSON.parse(localStorage.getItem('jenkins_books')) || Array(10).fill(false);
+  const savedPodcasts = JSON.parse(localStorage.getItem('jenkins_podcasts')) || Array(5).fill(false);
+
+  const levelsContainer = document.getElementById('levelsContainer');
+  const booksList = document.getElementById('booksList');
+  const podcastsList = document.getElementById('podcastsList');
+  const progressBar = document.getElementById('progressBar');
+  const progressText = document.getElementById('progressText');
+
+  function renderLevels() {
+    levelsContainer.innerHTML = '';
+    levels.forEach((levelTitle, i) => {
+      const levelNum = i + 1;
+      const div = document.createElement('section');
+      div.className = 'bg-gray-700 rounded p-4';
+
+      const h2 = document.createElement('h2');
+      h2.className = 'text-lg font-semibold text-indigo-300 mb-3';
+      h2.textContent = levelTitle;
+      div.appendChild(h2);
+
+      const ul = document.createElement('ul');
+      ul.className = 'space-y-2';
+
+      savedTasks
+        .filter(t => t.level === levelNum)
+        .forEach(task => {
+          const li = document.createElement('li');
+          li.className = 'flex items-center bg-gray-600 rounded p-2';
+          li.innerHTML = `
+            <input type="checkbox" class="mr-3 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+            <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+          `;
+          ul.appendChild(li);
+        });
+
+      div.appendChild(ul);
+      levelsContainer.appendChild(div);
+    });
+
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const completedCount = savedTasks.filter(t => t.completed).length;
+    const totalCount = savedTasks.length;
+    const percent = Math.round((completedCount / totalCount) * 100);
+
+    progressBar.style.width = `${percent}%`;
+    progressText.textContent = `${completedCount}/${totalCount} tasks completed (${percent}%)`;
+  }
+
+  document.body.addEventListener('change', e => {
+    if (e.target.matches('.task-checkbox')) {
+      const id = e.target.dataset.id;
+      const task = savedTasks.find(t => t.id === id);
+      if (task) {
+        task.completed = e.target.checked;
+        localStorage.setItem('jenkins_tasks', JSON.stringify(savedTasks));
+        renderLevels();
+      }
+    }
+    if (e.target.matches('[data-book]')) {
+      const idx = parseInt(e.target.dataset.book, 10);
+      savedBooks[idx] = e.target.checked;
+      localStorage.setItem('jenkins_books', JSON.stringify(savedBooks));
+    }
+    if (e.target.matches('[data-podcast]')) {
+      const idx = parseInt(e.target.dataset.podcast, 10);
+      savedPodcasts[idx] = e.target.checked;
+      localStorage.setItem('jenkins_podcasts', JSON.stringify(savedPodcasts));
+    }
+  });
+
+  function renderBooks() {
+    savedBooks.forEach((checked, i) => {
+      const el = booksList.querySelector(`[data-book="${i}"]`);
+      if (el) el.checked = checked;
+    });
+  }
+  function renderPodcasts() {
+    savedPodcasts.forEach((checked, i) => {
+      const el = podcastsList.querySelector(`[data-podcast="${i}"]`);
+      if (el) el.checked = checked;
+    });
+  }
+
+  renderLevels();
+  renderBooks();
+  renderPodcasts();
+</script>
+</body>
+</html>

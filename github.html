@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GitHub Mastery RPG Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .completed {
+      text-decoration: line-through;
+      color: #888;
+    }
+  </style>
+</head>
+<body class="p-6 max-w-7xl mx-auto">
+  <h1 class="text-4xl font-extrabold text-green-400 mb-6">🐙 GitHub Mastery RPG Progress Tracker</h1>
+  <p class="mb-8 text-gray-400">Level up your GitHub skills by completing tasks, reading must-have books, and listening to top podcasts!</p>
+
+  <div class="flex flex-col md:flex-row gap-8">
+    <section class="flex-1 space-y-6" id="levelsContainer"></section>
+
+    <aside class="w-full md:w-96 bg-gray-800 rounded p-6 space-y-8">
+      <div>
+        <h2 class="text-xl font-bold text-green-300 mb-3">📚 10 Must-Read GitHub & Git Books</h2>
+        <ul id="booksList" class="space-y-2">
+          <li><label><input type="checkbox" data-book="0" class="mr-2" />Pro Git (Scott Chacon & Ben Straub)</label></li>
+          <li><label><input type="checkbox" data-book="1" class="mr-2" />Git Pocket Guide (Richard E. Silverman)</label></li>
+          <li><label><input type="checkbox" data-book="2" class="mr-2" />GitHub Essentials (Achilleas Anagnostopoulos)</label></li>
+          <li><label><input type="checkbox" data-book="3" class="mr-2" />Learning GitHub Actions (Michael Heap)</label></li>
+          <li><label><input type="checkbox" data-book="4" class="mr-2" />GitHub For Dummies (Sarah Guthals, Phil Haack)</label></li>
+          <li><label><input type="checkbox" data-book="5" class="mr-2" />Effective Git (Davide E. Schiavon)</label></li>
+          <li><label><input type="checkbox" data-book="6" class="mr-2" />Version Control with Git (Jon Loeliger, Matthew McCullough)</label></li>
+          <li><label><input type="checkbox" data-book="7" class="mr-2" />Mastering GitHub Actions (Michael Heap)</label></li>
+          <li><label><input type="checkbox" data-book="8" class="mr-2" />GitHub Quick Start Guide (Brandon Shell)</label></li>
+          <li><label><input type="checkbox" data-book="9" class="mr-2" />The Art of Git (Jon Loeliger)</label></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-bold text-green-300 mb-3">🎧 5 Popular Git & GitHub Podcasts</h2>
+        <ul id="podcastsList" class="space-y-2">
+          <li><label><input type="checkbox" data-podcast="0" class="mr-2" />Git Minutes</label></li>
+          <li><label><input type="checkbox" data-podcast="1" class="mr-2" />GitHub Universe Podcast</label></li>
+          <li><label><input type="checkbox" data-podcast="2" class="mr-2" />Developer Tea</label></li>
+          <li><label><input type="checkbox" data-podcast="3" class="mr-2" />Changelog Podcast</label></li>
+          <li><label><input type="checkbox" data-podcast="4" class="mr-2" />Command Line Heroes</label></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <div class="mt-8">
+    <p class="text-gray-400 mb-2">Overall Progress:</p>
+    <div class="h-5 bg-gray-700 rounded overflow-hidden">
+      <div id="progressBar" class="h-5 bg-green-500 transition-all duration-300"></div>
+    </div>
+    <p id="progressText" class="text-sm text-gray-400 mt-1"></p>
+  </div>
+
+<script>
+  const levels = [
+    "Level 1: Git & GitHub Basics",
+    "Level 2: Branching & Merging",
+    "Level 3: Collaboration & Pull Requests",
+    "Level 4: Issues & Project Management",
+    "Level 5: GitHub Actions & CI/CD",
+    "Level 6: Security & Best Practices",
+    "Level 7: Advanced Git Techniques",
+    "Level 8: Open Source Contribution",
+    "Level 9: GitHub API & Automation",
+    "Level 10: GitHub Enterprise & Scaling"
+  ];
+
+  const levelTasks = [
+    [
+      "Install Git and configure user info",
+      "Create your first Git repository",
+      "Understand Git commit lifecycle",
+      "Make your first commit",
+      "Push commits to GitHub repository",
+      "Clone a GitHub repository",
+      "Understand GitHub repository interface",
+      "Create a README.md file",
+      "Add and commit README.md",
+      "Explore GitHub issues tab"
+    ],
+    [
+      "Create a new branch",
+      "Switch between branches",
+      "Merge branches locally",
+      "Resolve simple merge conflicts",
+      "Use git log and git status",
+      "Delete a branch",
+      "Understand fast-forward merges",
+      "Use git diff to inspect changes",
+      "Practice rebasing basics",
+      "Understand branching strategies"
+    ],
+    [
+      "Fork a repository on GitHub",
+      "Create a pull request (PR)",
+      "Review a PR",
+      "Comment on a PR",
+      "Merge a PR using GitHub UI",
+      "Use draft pull requests",
+      "Understand PR reviews and approvals",
+      "Link issues to PRs",
+      "Close issues via commit messages",
+      "Understand GitHub code owners"
+    ],
+    [
+      "Create issues with labels",
+      "Assign issues to team members",
+      "Use GitHub Projects (Kanban boards)",
+      "Create milestones",
+      "Use issue templates",
+      "Track progress using Projects",
+      "Close issues with PR merges",
+      "Use GitHub Discussions",
+      "Write good issue descriptions",
+      "Filter issues by labels and milestones"
+    ],
+    [
+      "Understand GitHub Actions basics",
+      "Set up a workflow yaml",
+      "Run tests on push events",
+      "Use marketplace actions",
+      "Deploy to a staging environment",
+      "Add badges to README",
+      "Create scheduled workflows",
+      "Use secrets in workflows",
+      "Use matrix builds",
+      "Debug failing workflows"
+    ],
+    [
+      "Enable branch protection rules",
+      "Use required status checks",
+      "Set up code owners",
+      "Enable two-factor authentication",
+      "Scan code for vulnerabilities",
+      "Understand Dependabot alerts",
+      "Use secret scanning",
+      "Review security advisories",
+      "Create signed commits",
+      "Audit repository collaborators"
+    ],
+    [
+      "Cherry-pick commits",
+      "Use git stash",
+      "Perform interactive rebasing",
+      "Use git bisect to find bugs",
+      "Amend commits",
+      "Undo commits safely",
+      "Rewrite commit messages",
+      "Use reflog to recover commits",
+      "Use git hooks",
+      "Understand subtree merges"
+    ],
+    [
+      "Find beginner-friendly issues",
+      "Fork and clone open source projects",
+      "Submit your first PR to open source",
+      "Engage with maintainers",
+      "Follow contributing guidelines",
+      "Participate in issue discussions",
+      "Write tests for open source projects",
+      "Handle PR feedback",
+      "Review other PRs",
+      "Attend open source events"
+    ],
+    [
+      "Use GitHub API v4 (GraphQL)",
+      "Automate issue creation",
+      "Create GitHub bots",
+      "Write GitHub CLI scripts",
+      "Integrate GitHub with Slack",
+      "Use GitHub webhooks",
+      "Analyze repo statistics",
+      "Automate release notes",
+      "Create GitHub apps",
+      "Schedule automated maintenance tasks"
+    ],
+    [
+      "Use GitHub Enterprise features",
+      "Set up self-hosted runners",
+      "Manage large organizations",
+      "Enforce enterprise security policies",
+      "Scale GitHub Actions runners",
+      "Integrate GitHub with SSO",
+      "Automate enterprise workflows",
+      "Use audit logs",
+      "Manage billing and plans",
+      "Train teams on GitHub best practices"
+    ],
+  ];
+
+  // Flatten tasks with unique IDs & level
+  const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+    tasksInLevel.map(desc => ({
+      id: `${levelIndex}-${desc}`,
+      description: desc,
+      level: levelIndex + 1,
+      completed: false
+    }))
+  );
+
+  // Load saved state or initialize
+  const savedTasks = JSON.parse(localStorage.getItem('github_tasks')) || tasks;
+  const savedBooks = JSON.parse(localStorage.getItem('github_books')) || Array(10).fill(false);
+  const savedPodcasts = JSON.parse(localStorage.getItem('github_podcasts')) || Array(5).fill(false);
+
+  const levelsContainer = document.getElementById('levelsContainer');
+  const booksList = document.getElementById('booksList');
+  const podcastsList = document.getElementById('podcastsList');
+  const progressBar = document.getElementById('progressBar');
+  const progressText = document.getElementById('progressText');
+
+  function renderLevels() {
+    levelsContainer.innerHTML = '';
+    levels.forEach((levelTitle, i) => {
+      const levelNum = i + 1;
+      const div = document.createElement('section');
+      div.className = 'bg-gray-700 rounded p-4';
+
+      const h2 = document.createElement('h2');
+      h2.className = 'text-lg font-semibold text-green-300 mb-3';
+      h2.textContent = levelTitle;
+      div.appendChild(h2);
+
+      const ul = document.createElement('ul');
+      ul.className = 'space-y-2';
+
+      savedTasks
+        .filter(t => t.level === levelNum)
+        .forEach(task => {
+          const li = document.createElement('li');
+          li.className = 'flex items-center bg-gray-600 rounded p-2';
+          li.innerHTML = `
+            <input type="checkbox" class="mr-3 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+            <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+          `;
+          ul.appendChild(li);
+        });
+
+      div.appendChild(ul);
+      levelsContainer.appendChild(div);
+    });
+
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const completedCount = savedTasks.filter(t => t.completed).length;
+    const totalCount = savedTasks.length;
+    const percent = Math.round((completedCount / totalCount) * 100);
+
+    progressBar.style.width = `${percent}%`;
+    progressText.textContent = `${completedCount}/${totalCount} tasks completed (${percent}%)`;
+  }
+
+  document.body.addEventListener('change', e => {
+    if (e.target.matches('.task-checkbox')) {
+      const id = e.target.dataset.id;
+      const task = savedTasks.find(t => t.id === id);
+      if (task) {
+        task.completed = e.target.checked;
+        localStorage.setItem('github_tasks', JSON.stringify(savedTasks));
+        renderLevels();
+      }
+    }
+    if (e.target.matches('[data-book]')) {
+      const idx = parseInt(e.target.dataset.book, 10);
+      savedBooks[idx] = e.target.checked;
+      localStorage.setItem('github_books', JSON.stringify(savedBooks));
+    }
+    if (e.target.matches('[data-podcast]')) {
+      const idx = parseInt(e.target.dataset.podcast, 10);
+      savedPodcasts[idx] = e.target.checked;
+      localStorage.setItem('github_podcasts', JSON.stringify(savedPodcasts));
+    }
+  });
+
+  function renderBooks() {
+    savedBooks.forEach((checked, i) => {
+      const el = booksList.querySelector(`[data-book="${i}"]`);
+      if (el) el.checked = checked;
+    });
+  }
+  function renderPodcasts() {
+    savedPodcasts.forEach((checked, i) => {
+      const el = podcastsList.querySelector(`[data-podcast="${i}"]`);
+      if (el) el.checked = checked;
+    });
+  }
+
+  renderLevels();
+  renderBooks();
+  renderPodcasts();
+</script>
+</body>
+</html>
