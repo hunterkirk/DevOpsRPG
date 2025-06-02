@@ -1,89 +1,69 @@
 <!DOCTYPE html>
 <html lang="en" class="bg-gray-900 text-white">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DevOps Wizardry RPG</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    .task-item.completed {
-      text-decoration: line-through;
-      color: #22c55e;
-    }
-  </style>
 </head>
 <body class="p-8">
 
-  <div class="max-w-2xl mx-auto bg-gray-800 rounded-2xl shadow-lg p-6">
-    <h1 class="text-3xl font-bold mb-4 text-yellow-300">🧙‍♂️ DevOps Wizardry RPG</h1>
-    <p class="mb-4 text-gray-300">Complete these challenges and become a DevOps wizard!</p>
+  <div class="flex max-w-full h-screen bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+    <!-- Sidebar links -->
+    <div class="w-64 p-6 bg-gray-700 overflow-y-auto">
+      <h1 class="text-2xl font-bold mb-4 text-yellow-300">🧙‍♂️ DevOps RPG</h1>
+      <p class="mb-4 text-gray-300">Choose a challenge:</p>
+      <div class="space-y-2">
+        <a href="linux.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Linux</a>
+        <a href="bash.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Bash</a>
+        <a href="lua.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Lua</a>
+        <a href="yaml.html" target="rpg-frame" class="block text-yellow-400 hover:underline">YAML</a>
+        <a href="json.html" target="rpg-frame" class="block text-yellow-400 hover:underline">JSON</a>
+        <a href="python.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Python</a>
+        <a href="golang.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Go Lang</a>
+        <a href="rust.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Rust</a>
+        <a href="node.html" target="rpg-frame" class="block text-yellow-400 hover:underline">NodeJS</a>
+        <a href="ruby.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Ruby</a>
+        <a href="rails.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Rails</a>
+        <a href="nginx.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Nginx</a>
+        <a href="terraform.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Terraform</a>
+        <a href="docker.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Docker</a>
+        <a href="kubernetes.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Kubernetes</a>
+        <a href="grafana.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Grafana</a>
+        <a href="prometheus.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Prometheus</a>
+        <a href="jenkins.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Jenkins</a>
+        <a href="groovy.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Groovy</a>
+        <a href="devops.html" target="rpg-frame" class="block text-yellow-400 hover:underline">DevOps</a>
+        <a href="ollama.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Ollama</a>
+        <a href="github.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Github</a>
+        <a href="bitbucket.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Bitbucket</a>
+        <a href="jira.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Jira</a>
+        <a href="gitlab.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Gitlab</a>
+        <a href="sqlite3.html" target="rpg-frame" class="block text-yellow-400 hover:underline">SQLite3</a>
+        <a href="postgresql.html" target="rpg-frame" class="block text-yellow-400 hover:underline">PostgreSQL</a>
+        <a href="mysql.html" target="rpg-frame" class="block text-yellow-400 hover:underline">MySQL</a>
+        <a href="redis.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Redis</a>
+      </div>
 
-    <a href="linux.html">* Linux</a>
-    <br>
+      <!-- AWS section -->
+      <h2 class="mt-6 mb-2 font-bold text-yellow-300">AWS Challenges:</h2>
+      <div class="space-y-2">
+        <a href="aws-lambda.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Lambda</a>
+        <a href="aws-eks.html" target="rpg-frame" class="block text-yellow-400 hover:underline">EKS</a>
+        <a href="aws-ecs.html" target="rpg-frame" class="block text-yellow-400 hover:underline">ECS</a>
+        <a href="aws-iam.html" target="rpg-frame" class="block text-yellow-400 hover:underline">IAM</a>
+        <a href="aws-cloudwatch.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Cloudwatch</a>
+        <a href="aws-dynamodb.html" target="rpg-frame" class="block text-yellow-400 hover:underline">DynamoDB</a>
+        <a href="aws-cloudformation.html" target="rpg-frame" class="block text-yellow-400 hover:underline">CloudFormation</a>
+        <a href="aws-bedrock.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Bedrock</a>
+        <a href="aws-q-developer.html" target="rpg-frame" class="block text-yellow-400 hover:underline">Q Developer</a>
+      </div>
+    </div>
 
-    <a href="bash.html">* Bash</a>
-    <br>
-    <a href="lua.html">* Lua</a>
-    <br>
-    <a href="yaml.html">* yaml</a>
-    <br>
-    <a href="json.html">* json</a>
-    <br>
-    <a href="python.html">* Python</a>
-      <br>
-      <a href="golang.html">* Go Lang</a>
-      <br>
-      <a href="rust.html">* Rust</a>
-      <br>
-      <a href="node.html">* NodeJS</a>
-      <br>
-      <a href="ruby.html">* Ruby</a>
-      <br>
-      <a href="rails.html">* Rails</a>
-      <br>
-      <a href="nginx.html">* nginx</a>
-      <br>
-      <a href="terraform.html">* Terraform</a>
-      <br>      
-      <a href="docker.html">* Docker</a>
-      <br>
-      <a href="Kubernetes.html">* Kubernetes</a>
-      <br>
-      <a href="grafana.html">* Grafana</a>
-      <br>
-      <a href="prometheus.html">* Prometheus</a>
-      <br>
-      <a href="jenkins.html">* Jenkins</a>
-      <br>
-      <a href="groovy.html">* Groovy</a>
-      <br>
-      <a href="devops.html">* DevOps</a>
-      <br>
-      <a href="ollama.html">* Ollama</a>
-      <br>
-      <a href="github.html">* Github</a>
-      <br>
-      <a href="bitbucket.html">* Bitbucket</a>
-      <br>
-      <a href="jira.html">* Jira</a>
-      <br>
-      <a href="gitlab.html">* Git Lab</a>
-      <br>
-      <a href="sqlite3.html">* SQLite3</a><br>
-      <a href="postgresql.html">* PostgreSQL</a><br>
-      <a href="mysql.html">* MySQL</a><br>
-      <a href="redis.html">* Redis</a><br>
-      <br>
-      AWS :<br>
-        <a href="aws-lambda.html">* Lambda</a><br>
-        <a href="aws-eks.html">* EKS</a><br>
-        <a href="aws-ecs.html">* ECS</a><br>
-        <a href="aws-iam.html">* IAM</a><br>
-        <a href="aws-cloudwatch.html">* Cloudwatch</a><br>
-        <a href="aws-dynamodb.html">* DynamoDB</a><br>
-        <a href="aws-cloudformation.html">* Cloudformation</a><br>
-        <a href="aws-bedrock.html">* Bedrock</a><br>
-        <a href="aws-q-developer.html">* Q Developer</a><br>
+    <!-- Iframe area -->
+    <div class="flex-1">
+      <iframe name="rpg-frame" class="w-full h-full border-l border-gray-600" src="about:blank"></iframe>
+    </div>
   </div>
 
 </body>
