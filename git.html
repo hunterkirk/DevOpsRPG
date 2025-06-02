@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-white">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Git Mastery RPG</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .task-item.completed {
+      text-decoration: line-through;
+      color: #22c55e;
+    }
+  </style>
+</head>
+<body class="p-8">
+
+  <div class="max-w-3xl mx-auto bg-gray-800 rounded-2xl shadow-lg p-6">
+    <h1 class="text-3xl font-bold mb-4 text-yellow-300">🐙 Git Mastery RPG</h1>
+    <p class="mb-4 text-gray-300">Conquer these challenges to become a Git wizard! 🧙‍♂️</p>
+
+    <!-- Tasks grouped by level -->
+    <div id="tasks"></div>
+
+    <!-- Book and Podcast sections -->
+    <div class="mt-8">
+      <h2 class="text-2xl font-bold text-yellow-300 mb-2">📚 Must-Read Git Books</h2>
+      <ul class="list-disc pl-5 text-gray-300">
+        <li>Pro Git - Scott Chacon & Ben Straub</li>
+        <li>Git Pocket Guide - Richard E. Silverman</li>
+        <li>Version Control with Git - Jon Loeliger</li>
+        <li>Git in Practice - Mike McQuaid</li>
+        <li>Mastering Git - Jakub Narebski</li>
+        <li>Learning Git - Anna Skoulikari</li>
+        <li>Git Essentials - Ferdinando Santacroce</li>
+        <li>Pragmatic Version Control Using Git - Travis Swicegood</li>
+        <li>Git for Teams - Emma Jane Hogbin Westby</li>
+        <li>Git Magic - Ben Lynn</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold text-yellow-300 mt-6 mb-2">🎧 Popular Git Podcasts</h2>
+      <ul class="list-disc pl-5 text-gray-300">
+        <li>The Git Minute</li>
+        <li>The Changelog</li>
+        <li>GitHub ReadMe Podcast</li>
+        <li>Git Tea Time</li>
+        <li>DevDiscuss</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    const levels = [
+      {
+        level: 1,
+        tasks: [
+          "Install Git and configure global username and email",
+          "Initialize a new Git repository",
+          "Create your first commit",
+          "Check repository status with git status",
+          "View commit history with git log",
+          "Create a .gitignore file",
+          "Clone a remote repository",
+          "Understand staging area with git add",
+          "Understand the difference between working directory and index",
+          "View differences with git diff"
+        ]
+      },
+      {
+        level: 2,
+        tasks: [
+          "Learn about branches: create a new branch",
+          "Switch between branches",
+          "Merge branches using git merge",
+          "Resolve simple merge conflicts",
+          "Delete branches after merging",
+          "Understand HEAD in Git",
+          "Use git stash to save work in progress",
+          "Apply stashed changes",
+          "Use git reflog to see history",
+          "Revert a commit with git revert"
+        ]
+      },
+      {
+        level: 3,
+        tasks: [
+          "Use git reset to undo changes",
+          "Understand soft, mixed, and hard reset",
+          "Cherry-pick a commit",
+          "Use git tag to create tags",
+          "Push tags to remote",
+          "View remote repositories with git remote -v",
+          "Fetch changes from remote with git fetch",
+          "Pull changes with git pull",
+          "Push local commits with git push",
+          "Set upstream branches"
+        ]
+      },
+      {
+        level: 4,
+        tasks: [
+          "Use rebase to tidy up history",
+          "Interactive rebase with git rebase -i",
+          "Understand fast-forward vs no-ff merges",
+          "Use git bisect to find bugs",
+          "Use git blame to find who changed a line",
+          "Create and apply patches",
+          "Use git grep to search repo",
+          "Use git archive to create tar archives",
+          "Clean untracked files with git clean",
+          "Learn about hooks in .git/hooks"
+        ]
+      },
+      {
+        level: 5,
+        tasks: [
+          "Set up SSH keys for Git",
+          "Use git config to set aliases",
+          "Understand submodules and add one",
+          "Update submodules",
+          "Use git submodule status",
+          "Understand Git workflow models (Git Flow, GitHub Flow)",
+          "Use git log with pretty formats",
+          "Use git show to see details of commits",
+          "Learn about git shortlog",
+          "Use git describe for tagging"
+        ]
+      },
+      {
+        level: 6,
+        tasks: [
+          "Configure global .gitconfig for advanced settings",
+          "Use git worktree for multiple working trees",
+          "Use git notes to annotate commits",
+          "Learn about reflog expire and cleanup",
+          "Use git fsck to check repo health",
+          "Use git gc to clean up the repo",
+          "Understand shallow clone",
+          "Create custom Git aliases",
+          "Set up git hooks for pre-commit",
+          "Learn about git bundle for sharing repos"
+        ]
+      },
+      {
+        level: 7,
+        tasks: [
+          "Contribute to an open source repo using Git",
+          "Understand pull requests vs. git format-patch",
+          "Use git request-pull",
+          "Understand signing commits with GPG",
+          "Use git filter-branch to rewrite history",
+          "Understand and use git rerere",
+          "Use git instaweb to browse history",
+          "Learn about git daemon for serving repos",
+          "Understand git attributes",
+          "Use git diff --staged"
+        ]
+      },
+      {
+        level: 8,
+        tasks: [
+          "Understand git replace for temporary replacements",
+          "Use git submodule deinit",
+          "Learn about git lfs for large files",
+          "Use git verify-commit for signed commits",
+          "Understand git credential helpers",
+          "Use git apply to apply patches",
+          "Learn about git whatchanged",
+          "Understand git am for applying patches from mail",
+          "Use git revert -n for batch reverts",
+          "Use git merge --squash"
+        ]
+      },
+      {
+        level: 9,
+        tasks: [
+          "Understand rebase vs merge conflicts",
+          "Use git diff --color-words for readability",
+          "Learn about git difftool for external diffs",
+          "Use git mergetool for conflict resolution",
+          "Understand and configure git rerere",
+          "Learn about git notes merge",
+          "Understand git cherry",
+          "Use git patch-id for patch identity",
+          "Use git archive --format=zip",
+          "Use git rev-parse to get revision hashes"
+        ]
+      },
+      {
+        level: 10,
+        tasks: [
+          "Learn advanced .gitattributes usage",
+          "Use git interpret-trailers for commit trailers",
+          "Understand advanced rebasing workflows",
+          "Use git worktree for multiple branches",
+          "Master interactive rebase rewriting history",
+          "Use git replace to fix bad commits",
+          "Understand git plumbing vs porcelain",
+          "Master advanced stashing workflows",
+          "Experiment with git rerere for merge conflicts",
+          "Review your Git wizardry skills! 🎉"
+        ]
+      }
+    ];
+
+    // Generate tasks
+    const tasksContainer = document.getElementById("tasks");
+    levels.forEach(level => {
+      const levelHeader = document.createElement("h2");
+      levelHeader.className = "text-xl font-bold text-yellow-300 mt-4 mb-2";
+      levelHeader.textContent = `Level ${level.level}`;
+      tasksContainer.appendChild(levelHeader);
+
+      const ul = document.createElement("ul");
+      ul.className = "list-disc pl-5 mb-4";
+      level.tasks.forEach((task, index) => {
+        const li = document.createElement("li");
+        li.textContent = task;
+        li.className = "task-item cursor-pointer text-gray-300 hover:text-white";
+        li.dataset.key = `level-${level.level}-task-${index}`;
+        li.onclick = () => {
+          li.classList.toggle("completed");
+          const key = li.dataset.key;
+          localStorage.setItem(key, li.classList.contains("completed"));
+        };
+
+        // Load from localStorage
+        const completed = localStorage.getItem(li.dataset.key) === "true";
+        if (completed) li.classList.add("completed");
+
+        ul.appendChild(li);
+      });
+      tasksContainer.appendChild(ul);
+    });
+  </script>
+
+</body>
+</html>

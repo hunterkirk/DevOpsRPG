@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-white">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Istio Mastery RPG</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .task-item.completed {
+      text-decoration: line-through;
+      color: #22c55e;
+    }
+  </style>
+</head>
+<body class="p-8">
+
+  <div class="max-w-3xl mx-auto bg-gray-800 rounded-2xl shadow-lg p-6">
+    <h1 class="text-3xl font-bold mb-4 text-cyan-400">🌊 Istio Mastery RPG</h1>
+    <p class="mb-4 text-gray-300">Complete these challenges and master Istio service mesh wizardry!</p>
+
+    <div id="tasks"></div>
+
+    <div class="mt-8">
+      <h2 class="text-2xl font-bold text-cyan-400 mb-2">📚 Must-Read Istio Books</h2>
+      <ul class="list-disc pl-5 text-gray-300">
+        <li>Istio: Up and Running - Lee Calcote & Zack Butcher</li>
+        <li>Learning Istio - Rahul Sharma</li>
+        <li>Service Mesh for Mere Mortals - Christian Posta</li>
+        <li>Cloud Native DevOps with Kubernetes - Justin Garrison & Kris Nova (Istio sections)</li>
+        <li>Mastering Service Mesh - Ankit Sharma</li>
+        <li>Hands-On Service Mesh with Istio - Subhrajit Roy</li>
+        <li>Kubernetes Patterns - Bilgin Ibryam & Roland Huß (mesh patterns)</li>
+        <li>Microservices Patterns - Chris Richardson (related service mesh concepts)</li>
+        <li>Istio Security - Chris Bailey (O'Reilly)</li>
+        <li>Istio Cookbook - Packt Publishing</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold text-cyan-400 mt-6 mb-2">🎧 Popular Istio & Service Mesh Podcasts</h2>
+      <ul class="list-disc pl-5 text-gray-300">
+        <li>Service Mesh Weekly</li>
+        <li>Kubernetes Podcast from Google</li>
+        <li>The InfoQ Podcast</li>
+        <li>Software Engineering Daily</li>
+        <li>The New Stack Podcast</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    const levels = [
+      {
+        level: 1,
+        tasks: [
+          "Install Istio CLI (istioctl)",
+          "Install Istio on a Kubernetes cluster",
+          "Verify Istio installation with istioctl verify-install",
+          "Deploy a sample application (Bookinfo)",
+          "Understand Istio architecture components",
+          "Configure automatic sidecar injection",
+          "Check sidecar proxies are running",
+          "Access Istio dashboard with Kiali",
+          "Use Istio’s default Gateway to expose apps",
+          "Use kubectl to inspect Istio custom resources"
+        ]
+      },
+      {
+        level: 2,
+        tasks: [
+          "Understand and configure DestinationRules",
+          "Create and use VirtualServices for routing",
+          "Use HTTP routing rules (path, headers)",
+          "Implement traffic shifting between versions",
+          "Configure retries and timeouts for services",
+          "Implement fault injection (abort, delay)",
+          "Use mirroring to test new versions",
+          "Understand sidecar proxy Envoy filters",
+          "View metrics with Prometheus integration",
+          "Explore logs with Fluentd and ELK stack"
+        ]
+      },
+      {
+        level: 3,
+        tasks: [
+          "Configure mutual TLS between services",
+          "Understand and use AuthorizationPolicies",
+          "Apply PeerAuthentication for security",
+          "Set up JWT validation with RequestAuthentication",
+          "Enable auditing of Istio traffic",
+          "Use Istio’s telemetry to monitor traffic",
+          "Create custom metrics with Mixer (if applicable)",
+          "Understand Istio’s policy and telemetry model",
+          "Use Grafana dashboards for Istio metrics",
+          "Explore tracing with Jaeger integration"
+        ]
+      },
+      {
+        level: 4,
+        tasks: [
+          "Configure egress traffic rules",
+          "Control ingress traffic with Gateways and VirtualServices",
+          "Use TLS origination and termination at Gateways",
+          "Manage multiple gateways for multi-tenant clusters",
+          "Understand and configure ServiceEntries",
+          "Implement circuit breaking with OutlierDetection",
+          "Use EnvoyFilters to customize proxy behavior",
+          "Implement traffic shadowing",
+          "Understand Istio’s sidecar proxy lifecycle",
+          "Debug Istio proxy with istioctl proxy-status"
+        ]
+      },
+      {
+        level: 5,
+        tasks: [
+          "Use Helm or Operator for Istio installation",
+          "Configure Resource Quotas for Istio components",
+          "Understand control plane scaling best practices",
+          "Manage Istio upgrades with zero downtime",
+          "Enable and configure Istio’s Pilot",
+          "Set up multi-cluster Istio service mesh",
+          "Use Istio with service mesh federation",
+          "Monitor Istio control plane health",
+          "Set up Prometheus alerting for Istio metrics",
+          "Implement network policies alongside Istio"
+        ]
+      },
+      {
+        level: 6,
+        tasks: [
+          "Use Istio with EnvoyFilter extensions",
+          "Implement custom Envoy WASM filters",
+          "Use Istio’s Mixer-less telemetry with Telemetry API",
+          "Customize Istio dashboards with Grafana",
+          "Build custom adapters if still applicable",
+          "Use Istio with service mesh gateways for external APIs",
+          "Configure rate limiting with Istio",
+          "Manage request headers and transformations",
+          "Understand Istio RBAC and integrate with Kubernetes RBAC",
+          "Implement Istio multi-tenancy"
+        ]
+      },
+      {
+        level: 7,
+        tasks: [
+          "Use Istio with external authentication services",
+          "Configure OPA Gatekeeper with Istio",
+          "Implement secure ingress with JWT and OAuth2",
+          "Understand Istio’s interaction with service discovery",
+          "Manage DNS and ServiceEntries for external services",
+          "Implement fine-grained telemetry",
+          "Set up Istio with virtual machines (VMs)",
+          "Integrate Istio with API gateways",
+          "Understand Istio’s sidecar auto-injection templates",
+          "Perform Istio configuration validation"
+        ]
+      },
+      {
+        level: 8,
+        tasks: [
+          "Debug Istio networking issues with tcpdump",
+          "Profile Istio proxy performance",
+          "Use distributed tracing effectively",
+          "Create advanced traffic routing scenarios",
+          "Test fault injection in production safely",
+          "Handle cross-cluster Istio deployments",
+          "Implement custom service mesh policies",
+          "Use Istio with gRPC services",
+          "Understand Envoy proxy advanced config",
+          "Participate in Istio community and contribute"
+        ]
+      },
+      {
+        level: 9,
+        tasks: [
+          "Use Istio’s experimental features",
+          "Customize sidecar injection with templates",
+          "Manage service mesh at scale",
+          "Automate Istio configurations via GitOps",
+          "Integrate Istio with CI/CD pipelines",
+          "Secure Istio control plane communication",
+          "Manage secrets in Istio with Kubernetes Secrets and Vault",
+          "Use Envoy proxy tracing with OpenTelemetry",
+          "Analyze Istio service mesh cost implications",
+          "Design resilient microservices architecture with Istio"
+        ]
+      },
+      {
+        level: 10,
+        tasks: [
+          "Master Istio service mesh security architecture",
+          "Design multi-cluster, multi-mesh topologies",
+          "Implement zero-trust networking with Istio",
+          "Optimize Istio performance and resource usage",
+          "Create custom Istio extensions",
+          "Develop Istio operators and controllers",
+          "Contribute to Istio open source",
+          "Host Istio workshops and trainings",
+          "Maintain large-scale Istio deployments",
+          "Celebrate your Istio mastery! 🎉"
+        ]
+      }
+    ];
+
+    const tasksContainer = document.getElementById("tasks");
+    levels.forEach(level => {
+      const levelHeader = document.createElement("h2");
+      levelHeader.className = "text-xl font-bold text-cyan-400 mt-4 mb-2";
+      levelHeader.textContent = `Level ${level.level}`;
+      tasksContainer.appendChild(levelHeader);
+
+      const ul = document.createElement("ul");
+      ul.className = "list-disc pl-5 mb-4";
+      level.tasks.forEach((task, idx) => {
+        const li = document.createElement("li");
+        li.textContent = task;
+        li.className = "task-item cursor-pointer text-gray-300 hover:text-white";
+        li.dataset.key = `istio-level-${level.level}-task-${idx}`;
+        li.onclick = () => {
+          li.classList.toggle("completed");
+          localStorage.setItem(li.dataset.key, li.classList.contains("completed"));
+        };
+        if(localStorage.getItem(li.dataset.key) === "true") li.classList.add("completed");
+        ul.appendChild(li);
+      });
+      tasksContainer.appendChild(ul);
+    });
+  </script>
+
+</body>
+</html>
