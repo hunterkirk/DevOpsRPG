@@ -1,1 +1,1 @@
-<a href="https://hunterkirk.github.io/devops-rpg/">DevOpsRPG</a>
+<a href="https://hunterkirk.github.io/DevOpsRPG/">DevOpsRPG</a>
