@@ -1,237 +1,301 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-gray-900 text-white">
+<html lang="en" class="bg-gray-900 text-gray-100">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Git Mastery RPG</title>
+  <title>Git RPG Progress Tracker</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .task-item.completed {
+    .completed {
       text-decoration: line-through;
-      color: #22c55e;
+      color: #aaa;
     }
   </style>
 </head>
-<body class="p-8">
+<body class="p-4">
+  <h1 class="text-3xl font-bold text-yellow-400 mb-4">🐙 Git Mastery - RPG Progress Tracker</h1>
+  <p class="mb-4 text-sm text-gray-400">Complete all 100 tasks across 10 levels to become a Git Master! Track your progress, books, and podcasts.</p>
 
-  <div class="max-w-3xl mx-auto bg-gray-800 rounded-2xl shadow-lg p-6">
-    <h1 class="text-3xl font-bold mb-4 text-yellow-300">🐙 Git Mastery RPG</h1>
-    <p class="mb-4 text-gray-300">Conquer these challenges to become a Git wizard! 🧙‍♂️</p>
+  <div class="flex flex-col md:flex-row gap-4">
+    <!-- Tasks Section -->
+    <div class="flex-1 space-y-4" id="levelsContainer"></div>
 
-    <!-- Tasks grouped by level -->
-    <div id="tasks"></div>
+    <!-- Books & Podcasts Section -->
+    <div class="w-full md:w-1/3 bg-gray-800 rounded p-4 space-y-6">
+      <div>
+        <h2 class="text-lg font-bold text-yellow-300 mb-2">📚 10 Must-Read Git & Version Control Books</h2>
+        <ul id="booksList" class="space-y-2">
+          <li><label><input type="checkbox" data-book="0" class="mr-2" />Pro Git (Scott Chacon & Ben Straub)</label></li>
+          <li><label><input type="checkbox" data-book="1" class="mr-2" />Git Pocket Guide (Richard E. Silverman)</label></li>
+          <li><label><input type="checkbox" data-book="2" class="mr-2" />Version Control with Git (Jon Loeliger)</label></li>
+          <li><label><input type="checkbox" data-book="3" class="mr-2" />Git in Practice (Mike McQuaid)</label></li>
+          <li><label><input type="checkbox" data-book="4" class="mr-2" />Git Essentials</label></li>
+          <li><label><input type="checkbox" data-book="5" class="mr-2" />Learning Git and GitHub</label></li>
+          <li><label><input type="checkbox" data-book="6" class="mr-2" />Mastering Git</label></li>
+          <li><label><input type="checkbox" data-book="7" class="mr-2" />Git for Teams</label></li>
+          <li><label><input type="checkbox" data-book="8" class="mr-2" />Pragmatic Version Control Using Git</label></li>
+          <li><label><input type="checkbox" data-book="9" class="mr-2" />Git Magic</label></li>
+        </ul>
+      </div>
 
-    <!-- Book and Podcast sections -->
-    <div class="mt-8">
-      <h2 class="text-2xl font-bold text-yellow-300 mb-2">📚 Must-Read Git Books</h2>
-      <ul class="list-disc pl-5 text-gray-300">
-        <li>Pro Git - Scott Chacon & Ben Straub</li>
-        <li>Git Pocket Guide - Richard E. Silverman</li>
-        <li>Version Control with Git - Jon Loeliger</li>
-        <li>Git in Practice - Mike McQuaid</li>
-        <li>Mastering Git - Jakub Narebski</li>
-        <li>Learning Git - Anna Skoulikari</li>
-        <li>Git Essentials - Ferdinando Santacroce</li>
-        <li>Pragmatic Version Control Using Git - Travis Swicegood</li>
-        <li>Git for Teams - Emma Jane Hogbin Westby</li>
-        <li>Git Magic - Ben Lynn</li>
-      </ul>
-
-      <h2 class="text-2xl font-bold text-yellow-300 mt-6 mb-2">🎧 Popular Git Podcasts</h2>
-      <ul class="list-disc pl-5 text-gray-300">
-        <li>The Git Minute</li>
-        <li>The Changelog</li>
-        <li>GitHub ReadMe Podcast</li>
-        <li>Git Tea Time</li>
-        <li>DevDiscuss</li>
-      </ul>
+      <div>
+        <h2 class="text-lg font-bold text-yellow-300 mb-2">🎧 5 Popular Git & DevOps Podcasts</h2>
+        <ul id="podcastsList" class="space-y-2">
+          <li><label><input type="checkbox" data-podcast="0" class="mr-2" />Git Minutes</label></li>
+          <li><label><input type="checkbox" data-podcast="1" class="mr-2" />The GitHub Podcast</label></li>
+          <li><label><input type="checkbox" data-podcast="2" class="mr-2" />DevOps Cafe</label></li>
+          <li><label><input type="checkbox" data-podcast="3" class="mr-2" />Command Line Heroes</label></li>
+          <li><label><input type="checkbox" data-podcast="4" class="mr-2" />Software Engineering Daily</label></li>
+        </ul>
+      </div>
     </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="mt-4">
+    <p class="text-sm text-gray-400 mb-1">Overall Progress:</p>
+    <div class="h-4 bg-gray-700 rounded overflow-hidden">
+      <div id="progressBar" class="h-4 bg-yellow-400 transition-all duration-300"></div>
+    </div>
+    <p id="progressText" class="text-xs text-gray-400 mt-1"></p>
   </div>
 
   <script>
     const levels = [
-      {
-        level: 1,
-        tasks: [
-          "Install Git and configure global username and email",
-          "Initialize a new Git repository",
-          "Create your first commit",
-          "Check repository status with git status",
-          "View commit history with git log",
-          "Create a .gitignore file",
-          "Clone a remote repository",
-          "Understand staging area with git add",
-          "Understand the difference between working directory and index",
-          "View differences with git diff"
-        ]
-      },
-      {
-        level: 2,
-        tasks: [
-          "Learn about branches: create a new branch",
-          "Switch between branches",
-          "Merge branches using git merge",
-          "Resolve simple merge conflicts",
-          "Delete branches after merging",
-          "Understand HEAD in Git",
-          "Use git stash to save work in progress",
-          "Apply stashed changes",
-          "Use git reflog to see history",
-          "Revert a commit with git revert"
-        ]
-      },
-      {
-        level: 3,
-        tasks: [
-          "Use git reset to undo changes",
-          "Understand soft, mixed, and hard reset",
-          "Cherry-pick a commit",
-          "Use git tag to create tags",
-          "Push tags to remote",
-          "View remote repositories with git remote -v",
-          "Fetch changes from remote with git fetch",
-          "Pull changes with git pull",
-          "Push local commits with git push",
-          "Set upstream branches"
-        ]
-      },
-      {
-        level: 4,
-        tasks: [
-          "Use rebase to tidy up history",
-          "Interactive rebase with git rebase -i",
-          "Understand fast-forward vs no-ff merges",
-          "Use git bisect to find bugs",
-          "Use git blame to find who changed a line",
-          "Create and apply patches",
-          "Use git grep to search repo",
-          "Use git archive to create tar archives",
-          "Clean untracked files with git clean",
-          "Learn about hooks in .git/hooks"
-        ]
-      },
-      {
-        level: 5,
-        tasks: [
-          "Set up SSH keys for Git",
-          "Use git config to set aliases",
-          "Understand submodules and add one",
-          "Update submodules",
-          "Use git submodule status",
-          "Understand Git workflow models (Git Flow, GitHub Flow)",
-          "Use git log with pretty formats",
-          "Use git show to see details of commits",
-          "Learn about git shortlog",
-          "Use git describe for tagging"
-        ]
-      },
-      {
-        level: 6,
-        tasks: [
-          "Configure global .gitconfig for advanced settings",
-          "Use git worktree for multiple working trees",
-          "Use git notes to annotate commits",
-          "Learn about reflog expire and cleanup",
-          "Use git fsck to check repo health",
-          "Use git gc to clean up the repo",
-          "Understand shallow clone",
-          "Create custom Git aliases",
-          "Set up git hooks for pre-commit",
-          "Learn about git bundle for sharing repos"
-        ]
-      },
-      {
-        level: 7,
-        tasks: [
-          "Contribute to an open source repo using Git",
-          "Understand pull requests vs. git format-patch",
-          "Use git request-pull",
-          "Understand signing commits with GPG",
-          "Use git filter-branch to rewrite history",
-          "Understand and use git rerere",
-          "Use git instaweb to browse history",
-          "Learn about git daemon for serving repos",
-          "Understand git attributes",
-          "Use git diff --staged"
-        ]
-      },
-      {
-        level: 8,
-        tasks: [
-          "Understand git replace for temporary replacements",
-          "Use git submodule deinit",
-          "Learn about git lfs for large files",
-          "Use git verify-commit for signed commits",
-          "Understand git credential helpers",
-          "Use git apply to apply patches",
-          "Learn about git whatchanged",
-          "Understand git am for applying patches from mail",
-          "Use git revert -n for batch reverts",
-          "Use git merge --squash"
-        ]
-      },
-      {
-        level: 9,
-        tasks: [
-          "Understand rebase vs merge conflicts",
-          "Use git diff --color-words for readability",
-          "Learn about git difftool for external diffs",
-          "Use git mergetool for conflict resolution",
-          "Understand and configure git rerere",
-          "Learn about git notes merge",
-          "Understand git cherry",
-          "Use git patch-id for patch identity",
-          "Use git archive --format=zip",
-          "Use git rev-parse to get revision hashes"
-        ]
-      },
-      {
-        level: 10,
-        tasks: [
-          "Learn advanced .gitattributes usage",
-          "Use git interpret-trailers for commit trailers",
-          "Understand advanced rebasing workflows",
-          "Use git worktree for multiple branches",
-          "Master interactive rebase rewriting history",
-          "Use git replace to fix bad commits",
-          "Understand git plumbing vs porcelain",
-          "Master advanced stashing workflows",
-          "Experiment with git rerere for merge conflicts",
-          "Review your Git wizardry skills! 🎉"
-        ]
-      }
+      "Level 1: Git Basics",
+      "Level 2: Branching & Merging",
+      "Level 3: Remote Repositories",
+      "Level 4: Undoing Changes",
+      "Level 5: Stashing & Cleaning",
+      "Level 6: Tagging & Releases",
+      "Level 7: Rebasing & Cherry-Picking",
+      "Level 8: Collaboration Workflows",
+      "Level 9: Git Internals",
+      "Level 10: Advanced Git & Automation"
     ];
 
-    // Generate tasks
-    const tasksContainer = document.getElementById("tasks");
-    levels.forEach(level => {
-      const levelHeader = document.createElement("h2");
-      levelHeader.className = "text-xl font-bold text-yellow-300 mt-4 mb-2";
-      levelHeader.textContent = `Level ${level.level}`;
-      tasksContainer.appendChild(levelHeader);
+    const levelTasks = [
+      [
+        "Install Git and configure username/email",
+        "Initialize a new Git repository",
+        "Check Git version",
+        "Understand working directory, staging area, repository",
+        "Create and edit files",
+        "Add files to staging",
+        "Commit changes with messages",
+        "View commit history with git log",
+        "Use git status to check changes",
+        "Remove files from staging"
+      ],
+      [
+        "Create new branches",
+        "Switch between branches",
+        "Merge branches with git merge",
+        "Understand fast-forward merges",
+        "Resolve simple merge conflicts",
+        "Delete branches",
+        "Use git branch -v",
+        "Rename branches",
+        "Use git checkout -b",
+        "View branch graph"
+      ],
+      [
+        "Add a remote repository",
+        "Push commits to remote",
+        "Fetch from remote",
+        "Pull changes from remote",
+        "Clone repositories",
+        "Set upstream branch",
+        "Use git remote -v",
+        "Remove remote repositories",
+        "Handle remote branch deletions",
+        "Use git fetch --all"
+      ],
+      [
+        "Undo last commit with git reset",
+        "Amend commits",
+        "Discard changes in working directory",
+        "Revert commits",
+        "Restore deleted files",
+        "Unstage files",
+        "Use git reflog to recover commits",
+        "Reset to a specific commit",
+        "Use git clean to remove untracked files",
+        "Reset hard vs soft vs mixed"
+      ],
+      [
+        "Stash changes",
+        "Apply stash",
+        "List stash entries",
+        "Drop stash",
+        "Pop stash",
+        "Stash with message",
+        "Stash branch changes",
+        "Clear all stashes",
+        "Use git stash show",
+        "Use stash for WIP"
+      ],
+      [
+        "Create tags",
+        "List tags",
+        "Delete tags",
+        "Push tags to remote",
+        "Use annotated tags",
+        "Checkout tags",
+        "Sign tags with GPG",
+        "Use lightweight tags",
+        "Create release notes",
+        "Use tags in CI/CD"
+      ],
+      [
+        "Rebase branches",
+        "Interactive rebase",
+        "Resolve rebase conflicts",
+        "Abort rebase",
+        "Squash commits",
+        "Edit commits during rebase",
+        "Use git cherry-pick",
+        "Skip commits in rebase",
+        "Rearrange commit order",
+        "Rebase vs merge differences"
+      ],
+      [
+        "Fork workflows",
+        "Feature branch workflow",
+        "Gitflow workflow",
+        "Pull request basics",
+        "Code reviews with Git",
+        "Using CI with Git",
+        "Protected branches",
+        "Handling large repos",
+        "Submodules basics",
+        "Releases with tags"
+      ],
+      [
+        "Understand Git object model",
+        "Learn about commits, trees, blobs",
+        "Use git cat-file",
+        "Use git hash-object",
+        "Explore git gc and pruning",
+        "Use git fsck",
+        "Understand refs and HEAD",
+        "Explore index and pack files",
+        "Explore internal storage",
+        "Understand Git plumbing commands"
+      ],
+      [
+        "Automate Git hooks",
+        "Create custom aliases",
+        "Use Git with Docker",
+        "Use Git in CI/CD pipelines",
+        "Integrate Git with IDEs",
+        "Manage large files with Git LFS",
+        "Advanced merge strategies",
+        "Use Git blame effectively",
+        "Optimize Git performance",
+        "Build a complete Git workflow"
+      ]
+    ];
 
-      const ul = document.createElement("ul");
-      ul.className = "list-disc pl-5 mb-4";
-      level.tasks.forEach((task, index) => {
-        const li = document.createElement("li");
-        li.textContent = task;
-        li.className = "task-item cursor-pointer text-gray-300 hover:text-white";
-        li.dataset.key = `level-${level.level}-task-${index}`;
-        li.onclick = () => {
-          li.classList.toggle("completed");
-          const key = li.dataset.key;
-          localStorage.setItem(key, li.classList.contains("completed"));
-        };
+    const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+      tasksInLevel.map(description => ({
+        id: `${levelIndex}-${description}`,
+        description,
+        level: levelIndex + 1,
+        completed: false
+      }))
+    );
 
-        // Load from localStorage
-        const completed = localStorage.getItem(li.dataset.key) === "true";
-        if (completed) li.classList.add("completed");
+    const savedTasks = JSON.parse(localStorage.getItem('git_tasks')) || tasks;
+    const savedBooks = JSON.parse(localStorage.getItem('git_books')) || Array(10).fill(false);
+    const savedPodcasts = JSON.parse(localStorage.getItem('git_podcasts')) || Array(5).fill(false);
 
-        ul.appendChild(li);
+    const levelsContainer = document.getElementById('levelsContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const booksList = document.getElementById('booksList');
+    const podcastsList = document.getElementById('podcastsList');
+
+    function renderLevels() {
+      levelsContainer.innerHTML = '';
+      levels.forEach((levelTitle, i) => {
+        const levelNumber = i + 1;
+        const levelEl = document.createElement('div');
+        levelEl.className = 'bg-gray-700 rounded p-4';
+
+        const header = document.createElement('h2');
+        header.className = 'text-lg font-bold text-yellow-300 mb-2';
+        header.textContent = levelTitle;
+        levelEl.appendChild(header);
+
+        const ul = document.createElement('ul');
+        ul.className = 'space-y-2';
+
+        savedTasks
+          .filter(task => task.level === levelNumber)
+          .forEach(task => {
+            const li = document.createElement('li');
+            li.className = 'flex items-center bg-gray-600 rounded p-2';
+            li.innerHTML = `
+              <input type="checkbox" class="mr-2 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+              <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+            `;
+            ul.appendChild(li);
+          });
+
+        levelEl.appendChild(ul);
+        levelsContainer.appendChild(levelEl);
       });
-      tasksContainer.appendChild(ul);
-    });
-  </script>
+      updateTaskProgress();
+    }
 
+    function updateTaskProgress() {
+      const completed = savedTasks.filter(task => task.completed).length;
+      const total = savedTasks.length;
+      const percent = Math.floor((completed / total) * 100);
+      progressBar.style.width = `${percent}%`;
+      progressText.textContent = `${completed}/${total} tasks completed (${percent}%)`;
+    }
+
+    document.body.addEventListener('change', e => {
+      if (e.target.matches('.task-checkbox')) {
+        const id = e.target.dataset.id;
+        const task = savedTasks.find(t => t.id === id);
+        if (task) {
+          task.completed = e.target.checked;
+          localStorage.setItem('git_tasks', JSON.stringify(savedTasks));
+          renderLevels();
+        }
+      }
+      if (e.target.matches('[data-book]')) {
+        const bookId = parseInt(e.target.dataset.book, 10);
+        savedBooks[bookId] = e.target.checked;
+        localStorage.setItem('git_books', JSON.stringify(savedBooks));
+      }
+      if (e.target.matches('[data-podcast]')) {
+        const podcastId = parseInt(e.target.dataset.podcast, 10);
+        savedPodcasts[podcastId] = e.target.checked;
+        localStorage.setItem('git_podcasts', JSON.stringify(savedPodcasts));
+      }
+    });
+
+    function renderBooks() {
+      savedBooks.forEach((checked, i) => {
+        const input = booksList.querySelector(`[data-book="${i}"]`);
+        if (input) input.checked = checked;
+      });
+    }
+
+    function renderPodcasts() {
+      savedPodcasts.forEach((checked, i) => {
+        const input = podcastsList.querySelector(`[data-podcast="${i}"]`);
+        if (input) input.checked = checked;
+      });
+    }
+
+    renderLevels();
+    renderBooks();
+    renderPodcasts();
+  </script>
 </body>
 </html>
