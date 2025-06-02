@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AWS EventBridge RPG Progress Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .completed {
+      text-decoration: line-through;
+      color: #888;
+    }
+  </style>
+</head>
+<body class="p-6">
+  <h1 class="text-3xl font-bold text-yellow-400 mb-5">⚡ AWS EventBridge - RPG Progress Tracker</h1>
+  <p class="mb-6 text-gray-400">Master AWS EventBridge step by step. Track your quests, scrolls (books), and wisdom (podcasts) on your path to event-driven mastery!</p>
+
+  <div class="flex flex-col md:flex-row gap-6">
+    <!-- Levels and tasks -->
+    <div class="flex-1 space-y-5" id="levelsContainer"></div>
+
+    <!-- Books and podcasts -->
+    <div class="w-full md:w-1/3 bg-gray-800 rounded p-5 space-y-7">
+      <div>
+        <h2 class="text-lg font-bold text-yellow-300 mb-3">📚 Scrolls to Read (Books)</h2>
+        <ul id="booksList" class="space-y-2">
+          <li><label><input type="checkbox" data-book="0" class="mr-2" />AWS Certified Solutions Architect Official Study Guide</label></li>
+          <li><label><input type="checkbox" data-book="1" class="mr-2" />Amazon Web Services in Action</label></li>
+          <li><label><input type="checkbox" data-book="2" class="mr-2" />Serverless Architectures on AWS</label></li>
+          <li><label><input type="checkbox" data-book="3" class="mr-2" />AWS Lambda in Action</label></li>
+          <li><label><input type="checkbox" data-book="4" class="mr-2" />Learning AWS EventBridge (eBook/Blog Series)</label></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-yellow-300 mb-3">🎧 Wisdom of the Sages (Podcasts)</h2>
+        <ul id="podcastsList" class="space-y-2">
+          <li><label><input type="checkbox" data-podcast="0" class="mr-2" />AWS Podcast</label></li>
+          <li><label><input type="checkbox" data-podcast="1" class="mr-2" />Serverless Chats</label></li>
+          <li><label><input type="checkbox" data-podcast="2" class="mr-2" />The Cloudcast</label></li>
+          <li><label><input type="checkbox" data-podcast="3" class="mr-2" />AWS TechChat</label></li>
+          <li><label><input type="checkbox" data-podcast="4" class="mr-2" />Software Engineering Daily (AWS episodes)</label></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="mt-7">
+    <p class="text-gray-400 text-sm mb-1">Overall Progress:</p>
+    <div class="h-5 bg-gray-700 rounded overflow-hidden">
+      <div id="progressBar" class="h-5 bg-yellow-400 transition-all duration-300"></div>
+    </div>
+    <p id="progressText" class="text-xs text-gray-400 mt-1"></p>
+  </div>
+
+  <script>
+    const levels = [
+      "Level 1: EventBridge Fundamentals",
+      "Level 2: Event Buses & Event Sources",
+      "Level 3: Rules and Event Patterns",
+      "Level 4: Targets and Event Transformation",
+      "Level 5: Schema Registry & Discovery",
+      "Level 6: Integrations with AWS Services",
+      "Level 7: Custom Event Buses & Cross-account Events",
+      "Level 8: Security, Permissions, and IAM",
+      "Level 9: Monitoring and Troubleshooting",
+      "Level 10: Advanced Use Cases and Best Practices"
+    ];
+
+    const levelTasks = [
+      [
+        "Understand what AWS EventBridge is",
+        "Learn core concepts: events, buses, rules, targets",
+        "Explore EventBridge use cases",
+        "Review event-driven architecture basics",
+        "Understand difference between EventBridge and SNS/SQS",
+        "Navigate AWS Management Console for EventBridge",
+        "Identify components of an EventBridge event",
+        "Explore AWS EventBridge pricing model",
+        "Setup AWS CLI for EventBridge",
+        "Read AWS EventBridge official docs overview"
+      ],
+      [
+        "Understand default event buses",
+        "Explore partner event sources",
+        "Create a custom event bus",
+        "Send test events to event buses",
+        "Understand event source schemas",
+        "Work with AWS service event sources",
+        "Explore SaaS partner integrations",
+        "List available event sources",
+        "Use CLI to manage event buses",
+        "Understand event source permissions"
+      ],
+      [
+        "Create EventBridge rules",
+        "Learn event pattern syntax",
+        "Filter events using patterns",
+        "Test event rules with sample events",
+        "Understand event matching logic",
+        "Use schedule expressions for rules",
+        "Create rules for multiple event sources",
+        "Disable and enable rules",
+        "Understand rule priorities",
+        "Debug event pattern matching"
+      ],
+      [
+        "Add targets to EventBridge rules",
+        "Use Lambda functions as targets",
+        "Set SNS topics as targets",
+        "Configure Step Functions as targets",
+        "Use API destinations as targets",
+        "Transform events using Input Transformer",
+        "Use dead-letter queues for failed events",
+        "Understand retry policies",
+        "Chain multiple targets",
+        "Test event delivery to targets"
+      ],
+      [
+        "Understand Schema Registry benefits",
+        "Discover schemas from events automatically",
+        "Use Schema Registry console and CLI",
+        "Generate code bindings from schemas",
+        "Integrate Schema Registry with IDEs",
+        "Manage schema versions",
+        "Share schemas across teams",
+        "Apply schema validation",
+        "Use Schema Discovery APIs",
+        "Automate schema discovery processes"
+      ],
+      [
+        "Integrate with AWS Lambda",
+        "Integrate with AWS Step Functions",
+        "Use EventBridge with AWS CloudWatch",
+        "Send events to SQS and SNS",
+        "Trigger AWS Glue jobs",
+        "Use EventBridge with Kinesis",
+        "Set up EventBridge to ECS and EKS",
+        "Integrate with third-party SaaS partners",
+        "Automate workflows with EventBridge",
+        "Understand integration limitations"
+      ],
+      [
+        "Create cross-account event buses",
+        "Configure event bus policies",
+        "Send events across AWS accounts",
+        "Use resource policies for access control",
+        "Setup event archiving and replay",
+        "Use EventBridge with multiple regions",
+        "Configure event bus permissions",
+        "Understand cross-account security concerns",
+        "Test cross-account event delivery",
+        "Audit cross-account events"
+      ],
+      [
+        "Configure IAM roles for EventBridge",
+        "Set least privilege permissions",
+        "Use resource-based policies",
+        "Enable encryption for event buses",
+        "Audit EventBridge permissions",
+        "Use AWS CloudTrail to track changes",
+        "Implement security best practices",
+        "Set up logging for EventBridge events",
+        "Manage user access with IAM",
+        "Respond to security incidents"
+      ],
+      [
+        "Monitor EventBridge with CloudWatch metrics",
+        "Set alarms for failed events",
+        "Use CloudWatch Logs for troubleshooting",
+        "Enable detailed event logging",
+        "Use AWS X-Ray for tracing",
+        "Understand common error messages",
+        "Debug event delivery issues",
+        "Use Dead Letter Queues effectively",
+        "Automate alerting workflows",
+        "Review operational dashboards"
+      ],
+      [
+        "Design event-driven microservices",
+        "Use EventBridge for SaaS integrations",
+        "Implement event replay strategies",
+        "Optimize event bus performance",
+        "Follow AWS best practices",
+        "Handle event schema evolution",
+        "Automate infrastructure with IaC",
+        "Plan for scaling EventBridge workloads",
+        "Participate in AWS EventBridge community",
+        "Contribute examples or blog posts"
+      ]
+    ];
+
+    const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+      tasksInLevel.map(description => ({
+        id: `${levelIndex}-${description}`,
+        description,
+        level: levelIndex + 1,
+        completed: false
+      }))
+    );
+
+    const savedTasks = JSON.parse(localStorage.getItem('eventbridge_tasks')) || tasks;
+    const savedBooks = JSON.parse(localStorage.getItem('eventbridge_books')) || Array(5).fill(false);
+    const savedPodcasts = JSON.parse(localStorage.getItem('eventbridge_podcasts')) || Array(5).fill(false);
+
+    const levelsContainer = document.getElementById('levelsContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+
+    function renderLevels() {
+      levelsContainer.innerHTML = '';
+      for(let i = 0; i < levels.length; i++) {
+        const levelDiv = document.createElement('div');
+        levelDiv.className = 'bg-gray-800 rounded p-4';
+
+        levelDiv.innerHTML = `<h2 class="font-bold text-yellow-400 mb-3">${levels[i]}</h2>`;
+        const ul = document.createElement('ul');
+        ul.className = 'list-disc pl-5 space-y-1';
+
+        savedTasks
+          .filter(t => t.level === i + 1)
+          .forEach(task => {
+            const li = document.createElement('li');
+            li.className = task.completed ? 'completed' : '';
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = task.completed;
+            checkbox.className = 'mr-2';
+            checkbox.onchange = () => toggleTask(task.id);
+            li.appendChild(checkbox);
+            li.appendChild(document.createTextNode(task.description));
+            ul.appendChild(li);
+          });
+
+        levelDiv.appendChild(ul);
+        levelsContainer.appendChild(levelDiv);
+      }
+    }
+
+    function toggleTask(id) {
+      const task = savedTasks.find(t => t.id === id);
+      if (task) {
+        task.completed = !task.completed;
+        localStorage.setItem('eventbridge_tasks', JSON.stringify(savedTasks));
+        renderLevels();
+        updateProgress();
+      }
+    }
+
+    function renderBooks() {
+      const booksList = document.getElementById('booksList');
+      booksList.querySelectorAll('input[type="checkbox"]').forEach(input => {
+        const index = Number(input.getAttribute('data-book'));
+        input.checked = savedBooks[index];
+        input.onchange = () => {
+          savedBooks[index] = input.checked;
+          localStorage.setItem('eventbridge_books', JSON.stringify(savedBooks));
+          updateProgress();
+        };
+      });
+    }
+
+    function renderPodcasts() {
+      const podcastsList = document.getElementById('podcastsList');
+      podcastsList.querySelectorAll('input[type="checkbox"]').forEach(input => {
+        const index = Number(input.getAttribute('data-podcast'));
+        input.checked = savedPodcasts[index];
+        input.onchange = () => {
+          savedPodcasts[index] = input.checked;
+          localStorage.setItem('eventbridge_podcasts', JSON.stringify(savedPodcasts));
+          updateProgress();
+        };
+      });
+    }
+
+    function updateProgress() {
+      const totalTasks = savedTasks.length + savedBooks.length + savedPodcasts.length;
+      const completedTasks =
+        savedTasks.filter(t => t.completed).length +
+        savedBooks.filter(b => b).length +
+        savedPodcasts.filter(p => p).length;
+
+      const percent = Math.round((completedTasks / totalTasks) * 100);
+      progressBar.style.width = percent + '%';
+      progressText.textContent = `${percent}% completed (${completedTasks} of ${totalTasks} tasks)`;
+    }
+
+    renderLevels();
+    renderBooks();
+    renderPodcasts();
+    updateProgress();
+  </script>
+</body>
+</html>
