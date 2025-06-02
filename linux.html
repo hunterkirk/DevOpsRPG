@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Linux Mastery RPG Tracker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .completed { text-decoration: line-through; color: #888; }
+</style>
+</head>
+<body class="p-6 max-w-7xl mx-auto">
+<h1 class="text-4xl font-extrabold text-green-400 mb-6">🐧 Linux Mastery RPG Tracker</h1>
+<p class="mb-8 text-gray-400">Level up your Linux skills by completing tasks, reading essential books, and listening to top podcasts!</p>
+
+<div class="flex flex-col md:flex-row gap-8">
+  <section class="flex-1 space-y-6" id="levelsContainer"></section>
+  <aside class="w-full md:w-96 bg-gray-800 rounded p-6 space-y-8">
+    <div>
+      <h2 class="text-xl font-bold text-green-300 mb-3">📚 10 Must-Read Linux Books</h2>
+      <ul id="booksList" class="space-y-2">
+        <li><label><input type="checkbox" data-book="0" class="mr-2" />The Linux Command Line</label></li>
+        <li><label><input type="checkbox" data-book="1" class="mr-2" />How Linux Works</label></li>
+        <li><label><input type="checkbox" data-book="2" class="mr-2" />Linux Pocket Guide</label></li>
+        <li><label><input type="checkbox" data-book="3" class="mr-2" />UNIX and Linux System Administration</label></li>
+        <li><label><input type="checkbox" data-book="4" class="mr-2" />Linux Basics for Hackers</label></li>
+        <li><label><input type="checkbox" data-book="5" class="mr-2" />Linux Administration Handbook</label></li>
+        <li><label><input type="checkbox" data-book="6" class="mr-2" />The Linux Programming Interface</label></li>
+        <li><label><input type="checkbox" data-book="7" class="mr-2" />Linux Kernel Development</label></li>
+        <li><label><input type="checkbox" data-book="8" class="mr-2" />Linux Performance</label></li>
+        <li><label><input type="checkbox" data-book="9" class="mr-2" />Pro Linux System Administration</label></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-green-300 mb-3">🎧 5 Popular Linux Podcasts</h2>
+      <ul id="podcastsList" class="space-y-2">
+        <li><label><input type="checkbox" data-podcast="0" class="mr-2" />Linux Unplugged</label></li>
+        <li><label><input type="checkbox" data-podcast="1" class="mr-2" />Late Night Linux</label></li>
+        <li><label><input type="checkbox" data-podcast="2" class="mr-2" />Destination Linux</label></li>
+        <li><label><input type="checkbox" data-podcast="3" class="mr-2" />Command Line Heroes</label></li>
+        <li><label><input type="checkbox" data-podcast="4" class="mr-2" />Self-Hosted</label></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<div class="mt-8">
+  <p class="text-gray-400 mb-2">Overall Progress:</p>
+  <div class="h-5 bg-gray-700 rounded overflow-hidden">
+    <div id="progressBar" class="h-5 bg-green-500 transition-all duration-300"></div>
+  </div>
+  <p id="progressText" class="text-sm text-gray-400 mt-1"></p>
+</div>
+
+<script>
+const levels = [
+  "Level 1: Introduction to Linux",
+  "Level 2: Basic Commands",
+  "Level 3: Files & Directories",
+  "Level 4: Package Management",
+  "Level 5: Users & Permissions",
+  "Level 6: Networking",
+  "Level 7: Shell Scripting",
+  "Level 8: System Services",
+  "Level 9: Performance & Monitoring",
+  "Level 10: Linux Mastery"
+];
+
+const levelTasks = [
+  [
+    "Understand what Linux is",
+    "Learn Linux distributions",
+    "Understand kernel and user space",
+    "Learn about file system hierarchy",
+    "Explore man pages",
+    "Install a Linux distro",
+    "Explore graphical vs CLI interfaces",
+    "Get comfortable with the terminal",
+    "Understand open source principles",
+    "Join Linux communities"
+  ],
+  [
+    "Learn basic commands: ls, pwd, cd",
+    "Understand file viewing: cat, less",
+    "Use cp, mv, rm for file manipulation",
+    "Create and remove directories",
+    "Use nano, vi or vim editors",
+    "Explore file permissions with ls -l",
+    "Use tab completion",
+    "Understand absolute vs relative paths",
+    "Use history and command recall",
+    "Learn about pipes and redirects"
+  ],
+  [
+    "Use find and locate commands",
+    "Understand hidden files",
+    "Use tar, gzip, and zip",
+    "Understand symlinks",
+    "Learn about file metadata",
+    "Use head and tail for file viewing",
+    "Understand inodes and links",
+    "Learn about file descriptors",
+    "Work with wildcards and globbing",
+    "Document file management best practices"
+  ],
+  [
+    "Install software using apt or yum",
+    "Update and upgrade packages",
+    "Understand repositories",
+    "Use dpkg and rpm",
+    "Understand package dependencies",
+    "Compile software from source",
+    "Use snap and flatpak",
+    "Learn about PPA repositories",
+    "Clean up unused packages",
+    "Document your package management"
+  ],
+  [
+    "Understand users and groups",
+    "Create and delete users",
+    "Use chown and chmod",
+    "Understand sudo and root privileges",
+    "Set file ownership and permissions",
+    "Understand umask",
+    "Manage group memberships",
+    "Use passwd to change passwords",
+    "Explore /etc/passwd and /etc/shadow",
+    "Document security best practices"
+  ],
+  [
+    "Use ifconfig and ip commands",
+    "Configure static IP addresses",
+    "Understand hostnames and DNS",
+    "Use ping, traceroute, and netstat",
+    "Configure /etc/hosts file",
+    "Understand firewalls with ufw or iptables",
+    "Explore SSH for remote access",
+    "Transfer files with scp and rsync",
+    "Test network connectivity",
+    "Document networking configurations"
+  ],
+  [
+    "Write simple bash scripts",
+    "Use variables and conditionals",
+    "Use loops in scripts",
+    "Pass arguments to scripts",
+    "Understand exit codes",
+    "Use functions in scripts",
+    "Debug shell scripts",
+    "Schedule scripts with cron",
+    "Understand environment variables",
+    "Document your scripts"
+  ],
+  [
+    "Understand systemd and services",
+    "Start, stop, and restart services",
+    "Check service status",
+    "Understand runlevels and targets",
+    "Manage services with systemctl",
+    "Explore journalctl for logs",
+    "Enable/disable services on boot",
+    "Learn about sysVinit and Upstart",
+    "Explore system logs in /var/log",
+    "Document your service setup"
+  ],
+  [
+    "Use top and htop",
+    "Monitor disk usage with df and du",
+    "Check memory usage with free",
+    "Monitor running processes with ps",
+    "Use iostat and vmstat",
+    "Check system uptime and load",
+    "Analyze logs for issues",
+    "Set up alerting and monitoring tools",
+    "Simulate high load scenarios",
+    "Document performance tips"
+  ],
+  [
+    "Document your Linux journey",
+    "Contribute to open source projects",
+    "Share knowledge with others",
+    "Participate in Linux meetups",
+    "Automate your workflows",
+    "Explore advanced security features",
+    "Build custom kernel modules",
+    "Master troubleshooting techniques",
+    "Optimize for specific workloads",
+    "Achieve Linux Mastery! 🐧"
+  ]
+];
+
+const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+  tasksInLevel.map(desc => ({
+    id: `${levelIndex}-${desc}`,
+    description: desc,
+    level: levelIndex + 1,
+    completed: false
+  }))
+);
+
+const savedTasks = JSON.parse(localStorage.getItem('linux_tasks')) || tasks;
+const savedBooks = JSON.parse(localStorage.getItem('linux_books')) || Array(10).fill(false);
+const savedPodcasts = JSON.parse(localStorage.getItem('linux_podcasts')) || Array(5).fill(false);
+
+const levelsContainer = document.getElementById('levelsContainer');
+const booksList = document.getElementById('booksList');
+const podcastsList = document.getElementById('podcastsList');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+
+function renderLevels() {
+  levelsContainer.innerHTML = '';
+  levels.forEach((levelTitle, i) => {
+    const levelNum = i + 1;
+    const div = document.createElement('section');
+    div.className = 'bg-gray-700 rounded p-4';
+    const h2 = document.createElement('h2');
+    h2.className = 'text-lg font-semibold text-green-300 mb-3';
+    h2.textContent = levelTitle;
+    div.appendChild(h2);
+    const ul = document.createElement('ul');
+    ul.className = 'space-y-2';
+    savedTasks.filter(t => t.level === levelNum).forEach(task => {
+      const li = document.createElement('li');
+      li.className = 'flex items-center bg-gray-600 rounded p-2';
+      li.innerHTML = `
+        <input type="checkbox" class="mr-3 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+        <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+      `;
+      ul.appendChild(li);
+    });
+    div.appendChild(ul);
+    levelsContainer.appendChild(div);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const completedCount = savedTasks.filter(t => t.completed).length;
+  const totalCount = savedTasks.length;
+  const percent = Math.round((completedCount / totalCount) * 100);
+  progressBar.style.width = `${percent}%`;
+  progressText.textContent = `${completedCount}/${totalCount} tasks completed (${percent}%)`;
+}
+
+document.body.addEventListener('change', e => {
+  if (e.target.matches('.task-checkbox')) {
+    const id = e.target.dataset.id;
+    const task = savedTasks.find(t => t.id === id);
+    if (task) {
+      task.completed = e.target.checked;
+      localStorage.setItem('linux_tasks', JSON.stringify(savedTasks));
+      renderLevels();
+    }
+  }
+  if (e.target.matches('[data-book]')) {
+    const idx = parseInt(e.target.dataset.book, 10);
+    savedBooks[idx] = e.target.checked;
+    localStorage.setItem('linux_books', JSON.stringify(savedBooks));
+  }
+  if (e.target.matches('[data-podcast]')) {
+    const idx = parseInt(e.target.dataset.podcast, 10);
+    savedPodcasts[idx] = e.target.checked;
+    localStorage.setItem('linux_podcasts', JSON.stringify(savedPodcasts));
+  }
+});
+
+function renderBooks() {
+  savedBooks.forEach((checked, i) => {
+    const el = booksList.querySelector(`[data-book="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+function renderPodcasts() {
+  savedPodcasts.forEach((checked, i) => {
+    const el = podcastsList.querySelector(`[data-podcast="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+
+renderLevels();
+renderBooks();
+renderPodcasts();
+</script>
+</body>
+</html>

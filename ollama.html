@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ollama Mastery RPG Tracker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .completed { text-decoration: line-through; color: #888; }
+</style>
+</head>
+<body class="p-6 max-w-7xl mx-auto">
+<h1 class="text-4xl font-extrabold text-blue-400 mb-6">🐙 Ollama Mastery RPG Tracker</h1>
+<p class="mb-8 text-gray-400">Level up your Ollama skills by completing tasks, reading essential books, and listening to top podcasts!</p>
+
+<div class="flex flex-col md:flex-row gap-8">
+  <section class="flex-1 space-y-6" id="levelsContainer"></section>
+  <aside class="w-full md:w-96 bg-gray-800 rounded p-6 space-y-8">
+    <div>
+      <h2 class="text-xl font-bold text-blue-300 mb-3">📚 10 Must-Read AI/LLM Books</h2>
+      <ul id="booksList" class="space-y-2">
+        <li><label><input type="checkbox" data-book="0" class="mr-2" />Deep Learning (Goodfellow et al.)</label></li>
+        <li><label><input type="checkbox" data-book="1" class="mr-2" />You Look Like a Thing and I Love You</label></li>
+        <li><label><input type="checkbox" data-book="2" class="mr-2" />Artificial Intelligence: A Guide</label></li>
+        <li><label><input type="checkbox" data-book="3" class="mr-2" />Grokking Deep Learning</label></li>
+        <li><label><input type="checkbox" data-book="4" class="mr-2" />Machine Learning Yearning</label></li>
+        <li><label><input type="checkbox" data-book="5" class="mr-2" />Hands-On Machine Learning with Scikit-Learn</label></li>
+        <li><label><input type="checkbox" data-book="6" class="mr-2" />Transformers for NLP</label></li>
+        <li><label><input type="checkbox" data-book="7" class="mr-2" />The Alignment Problem</label></li>
+        <li><label><input type="checkbox" data-book="8" class="mr-2" />AI Superpowers</label></li>
+        <li><label><input type="checkbox" data-book="9" class="mr-2" />Generative Deep Learning</label></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-blue-300 mb-3">🎧 5 Popular AI Podcasts</h2>
+      <ul id="podcastsList" class="space-y-2">
+        <li><label><input type="checkbox" data-podcast="0" class="mr-2" />The AI Podcast</label></li>
+        <li><label><input type="checkbox" data-podcast="1" class="mr-2" />Practical AI</label></li>
+        <li><label><input type="checkbox" data-podcast="2" class="mr-2" />Lex Fridman Podcast</label></li>
+        <li><label><input type="checkbox" data-podcast="3" class="mr-2" />Data Skeptic</label></li>
+        <li><label><input type="checkbox" data-podcast="4" class="mr-2" />AI Alignment Podcast</label></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<div class="mt-8">
+  <p class="text-gray-400 mb-2">Overall Progress:</p>
+  <div class="h-5 bg-gray-700 rounded overflow-hidden">
+    <div id="progressBar" class="h-5 bg-blue-500 transition-all duration-300"></div>
+  </div>
+  <p id="progressText" class="text-sm text-gray-400 mt-1"></p>
+</div>
+
+<script>
+const levels = [
+  "Level 1: Ollama Introduction",
+  "Level 2: Local LLM Basics",
+  "Level 3: Model Management",
+  "Level 4: Fine-tuning Models",
+  "Level 5: Prompt Engineering",
+  "Level 6: Building APIs",
+  "Level 7: Integration & Workflows",
+  "Level 8: Scaling & Performance",
+  "Level 9: Security & Privacy",
+  "Level 10: Ollama Mastery"
+];
+
+const levelTasks = [
+  [
+    "Understand what Ollama is and its purpose",
+    "Install Ollama CLI on your system",
+    "Explore Ollama's documentation",
+    "Run your first Ollama command",
+    "Understand Ollama's architecture",
+    "Try Ollama's example LLMs",
+    "Explore the default models available",
+    "Understand basic model serving",
+    "Join the Ollama community",
+    "Set up your first Ollama environment"
+  ],
+  [
+    "Understand local LLMs vs cloud LLMs",
+    "Run a small LLM locally using Ollama",
+    "Explore Ollama's local model management",
+    "Experiment with multiple LLMs",
+    "Understand the limits of local hosting",
+    "Configure Ollama for GPU acceleration",
+    "Compare local vs remote performance",
+    "Understand Ollama licensing & usage",
+    "Try using Ollama with a chat app",
+    "Document your learnings"
+  ],
+  [
+    "Learn how to download new models",
+    "Manage your model library",
+    "Switch between different LLMs",
+    "Understand model versions & updates",
+    "Explore Ollama's model hub",
+    "Experiment with different model sizes",
+    "Back up your local models",
+    "Share models with others",
+    "Remove unused models",
+    "Understand the Ollama model manifest"
+  ],
+  [
+    "Understand fine-tuning basics",
+    "Explore fine-tuning with Ollama",
+    "Try a simple fine-tuning experiment",
+    "Understand hyperparameters",
+    "Compare fine-tuned vs default models",
+    "Explore advanced fine-tuning strategies",
+    "Evaluate your tuned model",
+    "Document the tuning process",
+    "Experiment with custom data",
+    "Share your tuned model"
+  ],
+  [
+    "Learn prompt engineering fundamentals",
+    "Craft clear and concise prompts",
+    "Explore temperature and max tokens",
+    "Test different prompt styles",
+    "Document prompt best practices",
+    "Understand prompt chaining",
+    "Use system prompts effectively",
+    "Benchmark prompt performance",
+    "Iterate and refine prompts",
+    "Create a prompt library"
+  ],
+  [
+    "Learn about building APIs with Ollama",
+    "Set up an API endpoint for your LLM",
+    "Integrate Ollama with a frontend",
+    "Test your API with Postman",
+    "Secure your API with tokens",
+    "Handle errors gracefully",
+    "Explore streaming responses",
+    "Monitor API usage",
+    "Deploy your API for production",
+    "Document your API"
+  ],
+  [
+    "Integrate Ollama with Zapier or Make",
+    "Use Ollama in a Node.js app",
+    "Connect Ollama with Slack or Discord",
+    "Experiment with voice-to-text LLMs",
+    "Use Ollama for document summarization",
+    "Automate repetitive tasks with LLMs",
+    "Explore LangChain + Ollama",
+    "Combine Ollama with vector databases",
+    "Debug integration issues",
+    "Share your integration projects"
+  ],
+  [
+    "Profile Ollama's performance",
+    "Explore scaling strategies",
+    "Use multiple LLMs in parallel",
+    "Benchmark different models",
+    "Optimize for latency and cost",
+    "Implement caching strategies",
+    "Explore load balancing",
+    "Document performance tuning tips",
+    "Monitor resource usage",
+    "Plan for future scaling"
+  ],
+  [
+    "Understand security best practices",
+    "Configure safe API keys",
+    "Understand data privacy implications",
+    "Monitor usage logs for abuse",
+    "Document security policies",
+    "Understand compliance needs",
+    "Secure sensitive data in prompts",
+    "Implement user access controls",
+    "Review security updates",
+    "Share security learnings"
+  ],
+  [
+    "Refactor your Ollama workflows",
+    "Document everything you’ve learned",
+    "Contribute to Ollama community",
+    "Write blog posts about your experience",
+    "Share your best practices",
+    "Explore future Ollama features",
+    "Mentor others on Ollama",
+    "Participate in Ollama events",
+    "Build your own Ollama-based tool",
+    "Achieve Ollama Mastery! 🐙"
+  ]
+];
+
+const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+  tasksInLevel.map(desc => ({
+    id: `${levelIndex}-${desc}`,
+    description: desc,
+    level: levelIndex + 1,
+    completed: false
+  }))
+);
+
+const savedTasks = JSON.parse(localStorage.getItem('ollama_tasks')) || tasks;
+const savedBooks = JSON.parse(localStorage.getItem('ollama_books')) || Array(10).fill(false);
+const savedPodcasts = JSON.parse(localStorage.getItem('ollama_podcasts')) || Array(5).fill(false);
+
+const levelsContainer = document.getElementById('levelsContainer');
+const booksList = document.getElementById('booksList');
+const podcastsList = document.getElementById('podcastsList');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+
+function renderLevels() {
+  levelsContainer.innerHTML = '';
+  levels.forEach((levelTitle, i) => {
+    const levelNum = i + 1;
+    const div = document.createElement('section');
+    div.className = 'bg-gray-700 rounded p-4';
+    const h2 = document.createElement('h2');
+    h2.className = 'text-lg font-semibold text-blue-300 mb-3';
+    h2.textContent = levelTitle;
+    div.appendChild(h2);
+    const ul = document.createElement('ul');
+    ul.className = 'space-y-2';
+    savedTasks.filter(t => t.level === levelNum).forEach(task => {
+      const li = document.createElement('li');
+      li.className = 'flex items-center bg-gray-600 rounded p-2';
+      li.innerHTML = `
+        <input type="checkbox" class="mr-3 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+        <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+      `;
+      ul.appendChild(li);
+    });
+    div.appendChild(ul);
+    levelsContainer.appendChild(div);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const completedCount = savedTasks.filter(t => t.completed).length;
+  const totalCount = savedTasks.length;
+  const percent = Math.round((completedCount / totalCount) * 100);
+  progressBar.style.width = `${percent}%`;
+  progressText.textContent = `${completedCount}/${totalCount} tasks completed (${percent}%)`;
+}
+
+document.body.addEventListener('change', e => {
+  if (e.target.matches('.task-checkbox')) {
+    const id = e.target.dataset.id;
+    const task = savedTasks.find(t => t.id === id);
+    if (task) {
+      task.completed = e.target.checked;
+      localStorage.setItem('ollama_tasks', JSON.stringify(savedTasks));
+      renderLevels();
+    }
+  }
+  if (e.target.matches('[data-book]')) {
+    const idx = parseInt(e.target.dataset.book, 10);
+    savedBooks[idx] = e.target.checked;
+    localStorage.setItem('ollama_books', JSON.stringify(savedBooks));
+  }
+  if (e.target.matches('[data-podcast]')) {
+    const idx = parseInt(e.target.dataset.podcast, 10);
+    savedPodcasts[idx] = e.target.checked;
+    localStorage.setItem('ollama_podcasts', JSON.stringify(savedPodcasts));
+  }
+});
+
+function renderBooks() {
+  savedBooks.forEach((checked, i) => {
+    const el = booksList.querySelector(`[data-book="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+function renderPodcasts() {
+  savedPodcasts.forEach((checked, i) => {
+    const el = podcastsList.querySelector(`[data-podcast="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+
+renderLevels();
+renderBooks();
+renderPodcasts();
+</script>
+</body>
+</html>

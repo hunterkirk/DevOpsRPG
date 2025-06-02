@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AWS EKS Wizardry RPG Tracker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .completed { text-decoration: line-through; color: #888; }
+</style>
+</head>
+<body class="p-6 max-w-7xl mx-auto">
+<h1 class="text-4xl font-extrabold text-green-400 mb-6">☸️ AWS EKS Wizardry RPG Tracker</h1>
+<p class="mb-8 text-gray-400">Level up your AWS EKS skills by completing tasks, reading essential books, and tuning into top DevOps podcasts!</p>
+
+<div class="flex flex-col md:flex-row gap-8">
+  <section class="flex-1 space-y-6" id="levelsContainer"></section>
+
+  <aside class="w-full md:w-96 bg-gray-800 rounded p-6 space-y-8">
+    <div>
+      <h2 class="text-xl font-bold text-green-300 mb-3">📚 10 Must-Read AWS & Kubernetes Books</h2>
+      <ul id="booksList" class="space-y-2">
+        <li><label><input type="checkbox" data-book="0" class="mr-2" />Kubernetes Up & Running</label></li>
+        <li><label><input type="checkbox" data-book="1" class="mr-2" />Amazon Web Services in Action</label></li>
+        <li><label><input type="checkbox" data-book="2" class="mr-2" />The Kubernetes Book</label></li>
+        <li><label><input type="checkbox" data-book="3" class="mr-2" />Terraform Up & Running</label></li>
+        <li><label><input type="checkbox" data-book="4" class="mr-2" />AWS Certified Kubernetes Application Developer Study Guide</label></li>
+        <li><label><input type="checkbox" data-book="5" class="mr-2" />Cloud Native DevOps with Kubernetes</label></li>
+        <li><label><input type="checkbox" data-book="6" class="mr-2" />AWS Certified Solutions Architect Official Study Guide</label></li>
+        <li><label><input type="checkbox" data-book="7" class="mr-2" />Docker Deep Dive</label></li>
+        <li><label><input type="checkbox" data-book="8" class="mr-2" />Effective DevOps</label></li>
+        <li><label><input type="checkbox" data-book="9" class="mr-2" />Networking and Kubernetes</label></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-green-300 mb-3">🎧 5 Popular DevOps Podcasts</h2>
+      <ul id="podcastsList" class="space-y-2">
+        <li><label><input type="checkbox" data-podcast="0" class="mr-2" />The DevOps Cafe</label></li>
+        <li><label><input type="checkbox" data-podcast="1" class="mr-2" />Arrested DevOps</label></li>
+        <li><label><input type="checkbox" data-podcast="2" class="mr-2" />Kubernetes Podcast from Google</label></li>
+        <li><label><input type="checkbox" data-podcast="3" class="mr-2" />The Ship Show</label></li>
+        <li><label><input type="checkbox" data-podcast="4" class="mr-2" />Screaming in the Cloud</label></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<div class="mt-8">
+  <p class="text-gray-400 mb-2">Overall Progress:</p>
+  <div class="h-5 bg-gray-700 rounded overflow-hidden">
+    <div id="progressBar" class="h-5 bg-green-500 transition-all duration-300"></div>
+  </div>
+  <p id="progressText" class="text-sm text-gray-400 mt-1"></p>
+</div>
+
+<script>
+const levels = [
+  "Level 1: EKS Fundamentals",
+  "Level 2: Cluster Setup & Configuration",
+  "Level 3: Networking & Security",
+  "Level 4: Storage & Persistent Data",
+  "Level 5: Monitoring & Logging",
+  "Level 6: Scaling & Auto Scaling",
+  "Level 7: CI/CD with EKS",
+  "Level 8: Advanced EKS Features",
+  "Level 9: Troubleshooting & Optimization",
+  "Level 10: Real-world Production EKS"
+];
+
+const levelTasks = [
+  [
+    "Understand Kubernetes basics",
+    "Learn AWS EKS overview and concepts",
+    "Install and configure kubectl",
+    "Create your first EKS cluster",
+    "Explore EKS console dashboard",
+    "Understand node groups and worker nodes",
+    "Configure IAM roles for EKS",
+    "Set up AWS CLI for EKS management",
+    "Review EKS pricing and limits",
+    "Familiarize with AWS CloudFormation for EKS"
+  ],
+  [
+    "Create EKS cluster with eksctl",
+    "Configure cluster networking (VPC, subnets)",
+    "Set up cluster autoscaler",
+    "Manage node groups and scaling",
+    "Configure Kubernetes namespaces",
+    "Enable logging for EKS cluster",
+    "Set up kubeconfig file properly",
+    "Deploy your first app on EKS",
+    "Manage cluster upgrades",
+    "Use AWS CloudWatch Container Insights"
+  ],
+  [
+    "Configure VPC CNI plugin",
+    "Set up security groups for EKS",
+    "Implement network policies in Kubernetes",
+    "Manage EKS API server endpoint access",
+    "Set up private EKS clusters",
+    "Configure TLS certificates for ingress",
+    "Integrate AWS IAM for service accounts (IRSA)",
+    "Enable Pod Security Policies",
+    "Set up firewall rules and NACLs",
+    "Understand and use EKS pod networking"
+  ],
+  [
+    "Configure persistent volumes with EBS",
+    "Use EFS for shared storage",
+    "Deploy stateful applications",
+    "Backup and restore EKS persistent data",
+    "Use dynamic provisioning of storage",
+    "Configure storage classes",
+    "Use CSI drivers in EKS",
+    "Understand volume lifecycle management",
+    "Monitor storage usage",
+    "Manage secrets and config maps securely"
+  ],
+  [
+    "Set up Prometheus monitoring in EKS",
+    "Configure Grafana dashboards",
+    "Enable CloudWatch Container Insights",
+    "Collect and analyze logs with Fluentd",
+    "Set up alerting for critical events",
+    "Integrate EKS monitoring with PagerDuty",
+    "Use AWS X-Ray with EKS",
+    "Monitor node and pod resource usage",
+    "Analyze application metrics",
+    "Implement centralized logging"
+  ],
+  [
+    "Configure Horizontal Pod Autoscaler (HPA)",
+    "Use Cluster Autoscaler effectively",
+    "Manage resource requests and limits",
+    "Scale applications based on custom metrics",
+    "Use AWS Auto Scaling groups for nodes",
+    "Handle rolling updates and rollbacks",
+    "Manage pod disruption budgets",
+    "Optimize node utilization",
+    "Implement blue-green deployments",
+    "Perform canary releases"
+  ],
+  [
+    "Set up GitOps for EKS (Flux or ArgoCD)",
+    "Build CI/CD pipelines integrating EKS",
+    "Deploy apps via Jenkins/CodePipeline",
+    "Automate Helm chart deployments",
+    "Use AWS CodeBuild and CodeDeploy",
+    "Implement automated testing on EKS",
+    "Secure pipelines and secrets",
+    "Monitor deployments and rollbacks",
+    "Use feature flags for deployments",
+    "Manage environment promotion workflows"
+  ],
+  [
+    "Use Fargate with EKS",
+    "Deploy custom Kubernetes controllers",
+    "Extend EKS with Kubernetes Operators",
+    "Use AWS App Mesh with EKS",
+    "Manage multi-cluster EKS setups",
+    "Integrate service mesh for traffic control",
+    "Set up EKS with Windows worker nodes",
+    "Configure GPU-enabled nodes",
+    "Implement Pod Security Admission",
+    "Use AWS Service Broker with EKS"
+  ],
+  [
+    "Troubleshoot node and pod failures",
+    "Debug networking issues",
+    "Analyze cluster resource bottlenecks",
+    "Recover from EKS control plane issues",
+    "Diagnose failed deployments",
+    "Use kubectl debug tools",
+    "Optimize cluster cost efficiency",
+    "Audit cluster security",
+    "Implement disaster recovery plans",
+    "Document troubleshooting procedures"
+  ],
+  [
+    "Run production-grade multi-tenant clusters",
+    "Implement compliance policies",
+    "Optimize application performance",
+    "Manage secrets at scale",
+    "Secure cluster with best practices",
+    "Automate infrastructure as code",
+    "Handle cross-region deployments",
+    "Scale clusters to thousands of nodes",
+    "Participate in community and contribute",
+    "Achieve AWS EKS Certified Specialist level"
+  ]
+];
+
+const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+  tasksInLevel.map(desc => ({
+    id: `${levelIndex}-${desc}`,
+    description: desc,
+    level: levelIndex + 1,
+    completed: false
+  }))
+);
+
+const savedTasks = JSON.parse(localStorage.getItem('eks_tasks')) || tasks;
+const savedBooks = JSON.parse(localStorage.getItem('eks_books')) || Array(10).fill(false);
+const savedPodcasts = JSON.parse(localStorage.getItem('eks_podcasts')) || Array(5).fill(false);
+
+const levelsContainer = document.getElementById('levelsContainer');
+const booksList = document.getElementById('booksList');
+const podcastsList = document.getElementById('podcastsList');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+
+function renderLevels() {
+  levelsContainer.innerHTML = '';
+  levels.forEach((levelTitle, i) => {
+    const levelNum = i + 1;
+    const div = document.createElement('section');
+    div.className = 'bg-gray-700 rounded p-4';
+    const h2 = document.createElement('h2');
+    h2.className = 'text-lg font-semibold text-green-300 mb-3';
+    h2.textContent = levelTitle;
+    div.appendChild(h2);
+    const ul = document.createElement('ul');
+    ul.className = 'space-y-2';
+    savedTasks.filter(t => t.level === levelNum).forEach(task => {
+      const li = document.createElement('li');
+      li.className = 'flex items-center bg-gray-600 rounded p-2';
+      li.innerHTML = `
+        <input type="checkbox" class="mr-3 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+        <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+      `;
+      ul.appendChild(li);
+    });
+    div.appendChild(ul);
+    levelsContainer.appendChild(div);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const completedCount = savedTasks.filter(t => t.completed).length;
+  const totalCount = savedTasks.length;
+  const percent = Math.round((completedCount / totalCount) * 100);
+  progressBar.style.width = `${percent}%`;
+  progressText.textContent = `${completedCount}/${totalCount} tasks completed (${percent}%)`;
+}
+
+document.body.addEventListener('change', e => {
+  if (e.target.matches('.task-checkbox')) {
+    const id = e.target.dataset.id;
+    const task = savedTasks.find(t => t.id === id);
+    if (task) {
+      task.completed = e.target.checked;
+      localStorage.setItem('eks_tasks', JSON.stringify(savedTasks));
+      renderLevels();
+    }
+  }
+  if (e.target.matches('[data-book]')) {
+    const idx = parseInt(e.target.dataset.book, 10);
+    savedBooks[idx] = e.target.checked;
+    localStorage.setItem('eks_books', JSON.stringify(savedBooks));
+  }
+  if (e.target.matches('[data-podcast]')) {
+    const idx = parseInt(e.target.dataset.podcast, 10);
+    savedPodcasts[idx] = e.target.checked;
+    localStorage.setItem('eks_podcasts', JSON.stringify(savedPodcasts));
+  }
+});
+
+function renderBooks() {
+  savedBooks.forEach((checked, i) => {
+    const el = booksList.querySelector(`[data-book="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+function renderPodcasts() {
+  savedPodcasts.forEach((checked, i) => {
+    const el = podcastsList.querySelector(`[data-podcast="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+
+renderLevels();
+renderBooks();
+renderPodcasts();
+</script>
+</body>
+</html>

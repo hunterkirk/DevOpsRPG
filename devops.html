@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DevOps Wizardry RPG Tracker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .completed { text-decoration: line-through; color: #888; }
+</style>
+</head>
+<body class="p-6 max-w-7xl mx-auto">
+<h1 class="text-4xl font-extrabold text-green-400 mb-6">🛠️ DevOps Wizardry RPG Tracker</h1>
+<p class="mb-8 text-gray-400">Level up your DevOps mastery by completing tasks, reading essential books, and tuning into top podcasts!</p>
+
+<div class="flex flex-col md:flex-row gap-8">
+  <section class="flex-1 space-y-6" id="levelsContainer"></section>
+
+  <aside class="w-full md:w-96 bg-gray-800 rounded p-6 space-y-8">
+    <div>
+      <h2 class="text-xl font-bold text-green-300 mb-3">📚 10 Must-Read DevOps Books</h2>
+      <ul id="booksList" class="space-y-2">
+        <li><label><input type="checkbox" data-book="0" class="mr-2" />The Phoenix Project</label></li>
+        <li><label><input type="checkbox" data-book="1" class="mr-2" />The DevOps Handbook</label></li>
+        <li><label><input type="checkbox" data-book="2" class="mr-2" />Accelerate</label></li>
+        <li><label><input type="checkbox" data-book="3" class="mr-2" />Site Reliability Engineering</label></li>
+        <li><label><input type="checkbox" data-book="4" class="mr-2" />Effective DevOps</label></li>
+        <li><label><input type="checkbox" data-book="5" class="mr-2" />Continuous Delivery</label></li>
+        <li><label><input type="checkbox" data-book="6" class="mr-2" />Infrastructure as Code</label></li>
+        <li><label><input type="checkbox" data-book="7" class="mr-2" />Terraform: Up & Running</label></li>
+        <li><label><input type="checkbox" data-book="8" class="mr-2" />Kubernetes Up & Running</label></li>
+        <li><label><input type="checkbox" data-book="9" class="mr-2" />Docker Deep Dive</label></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-green-300 mb-3">🎧 5 Popular DevOps Podcasts</h2>
+      <ul id="podcastsList" class="space-y-2">
+        <li><label><input type="checkbox" data-podcast="0" class="mr-2" />The DevOps Cafe</label></li>
+        <li><label><input type="checkbox" data-podcast="1" class="mr-2" />Arrested DevOps</label></li>
+        <li><label><input type="checkbox" data-podcast="2" class="mr-2" />The Ship Show</label></li>
+        <li><label><input type="checkbox" data-podcast="3" class="mr-2" />DevOps Paradox</label></li>
+        <li><label><input type="checkbox" data-podcast="4" class="mr-2" />Screaming in the Cloud</label></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<div class="mt-8">
+  <p class="text-gray-400 mb-2">Overall Progress:</p>
+  <div class="h-5 bg-gray-700 rounded overflow-hidden">
+    <div id="progressBar" class="h-5 bg-green-500 transition-all duration-300"></div>
+  </div>
+  <p id="progressText" class="text-sm text-gray-400 mt-1"></p>
+</div>
+
+<script>
+const levels = [
+  "Level 1: Foundations of DevOps",
+  "Level 2: Source Control Mastery",
+  "Level 3: CI/CD Pipelines",
+  "Level 4: Infrastructure Automation",
+  "Level 5: Containerization & Orchestration",
+  "Level 6: Monitoring & Logging",
+  "Level 7: Cloud Platforms & Services",
+  "Level 8: Security & Compliance",
+  "Level 9: Scaling & Reliability",
+  "Level 10: Advanced DevOps Practices"
+];
+
+const levelTasks = [
+  [
+    "Understand DevOps principles and culture",
+    "Learn about Agile and Lean methodologies",
+    "Set up a Linux environment",
+    "Install Git and learn basic commands",
+    "Understand version control concepts",
+    "Explore common DevOps tools overview",
+    "Familiarize with shell scripting basics",
+    "Learn about software development lifecycle",
+    "Set up a basic development environment",
+    "Join DevOps communities and forums"
+  ],
+  [
+    "Master branching and merging strategies",
+    "Work with Git workflows (GitFlow, trunk-based)",
+    "Use pull requests and code reviews",
+    "Learn about Git hooks",
+    "Configure Git remotes and collaboration",
+    "Resolve merge conflicts efficiently",
+    "Use tagging and releases",
+    "Understand Git internals",
+    "Set up GitLab or GitHub repositories",
+    "Automate Git workflows"
+  ],
+  [
+    "Understand Continuous Integration concepts",
+    "Set up Jenkins or GitHub Actions pipeline",
+    "Write build scripts",
+    "Implement automated testing",
+    "Use static code analysis tools",
+    "Set up automated deployments",
+    "Implement pipeline notifications",
+    "Handle build artifacts and storage",
+    "Manage pipeline secrets securely",
+    "Optimize CI/CD performance"
+  ],
+  [
+    "Learn Infrastructure as Code (IaC) concepts",
+    "Write basic Terraform configurations",
+    "Use Ansible or Chef for automation",
+    "Understand configuration management",
+    "Manage cloud infrastructure declaratively",
+    "Implement versioning of infrastructure code",
+    "Create reusable IaC modules",
+    "Test infrastructure changes",
+    "Handle drift detection",
+    "Deploy infrastructure with pipelines"
+  ],
+  [
+    "Understand Docker fundamentals",
+    "Build Docker images",
+    "Use Docker Compose for multi-container apps",
+    "Learn Kubernetes architecture",
+    "Deploy applications on Kubernetes",
+    "Manage container networking and storage",
+    "Use Helm for package management",
+    "Implement rolling updates",
+    "Monitor container health",
+    "Secure containerized applications"
+  ],
+  [
+    "Set up centralized logging (ELK, Splunk)",
+    "Configure Prometheus and Grafana",
+    "Use log aggregation tools",
+    "Implement alerting strategies",
+    "Monitor application metrics",
+    "Analyze system performance",
+    "Set up distributed tracing",
+    "Automate health checks",
+    "Use synthetic monitoring",
+    "Document monitoring setup"
+  ],
+  [
+    "Explore AWS, Azure, and GCP basics",
+    "Deploy serverless functions",
+    "Use managed Kubernetes services",
+    "Manage cloud networking",
+    "Understand cloud storage options",
+    "Implement autoscaling",
+    "Use cloud security tools",
+    "Handle cloud cost management",
+    "Set up multi-cloud deployments",
+    "Use cloud CLI tools efficiently"
+  ],
+  [
+    "Learn about security best practices",
+    "Implement secret management",
+    "Set up role-based access control (RBAC)",
+    "Conduct vulnerability scanning",
+    "Automate compliance checks",
+    "Implement network security policies",
+    "Use encryption in transit and at rest",
+    "Manage certificates and keys",
+    "Understand incident response",
+    "Document security policies"
+  ],
+  [
+    "Design highly available systems",
+    "Implement load balancing",
+    "Understand disaster recovery strategies",
+    "Use caching for scalability",
+    "Handle database replication and backups",
+    "Optimize system performance",
+    "Implement chaos engineering basics",
+    "Plan capacity and resource allocation",
+    "Use canary deployments",
+    "Review and improve SLIs/SLOs/SLAs"
+  ],
+  [
+    "Adopt GitOps practices",
+    "Implement advanced pipeline strategies",
+    "Automate infrastructure testing",
+    "Use service mesh technologies",
+    "Manage secrets with HashiCorp Vault",
+    "Explore AI/ML in DevOps",
+    "Contribute to open-source DevOps tools",
+    "Lead DevOps culture initiatives",
+    "Create knowledge-sharing docs & talks",
+    "Achieve DevOps wizardry mastery! 🧙‍♂️"
+  ]
+];
+
+const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+  tasksInLevel.map(desc => ({
+    id: `${levelIndex}-${desc}`,
+    description: desc,
+    level: levelIndex + 1,
+    completed: false
+  }))
+);
+
+const savedTasks = JSON.parse(localStorage.getItem('devops_tasks')) || tasks;
+const savedBooks = JSON.parse(localStorage.getItem('devops_books')) || Array(10).fill(false);
+const savedPodcasts = JSON.parse(localStorage.getItem('devops_podcasts')) || Array(5).fill(false);
+
+const levelsContainer = document.getElementById('levelsContainer');
+const booksList = document.getElementById('booksList');
+const podcastsList = document.getElementById('podcastsList');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+
+function renderLevels() {
+  levelsContainer.innerHTML = '';
+  levels.forEach((levelTitle, i) => {
+    const levelNum = i + 1;
+    const div = document.createElement('section');
+    div.className = 'bg-gray-700 rounded p-4';
+    const h2 = document.createElement('h2');
+    h2.className = 'text-lg font-semibold text-green-300 mb-3';
+    h2.textContent = levelTitle;
+    div.appendChild(h2);
+    const ul = document.createElement('ul');
+    ul.className = 'space-y-2';
+    savedTasks.filter(t => t.level === levelNum).forEach(task => {
+      const li = document.createElement('li');
+      li.className = 'flex items-center bg-gray-600 rounded p-2';
+      li.innerHTML = `
+        <input type="checkbox" class="mr-3 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+        <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+      `;
+      ul.appendChild(li);
+    });
+    div.appendChild(ul);
+    levelsContainer.appendChild(div);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const completedCount = savedTasks.filter(t => t.completed).length;
+  const totalCount = savedTasks.length;
+  const percent = Math.round((completedCount / totalCount) * 100);
+  progressBar.style.width = `${percent}%`;
+  progressText.textContent = `${completedCount}/${totalCount} tasks completed (${percent}%)`;
+}
+
+document.body.addEventListener('change', e => {
+  if (e.target.matches('.task-checkbox')) {
+    const id = e.target.dataset.id;
+    const task = savedTasks.find(t => t.id === id);
+    if (task) {
+      task.completed = e.target.checked;
+      localStorage.setItem('devops_tasks', JSON.stringify(savedTasks));
+      renderLevels();
+    }
+  }
+  if (e.target.matches('[data-book]')) {
+    const idx = parseInt(e.target.dataset.book, 10);
+    savedBooks[idx] = e.target.checked;
+    localStorage.setItem('devops_books', JSON.stringify(savedBooks));
+  }
+  if (e.target.matches('[data-podcast]')) {
+    const idx = parseInt(e.target.dataset.podcast, 10);
+    savedPodcasts[idx] = e.target.checked;
+    localStorage.setItem('devops_podcasts', JSON.stringify(savedPodcasts));
+  }
+});
+
+function renderBooks() {
+  savedBooks.forEach((checked, i) => {
+    const el = booksList.querySelector(`[data-book="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+function renderPodcasts() {
+  savedPodcasts.forEach((checked, i) => {
+    const el = podcastsList.querySelector(`[data-podcast="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+
+renderLevels();
+renderBooks();
+renderPodcasts();
+</script>
+</body>
+</html>

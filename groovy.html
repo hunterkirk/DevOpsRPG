@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Groovy Mastery RPG Tracker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .completed { text-decoration: line-through; color: #888; }
+</style>
+</head>
+<body class="p-6 max-w-7xl mx-auto">
+<h1 class="text-4xl font-extrabold text-green-400 mb-6">🪄 Groovy Mastery RPG Tracker</h1>
+<p class="mb-8 text-gray-400">Level up your Groovy skills by completing tasks, reading essential books, and listening to top programming podcasts!</p>
+
+<div class="flex flex-col md:flex-row gap-8">
+  <section class="flex-1 space-y-6" id="levelsContainer"></section>
+  <aside class="w-full md:w-96 bg-gray-800 rounded p-6 space-y-8">
+    <div>
+      <h2 class="text-xl font-bold text-green-300 mb-3">📚 10 Must-Read Groovy & JVM Books</h2>
+      <ul id="booksList" class="space-y-2">
+        <li><label><input type="checkbox" data-book="0" class="mr-2" />Groovy in Action</label></li>
+        <li><label><input type="checkbox" data-book="1" class="mr-2" />Programming Groovy 2</label></li>
+        <li><label><input type="checkbox" data-book="2" class="mr-2" />Groovy Recipes</label></li>
+        <li><label><input type="checkbox" data-book="3" class="mr-2" />Gradle in Action</label></li>
+        <li><label><input type="checkbox" data-book="4" class="mr-2" />Mastering Groovy</label></li>
+        <li><label><input type="checkbox" data-book="5" class="mr-2" />Groovy for Domain-Specific Languages</label></li>
+        <li><label><input type="checkbox" data-book="6" class="mr-2" />The Well-Grounded Java Developer</label></li>
+        <li><label><input type="checkbox" data-book="7" class="mr-2" />Building and Testing with Gradle</label></li>
+        <li><label><input type="checkbox" data-book="8" class="mr-2" />Effective Java (JVM companion)</label></li>
+        <li><label><input type="checkbox" data-book="9" class="mr-2" />The Pragmatic Programmer</label></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-green-300 mb-3">🎧 5 Popular Programming Podcasts</h2>
+      <ul id="podcastsList" class="space-y-2">
+        <li><label><input type="checkbox" data-podcast="0" class="mr-2" />Groovy Podcast</label></li>
+        <li><label><input type="checkbox" data-podcast="1" class="mr-2" />Java Pub House</label></li>
+        <li><label><input type="checkbox" data-podcast="2" class="mr-2" />Coding Blocks</label></li>
+        <li><label><input type="checkbox" data-podcast="3" class="mr-2" />Developer Tea</label></li>
+        <li><label><input type="checkbox" data-podcast="4" class="mr-2" />Groovy & Grails Podcast</label></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<div class="mt-8">
+  <p class="text-gray-400 mb-2">Overall Progress:</p>
+  <div class="h-5 bg-gray-700 rounded overflow-hidden">
+    <div id="progressBar" class="h-5 bg-green-500 transition-all duration-300"></div>
+  </div>
+  <p id="progressText" class="text-sm text-gray-400 mt-1"></p>
+</div>
+
+<script>
+const levels = [
+  "Level 1: Groovy Fundamentals",
+  "Level 2: Collections & Closures",
+  "Level 3: Object-Oriented Groovy",
+  "Level 4: Groovy Builders & DSLs",
+  "Level 5: Working with JSON & XML",
+  "Level 6: Testing with Groovy",
+  "Level 7: Groovy with Gradle",
+  "Level 8: Metaprogramming",
+  "Level 9: Advanced Groovy Patterns",
+  "Level 10: Groovy Mastery"
+];
+
+const levelTasks = [
+  [
+    "Install Groovy",
+    "Write a simple script",
+    "Understand dynamic typing",
+    "Use basic operators",
+    "Work with Groovy strings",
+    "Run scripts from the CLI",
+    "Understand Groovy's syntax",
+    "Use Groovy console",
+    "Understand Groovy vs Java",
+    "Set up a Groovy project"
+  ],
+  [
+    "Use lists and maps",
+    "Iterate over collections",
+    "Use Groovy ranges",
+    "Create and use closures",
+    "Understand implicit it",
+    "Use collect and findAll",
+    "Filter collections",
+    "Map and reduce with closures",
+    "Use spread operator",
+    "Master the GDK"
+  ],
+  [
+    "Create classes in Groovy",
+    "Use constructors",
+    "Add properties and methods",
+    "Understand default values",
+    "Use inheritance",
+    "Override toString()",
+    "Work with traits",
+    "Understand static typing",
+    "Use @CompileStatic",
+    "Explore categories"
+  ],
+  [
+    "Understand builders",
+    "Create an XML builder",
+    "Use MarkupBuilder",
+    "Use JsonBuilder",
+    "Create simple DSLs",
+    "Use nested builders",
+    "Create readable config scripts",
+    "Use ConfigSlurper",
+    "Understand command chains",
+    "Design a DSL for an app"
+  ],
+  [
+    "Parse JSON data",
+    "Parse XML data",
+    "Serialize data to JSON",
+    "Serialize data to XML",
+    "Use JsonSlurper",
+    "Use XmlSlurper",
+    "Integrate with REST APIs",
+    "Handle HTTP requests",
+    "Parse CSV files",
+    "Transform data formats"
+  ],
+  [
+    "Write Groovy unit tests",
+    "Use Spock framework",
+    "Test data-driven features",
+    "Mock services in tests",
+    "Use JUnit with Groovy",
+    "Understand test lifecycle",
+    "Assert with Groovy truth",
+    "Test REST APIs in Groovy",
+    "Run tests in CI/CD",
+    "Generate test reports"
+  ],
+  [
+    "Integrate Groovy with Gradle",
+    "Understand build.gradle",
+    "Write custom tasks",
+    "Use Gradle plugins",
+    "Configure multi-project builds",
+    "Use Gradle properties",
+    "Use Groovy in build scripts",
+    "Automate project tasks",
+    "Publish artifacts",
+    "Use dependency management"
+  ],
+  [
+    "Understand metaprogramming basics",
+    "Use ExpandoMetaClass",
+    "Add methods dynamically",
+    "Use categories for meta",
+    "Use methodMissing & propertyMissing",
+    "Add dynamic behavior to classes",
+    "Explore AST transformations",
+    "Use @Delegate",
+    "Write interceptors",
+    "Understand dynamic Groovy"
+  ],
+  [
+    "Understand functional style Groovy",
+    "Use currying & partials",
+    "Use memoization",
+    "Write fluent APIs",
+    "Create reusable components",
+    "Explore reactive Groovy",
+    "Use RxJava in Groovy",
+    "Understand performance tips",
+    "Profile Groovy applications",
+    "Contribute to open source Groovy projects"
+  ],
+  [
+    "Build production-ready Groovy apps",
+    "Deploy Groovy-based microservices",
+    "Optimize Groovy scripts",
+    "Integrate with Java libraries",
+    "Use Grails with Groovy",
+    "Create your own Gradle plugin",
+    "Promote best practices",
+    "Automate with Groovy scripts",
+    "Teach Groovy to your team",
+    "Achieve Groovy Mastery! 🎉"
+  ],
+];
+
+const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+  tasksInLevel.map(desc => ({
+    id: `${levelIndex}-${desc}`,
+    description: desc,
+    level: levelIndex + 1,
+    completed: false
+  }))
+);
+
+const savedTasks = JSON.parse(localStorage.getItem('groovy_tasks')) || tasks;
+const savedBooks = JSON.parse(localStorage.getItem('groovy_books')) || Array(10).fill(false);
+const savedPodcasts = JSON.parse(localStorage.getItem('groovy_podcasts')) || Array(5).fill(false);
+
+const levelsContainer = document.getElementById('levelsContainer');
+const booksList = document.getElementById('booksList');
+const podcastsList = document.getElementById('podcastsList');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+
+function renderLevels() {
+  levelsContainer.innerHTML = '';
+  levels.forEach((levelTitle, i) => {
+    const levelNum = i + 1;
+    const div = document.createElement('section');
+    div.className = 'bg-gray-700 rounded p-4';
+    const h2 = document.createElement('h2');
+    h2.className = 'text-lg font-semibold text-green-300 mb-3';
+    h2.textContent = levelTitle;
+    div.appendChild(h2);
+    const ul = document.createElement('ul');
+    ul.className = 'space-y-2';
+    savedTasks.filter(t => t.level === levelNum).forEach(task => {
+      const li = document.createElement('li');
+      li.className = 'flex items-center bg-gray-600 rounded p-2';
+      li.innerHTML = `
+        <input type="checkbox" class="mr-3 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+        <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+      `;
+      ul.appendChild(li);
+    });
+    div.appendChild(ul);
+    levelsContainer.appendChild(div);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const completedCount = savedTasks.filter(t => t.completed).length;
+  const totalCount = savedTasks.length;
+  const percent = Math.round((completedCount / totalCount) * 100);
+  progressBar.style.width = `${percent}%`;
+  progressText.textContent = `${completedCount}/${totalCount} tasks completed (${percent}%)`;
+}
+
+document.body.addEventListener('change', e => {
+  if (e.target.matches('.task-checkbox')) {
+    const id = e.target.dataset.id;
+    const task = savedTasks.find(t => t.id === id);
+    if (task) {
+      task.completed = e.target.checked;
+      localStorage.setItem('groovy_tasks', JSON.stringify(savedTasks));
+      renderLevels();
+    }
+  }
+  if (e.target.matches('[data-book]')) {
+    const idx = parseInt(e.target.dataset.book, 10);
+    savedBooks[idx] = e.target.checked;
+    localStorage.setItem('groovy_books', JSON.stringify(savedBooks));
+  }
+  if (e.target.matches('[data-podcast]')) {
+    const idx = parseInt(e.target.dataset.podcast, 10);
+    savedPodcasts[idx] = e.target.checked;
+    localStorage.setItem('groovy_podcasts', JSON.stringify(savedPodcasts));
+  }
+});
+
+function renderBooks() {
+  savedBooks.forEach((checked, i) => {
+    const el = booksList.querySelector(`[data-book="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+function renderPodcasts() {
+  savedPodcasts.forEach((checked, i) => {
+    const el = podcastsList.querySelector(`[data-podcast="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+
+renderLevels();
+renderBooks();
+renderPodcasts();
+</script>
+</body>
+</html>

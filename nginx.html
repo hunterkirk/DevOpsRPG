@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nginx Mastery RPG Tracker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .completed { text-decoration: line-through; color: #888; }
+</style>
+</head>
+<body class="p-6 max-w-7xl mx-auto">
+<h1 class="text-4xl font-extrabold text-green-400 mb-6">🌟 Nginx Mastery RPG Tracker</h1>
+<p class="mb-8 text-gray-400">Level up your Nginx skills by completing tasks, reading essential books, and listening to top podcasts!</p>
+
+<div class="flex flex-col md:flex-row gap-8">
+  <section class="flex-1 space-y-6" id="levelsContainer"></section>
+  <aside class="w-full md:w-96 bg-gray-800 rounded p-6 space-y-8">
+    <div>
+      <h2 class="text-xl font-bold text-green-300 mb-3">📚 10 Must-Read Nginx Books</h2>
+      <ul id="booksList" class="space-y-2">
+        <li><label><input type="checkbox" data-book="0" class="mr-2" />Nginx: A Practical Guide</label></li>
+        <li><label><input type="checkbox" data-book="1" class="mr-2" />Mastering Nginx</label></li>
+        <li><label><input type="checkbox" data-book="2" class="mr-2" />Nginx Cookbook</label></li>
+        <li><label><input type="checkbox" data-book="3" class="mr-2" />The Complete Nginx Deployment Guide</label></li>
+        <li><label><input type="checkbox" data-book="4" class="mr-2" />Nginx Essentials</label></li>
+        <li><label><input type="checkbox" data-book="5" class="mr-2" />Practical Nginx</label></li>
+        <li><label><input type="checkbox" data-book="6" class="mr-2" />Nginx HTTP Server - Fourth Edition</label></li>
+        <li><label><input type="checkbox" data-book="7" class="mr-2" />Web Server Technology Explained</label></li>
+        <li><label><input type="checkbox" data-book="8" class="mr-2" />The Art of Scalability</label></li>
+        <li><label><input type="checkbox" data-book="9" class="mr-2" />Deploying Nginx at Scale</label></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-green-300 mb-3">🎧 5 Popular Nginx Podcasts</h2>
+      <ul id="podcastsList" class="space-y-2">
+        <li><label><input type="checkbox" data-podcast="0" class="mr-2" />NGINX Podcast</label></li>
+        <li><label><input type="checkbox" data-podcast="1" class="mr-2" />The Load Balancer Show</label></li>
+        <li><label><input type="checkbox" data-podcast="2" class="mr-2" />Tech Stuff: Web Servers</label></li>
+        <li><label><input type="checkbox" data-podcast="3" class="mr-2" />The Backend Engineering Show</label></li>
+        <li><label><input type="checkbox" data-podcast="4" class="mr-2" />Real World DevOps</label></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<div class="mt-8">
+  <p class="text-gray-400 mb-2">Overall Progress:</p>
+  <div class="h-5 bg-gray-700 rounded overflow-hidden">
+    <div id="progressBar" class="h-5 bg-green-500 transition-all duration-300"></div>
+  </div>
+  <p id="progressText" class="text-sm text-gray-400 mt-1"></p>
+</div>
+
+<script>
+const levels = [
+  "Level 1: Nginx Basics",
+  "Level 2: Installation & Setup",
+  "Level 3: Static Content Serving",
+  "Level 4: Reverse Proxying",
+  "Level 5: Load Balancing",
+  "Level 6: Security & HTTPS",
+  "Level 7: Performance Tuning",
+  "Level 8: Monitoring & Logging",
+  "Level 9: Advanced Configurations",
+  "Level 10: Nginx Mastery"
+];
+
+const levelTasks = [
+  [
+    "Understand what Nginx is and its use cases",
+    "Explore Nginx documentation",
+    "Learn about Nginx configuration syntax",
+    "Understand Nginx modules",
+    "Familiarize with Nginx directory structure",
+    "Run your first Nginx server",
+    "Check the Nginx version",
+    "Understand the worker process model",
+    "Explore configuration files",
+    "Join the Nginx community"
+  ],
+  [
+    "Install Nginx on Linux",
+    "Install Nginx on Windows or Mac",
+    "Start and stop the Nginx service",
+    "Reload and restart Nginx",
+    "Use systemd for Nginx management",
+    "Set up default server blocks",
+    "Understand default error pages",
+    "Set up basic logging",
+    "Create a custom configuration file",
+    "Test configuration syntax"
+  ],
+  [
+    "Serve static HTML content",
+    "Configure MIME types",
+    "Set custom index files",
+    "Serve static images and files",
+    "Enable caching for static files",
+    "Use autoindex for directories",
+    "Understand file permissions",
+    "Optimize static file serving",
+    "Configure default error pages",
+    "Document your static content setup"
+  ],
+  [
+    "Set up reverse proxy to a backend",
+    "Understand proxy_pass directive",
+    "Configure headers for proxy",
+    "Enable gzip compression",
+    "Handle upstream timeouts",
+    "Add proxy cache settings",
+    "Use upstream blocks for multiple servers",
+    "Set custom proxy error pages",
+    "Debug proxy configuration",
+    "Document reverse proxy setup"
+  ],
+  [
+    "Understand Nginx load balancing",
+    "Configure round-robin load balancing",
+    "Use least_conn load balancing",
+    "Configure IP hash load balancing",
+    "Set up health checks",
+    "Tune load balancing weights",
+    "Monitor load balancing status",
+    "Understand session persistence",
+    "Simulate high-traffic load",
+    "Document your load balancing setup"
+  ],
+  [
+    "Set up HTTPS with Let's Encrypt",
+    "Configure SSL certificates",
+    "Redirect HTTP to HTTPS",
+    "Understand SSL/TLS protocols",
+    "Harden SSL configurations",
+    "Set up HSTS headers",
+    "Enable OCSP stapling",
+    "Test SSL security with SSL Labs",
+    "Handle certificate renewal",
+    "Document SSL setup"
+  ],
+  [
+    "Tune worker_processes and connections",
+    "Enable keepalive connections",
+    "Use caching for dynamic content",
+    "Configure client_max_body_size",
+    "Enable gzip compression",
+    "Optimize buffer sizes",
+    "Monitor performance with logs",
+    "Simulate high-traffic scenarios",
+    "Use CDN with Nginx",
+    "Document performance best practices"
+  ],
+  [
+    "Configure access and error logs",
+    "Customize log formats",
+    "Rotate logs automatically",
+    "Set up log monitoring",
+    "Use log analyzers like GoAccess",
+    "Enable stub_status module",
+    "Explore Prometheus exporter",
+    "Integrate with Grafana dashboards",
+    "Debug with detailed logs",
+    "Document monitoring setup"
+  ],
+  [
+    "Use map and geo modules",
+    "Set up multiple server blocks",
+    "Configure redirects and rewrites",
+    "Use try_files for fallback logic",
+    "Handle CORS headers",
+    "Set up rate limiting",
+    "Use Nginx as a mail proxy",
+    "Explore dynamic modules",
+    "Debug advanced configurations",
+    "Document advanced usage"
+  ],
+  [
+    "Refactor your Nginx configurations",
+    "Document everything you learned",
+    "Contribute to Nginx documentation",
+    "Share your best practices",
+    "Participate in Nginx forums",
+    "Explore Nginx Plus features",
+    "Mentor others in using Nginx",
+    "Create tutorials and videos",
+    "Optimize for future growth",
+    "Achieve Nginx Mastery! 🌟"
+  ]
+];
+
+const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+  tasksInLevel.map(desc => ({
+    id: `${levelIndex}-${desc}`,
+    description: desc,
+    level: levelIndex + 1,
+    completed: false
+  }))
+);
+
+const savedTasks = JSON.parse(localStorage.getItem('nginx_tasks')) || tasks;
+const savedBooks = JSON.parse(localStorage.getItem('nginx_books')) || Array(10).fill(false);
+const savedPodcasts = JSON.parse(localStorage.getItem('nginx_podcasts')) || Array(5).fill(false);
+
+const levelsContainer = document.getElementById('levelsContainer');
+const booksList = document.getElementById('booksList');
+const podcastsList = document.getElementById('podcastsList');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+
+function renderLevels() {
+  levelsContainer.innerHTML = '';
+  levels.forEach((levelTitle, i) => {
+    const levelNum = i + 1;
+    const div = document.createElement('section');
+    div.className = 'bg-gray-700 rounded p-4';
+    const h2 = document.createElement('h2');
+    h2.className = 'text-lg font-semibold text-green-300 mb-3';
+    h2.textContent = levelTitle;
+    div.appendChild(h2);
+    const ul = document.createElement('ul');
+    ul.className = 'space-y-2';
+    savedTasks.filter(t => t.level === levelNum).forEach(task => {
+      const li = document.createElement('li');
+      li.className = 'flex items-center bg-gray-600 rounded p-2';
+      li.innerHTML = `
+        <input type="checkbox" class="mr-3 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+        <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+      `;
+      ul.appendChild(li);
+    });
+    div.appendChild(ul);
+    levelsContainer.appendChild(div);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const completedCount = savedTasks.filter(t => t.completed).length;
+  const totalCount = savedTasks.length;
+  const percent = Math.round((completedCount / totalCount) * 100);
+  progressBar.style.width = `${percent}%`;
+  progressText.textContent = `${completedCount}/${totalCount} tasks completed (${percent}%)`;
+}
+
+document.body.addEventListener('change', e => {
+  if (e.target.matches('.task-checkbox')) {
+    const id = e.target.dataset.id;
+    const task = savedTasks.find(t => t.id === id);
+    if (task) {
+      task.completed = e.target.checked;
+      localStorage.setItem('nginx_tasks', JSON.stringify(savedTasks));
+      renderLevels();
+    }
+  }
+  if (e.target.matches('[data-book]')) {
+    const idx = parseInt(e.target.dataset.book, 10);
+    savedBooks[idx] = e.target.checked;
+    localStorage.setItem('nginx_books', JSON.stringify(savedBooks));
+  }
+  if (e.target.matches('[data-podcast]')) {
+    const idx = parseInt(e.target.dataset.podcast, 10);
+    savedPodcasts[idx] = e.target.checked;
+    localStorage.setItem('nginx_podcasts', JSON.stringify(savedPodcasts));
+  }
+});
+
+function renderBooks() {
+  savedBooks.forEach((checked, i) => {
+    const el = booksList.querySelector(`[data-book="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+function renderPodcasts() {
+  savedPodcasts.forEach((checked, i) => {
+    const el = podcastsList.querySelector(`[data-podcast="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+
+renderLevels();
+renderBooks();
+renderPodcasts();
+</script>
+</body>
+</html>

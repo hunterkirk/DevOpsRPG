@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>JSON Wizardry RPG Tracker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .completed { text-decoration: line-through; color: #888; }
+</style>
+</head>
+<body class="p-6 max-w-7xl mx-auto">
+<h1 class="text-4xl font-extrabold text-green-400 mb-6">📜 JSON Wizardry RPG Tracker</h1>
+<p class="mb-8 text-gray-400">Level up your JSON skills by completing tasks, reading essential books, and tuning into top DevOps podcasts!</p>
+
+<div class="flex flex-col md:flex-row gap-8">
+  <section class="flex-1 space-y-6" id="levelsContainer"></section>
+
+  <aside class="w-full md:w-96 bg-gray-800 rounded p-6 space-y-8">
+    <div>
+      <h2 class="text-xl font-bold text-green-300 mb-3">📚 10 Must-Read JSON & DevOps Books</h2>
+      <ul id="booksList" class="space-y-2">
+        <li><label><input type="checkbox" data-book="0" class="mr-2" />The Phoenix Project</label></li>
+        <li><label><input type="checkbox" data-book="1" class="mr-2" />The DevOps Handbook</label></li>
+        <li><label><input type="checkbox" data-book="2" class="mr-2" />JSON at Work</label></li>
+        <li><label><input type="checkbox" data-book="3" class="mr-2" />JavaScript: The Good Parts</label></li>
+        <li><label><input type="checkbox" data-book="4" class="mr-2" />RESTful Web APIs</label></li>
+        <li><label><input type="checkbox" data-book="5" class="mr-2" />Kubernetes Up & Running</label></li>
+        <li><label><input type="checkbox" data-book="6" class="mr-2" />Docker Deep Dive</label></li>
+        <li><label><input type="checkbox" data-book="7" class="mr-2" />Effective DevOps</label></li>
+        <li><label><input type="checkbox" data-book="8" class="mr-2" />Terraform: Up & Running</label></li>
+        <li><label><input type="checkbox" data-book="9" class="mr-2" />Mastering Kubernetes</label></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-green-300 mb-3">🎧 5 Popular DevOps Podcasts</h2>
+      <ul id="podcastsList" class="space-y-2">
+        <li><label><input type="checkbox" data-podcast="0" class="mr-2" />The DevOps Cafe</label></li>
+        <li><label><input type="checkbox" data-podcast="1" class="mr-2" />Arrested DevOps</label></li>
+        <li><label><input type="checkbox" data-podcast="2" class="mr-2" />The Ship Show</label></li>
+        <li><label><input type="checkbox" data-podcast="3" class="mr-2" />DevOps Paradox</label></li>
+        <li><label><input type="checkbox" data-podcast="4" class="mr-2" />Screaming in the Cloud</label></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<div class="mt-8">
+  <p class="text-gray-400 mb-2">Overall Progress:</p>
+  <div class="h-5 bg-gray-700 rounded overflow-hidden">
+    <div id="progressBar" class="h-5 bg-green-500 transition-all duration-300"></div>
+  </div>
+  <p id="progressText" class="text-sm text-gray-400 mt-1"></p>
+</div>
+
+<script>
+const levels = [
+  "Level 1: JSON Basics",
+  "Level 2: Working with JSON Data",
+  "Level 3: JSON and JavaScript",
+  "Level 4: JSON in APIs",
+  "Level 5: JSON Schema and Validation",
+  "Level 6: JSON in Configuration Management",
+  "Level 7: Parsing & Serialization",
+  "Level 8: Performance & Security",
+  "Level 9: Advanced JSON Usage",
+  "Level 10: JSON in Real-World DevOps"
+];
+
+const levelTasks = [
+  [
+    "Understand JSON syntax and data types",
+    "Write simple JSON objects and arrays",
+    "Use key-value pairs correctly",
+    "Work with nested JSON structures",
+    "Parse JSON strings manually",
+    "Understand JSON primitives",
+    "Write valid JSON files",
+    "Handle null and boolean values",
+    "Use comments in JSON alternatives",
+    "Validate JSON syntax"
+  ],
+  [
+    "Manipulate JSON data with JavaScript",
+    "Read and write JSON files",
+    "Use JSON.stringify and JSON.parse",
+    "Handle JSON with AJAX requests",
+    "Work with JSON in Node.js",
+    "Convert CSV to JSON",
+    "Convert JSON to CSV",
+    "Filter JSON data programmatically",
+    "Merge multiple JSON objects",
+    "Deep clone JSON objects"
+  ],
+  [
+    "Use JSON in RESTful API requests",
+    "Send JSON payloads with fetch",
+    "Receive JSON responses",
+    "Handle errors in JSON APIs",
+    "Use JSON in WebSockets",
+    "Debug API JSON payloads",
+    "Work with JSON Web Tokens (JWT)",
+    "Serialize JSON in HTTP headers",
+    "Write API documentation with JSON examples",
+    "Test APIs returning JSON"
+  ],
+  [
+    "Define JSON schema basics",
+    "Write JSON Schema for validation",
+    "Validate JSON using AJV",
+    "Use JSON Schema for API requests",
+    "Create reusable schema components",
+    "Understand schema references",
+    "Write advanced constraints",
+    "Generate data from JSON Schema",
+    "Integrate schema validation in CI",
+    "Document APIs with JSON Schema"
+  ],
+  [
+    "Use JSON in Docker Compose files",
+    "Configure Kubernetes with JSON",
+    "Manage cloud configs in JSON",
+    "Use JSON in Terraform",
+    "Automate deployment configs",
+    "Write Ansible playbooks with JSON",
+    "Integrate JSON with monitoring configs",
+    "Use JSON for logging configurations",
+    "Convert YAML to JSON",
+    "Version control JSON configs"
+  ],
+  [
+    "Parse JSON safely in multiple languages",
+    "Handle JSON encoding issues",
+    "Serialize custom objects to JSON",
+    "Optimize JSON parsing performance",
+    "Use streaming JSON parsers",
+    "Debug malformed JSON errors",
+    "Use JSONPath to query data",
+    "Implement error handling in parsers",
+    "Serialize large JSON data sets",
+    "Implement custom JSON serializers"
+  ],
+  [
+    "Understand JSON security vulnerabilities",
+    "Avoid JSON injection attacks",
+    "Sanitize JSON input",
+    "Encrypt JSON data",
+    "Handle JSON with sensitive data",
+    "Secure APIs sending JSON",
+    "Implement rate limiting on JSON endpoints",
+    "Use HTTPS for JSON transfers",
+    "Audit JSON logs",
+    "Follow JSON best security practices"
+  ],
+  [
+    "Work with JSON-LD for linked data",
+    "Use JSON in GraphQL queries",
+    "Generate JSON reports",
+    "Implement JSON Patch",
+    "Write JSON Merge Patch requests",
+    "Integrate JSON with NoSQL databases",
+    "Use JSON with message queues",
+    "Create dynamic JSON templates",
+    "Test complex JSON structures",
+    "Build JSON-driven microservices"
+  ],
+  [
+    "Build a full REST API with JSON",
+    "Automate JSON config generation",
+    "Create JSON-driven dashboards",
+    "Use JSON in serverless functions",
+    "Integrate JSON with CI/CD pipelines",
+    "Document JSON APIs comprehensively",
+    "Optimize JSON for mobile apps",
+    "Write reusable JSON libraries",
+    "Contribute to JSON open source projects",
+    "Become a JSON DevOps wizard! 🧙‍♂️"
+  ]
+];
+
+const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+  tasksInLevel.map(desc => ({
+    id: `${levelIndex}-${desc}`,
+    description: desc,
+    level: levelIndex + 1,
+    completed: false
+  }))
+);
+
+const savedTasks = JSON.parse(localStorage.getItem('json_tasks')) || tasks;
+const savedBooks = JSON.parse(localStorage.getItem('json_books')) || Array(10).fill(false);
+const savedPodcasts = JSON.parse(localStorage.getItem('json_podcasts')) || Array(5).fill(false);
+
+const levelsContainer = document.getElementById('levelsContainer');
+const booksList = document.getElementById('booksList');
+const podcastsList = document.getElementById('podcastsList');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+
+function renderLevels() {
+  levelsContainer.innerHTML = '';
+  levels.forEach((levelTitle, i) => {
+    const levelNum = i + 1;
+    const div = document.createElement('section');
+    div.className = 'bg-gray-700 rounded p-4';
+    const h2 = document.createElement('h2');
+    h2.className = 'text-lg font-semibold text-green-300 mb-3';
+    h2.textContent = levelTitle;
+    div.appendChild(h2);
+    const ul = document.createElement('ul');
+    ul.className = 'space-y-2';
+    savedTasks.filter(t => t.level === levelNum).forEach(task => {
+      const li = document.createElement('li');
+      li.className = 'flex items-center bg-gray-600 rounded p-2';
+      li.innerHTML = `
+        <input type="checkbox" class="mr-3 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+        <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+      `;
+      ul.appendChild(li);
+    });
+    div.appendChild(ul);
+    levelsContainer.appendChild(div);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const completedCount = savedTasks.filter(t => t.completed).length;
+  const totalCount = savedTasks.length;
+  const percent = Math.round((completedCount / totalCount) * 100);
+  progressBar.style.width = `${percent}%`;
+  progressText.textContent = `${completedCount}/${totalCount} tasks completed (${percent}%)`;
+}
+
+document.body.addEventListener('change', e => {
+  if (e.target.matches('.task-checkbox')) {
+    const id = e.target.dataset.id;
+    const task = savedTasks.find(t => t.id === id);
+    if (task) {
+      task.completed = e.target.checked;
+      localStorage.setItem('json_tasks', JSON.stringify(savedTasks));
+      renderLevels();
+    }
+  }
+  if (e.target.matches('[data-book]')) {
+    const idx = parseInt(e.target.dataset.book, 10);
+    savedBooks[idx] = e.target.checked;
+    localStorage.setItem('json_books', JSON.stringify(savedBooks));
+  }
+  if (e.target.matches('[data-podcast]')) {
+    const idx = parseInt(e.target.dataset.podcast, 10);
+    savedPodcasts[idx] = e.target.checked;
+    localStorage.setItem('json_podcasts', JSON.stringify(savedPodcasts));
+  }
+});
+
+function renderBooks() {
+  savedBooks.forEach((checked, i) => {
+    const el = booksList.querySelector(`[data-book="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+function renderPodcasts() {
+  savedPodcasts.forEach((checked, i) => {
+    const el = podcastsList.querySelector(`[data-podcast="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+
+renderLevels();
+renderBooks();
+renderPodcasts();
+</script>
+</body>
+</html>

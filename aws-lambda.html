@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AWS Lambda Mastery RPG Tracker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .completed { text-decoration: line-through; color: #888; }
+</style>
+</head>
+<body class="p-6 max-w-7xl mx-auto">
+<h1 class="text-4xl font-extrabold text-yellow-400 mb-6">⚡ AWS Lambda Mastery RPG Tracker</h1>
+<p class="mb-8 text-gray-400">Level up your AWS Lambda skills by completing tasks, reading essential books, and tuning into top podcasts!</p>
+
+<div class="flex flex-col md:flex-row gap-8">
+  <section class="flex-1 space-y-6" id="levelsContainer"></section>
+
+  <aside class="w-full md:w-96 bg-gray-800 rounded p-6 space-y-8">
+    <div>
+      <h2 class="text-xl font-bold text-yellow-300 mb-3">📚 10 Must-Read Books</h2>
+      <ul id="booksList" class="space-y-2">
+        <li><label><input type="checkbox" data-book="0" class="mr-2" />Serverless Architectures on AWS</label></li>
+        <li><label><input type="checkbox" data-book="1" class="mr-2" />AWS Lambda in Action</label></li>
+        <li><label><input type="checkbox" data-book="2" class="mr-2" />Serverless Applications with Node.js</label></li>
+        <li><label><input type="checkbox" data-book="3" class="mr-2" />Learning AWS Lambda</label></li>
+        <li><label><input type="checkbox" data-book="4" class="mr-2" />Programming AWS Lambda</label></li>
+        <li><label><input type="checkbox" data-book="5" class="mr-2" />Serverless Design Patterns and Best Practices</label></li>
+        <li><label><input type="checkbox" data-book="6" class="mr-2" />AWS Cookbook</label></li>
+        <li><label><input type="checkbox" data-book="7" class="mr-2" />The Definitive Guide to AWS Infrastructure Automation</label></li>
+        <li><label><input type="checkbox" data-book="8" class="mr-2" />AWS Well-Architected Framework</label></li>
+        <li><label><input type="checkbox" data-book="9" class="mr-2" />Serverless Computing: A Developer’s Guide</label></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-yellow-300 mb-3">🎧 5 Popular Podcasts</h2>
+      <ul id="podcastsList" class="space-y-2">
+        <li><label><input type="checkbox" data-podcast="0" class="mr-2" />AWS Podcast</label></li>
+        <li><label><input type="checkbox" data-podcast="1" class="mr-2" />Serverless Chats</label></li>
+        <li><label><input type="checkbox" data-podcast="2" class="mr-2" />The Cloudcast</label></li>
+        <li><label><input type="checkbox" data-podcast="3" class="mr-2" />Screaming in the Cloud</label></li>
+        <li><label><input type="checkbox" data-podcast="4" class="mr-2" />AWS Morning Brief</label></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<div class="mt-8">
+  <p class="text-gray-400 mb-2">Overall Progress:</p>
+  <div class="h-5 bg-gray-700 rounded overflow-hidden">
+    <div id="progressBar" class="h-5 bg-yellow-500 transition-all duration-300"></div>
+  </div>
+  <p id="progressText" class="text-sm text-gray-400 mt-1"></p>
+</div>
+
+<script>
+const levels = [
+  "Level 1: Getting Started with Lambda",
+  "Level 2: Basic Function Creation",
+  "Level 3: Integrations with AWS Services",
+  "Level 4: Event-driven Architectures",
+  "Level 5: Security & IAM Roles",
+  "Level 6: Monitoring & Logging",
+  "Level 7: Error Handling & Retries",
+  "Level 8: Performance Optimization",
+  "Level 9: Advanced Use Cases",
+  "Level 10: Mastery & Deployment Best Practices"
+];
+
+const levelTasks = [
+  [
+    "Understand what AWS Lambda is",
+    "Set up an AWS account",
+    "Explore the Lambda console",
+    "Read Lambda documentation",
+    "Learn about pricing & limits",
+    "Deploy your first Lambda function",
+    "Understand execution roles",
+    "Explore Lambda runtimes",
+    "Explore use cases for Lambda",
+    "Join an AWS community"
+  ],
+  [
+    "Create functions using the AWS Console",
+    "Deploy a basic Node.js/Python function",
+    "Understand handler syntax",
+    "Pass environment variables",
+    "Set memory and timeout limits",
+    "Understand the Lambda lifecycle",
+    "Delete and re-deploy a function",
+    "Use Lambda layers",
+    "Test locally using SAM CLI",
+    "Document your basic functions"
+  ],
+  [
+    "Trigger Lambda from S3 events",
+    "Trigger Lambda from DynamoDB streams",
+    "Use API Gateway as trigger",
+    "Use SNS/SQS triggers",
+    "Explore EventBridge events",
+    "Understand input/output JSON",
+    "Map events with AWS SDK",
+    "Set up CloudFormation templates",
+    "Explore Step Functions integrations",
+    "Document integrations in diagrams"
+  ],
+  [
+    "Understand event-driven architecture",
+    "Explore real-time file processing",
+    "Build a serverless REST API",
+    "Set up email triggers with SES",
+    "Explore image/video processing use cases",
+    "Understand fan-out patterns",
+    "Integrate with Kinesis data streams",
+    "Test and validate event flows",
+    "Simulate production events",
+    "Document real-world scenarios"
+  ],
+  [
+    "Understand IAM policies for Lambda",
+    "Create least-privilege execution roles",
+    "Attach permissions to roles",
+    "Use AWS KMS for secure data",
+    "Manage environment variable encryption",
+    "Enable VPC access securely",
+    "Audit IAM permissions for Lambda",
+    "Implement resource-based policies",
+    "Review Lambda security best practices",
+    "Document security configurations"
+  ],
+  [
+    "Use CloudWatch Logs for Lambda",
+    "Set up CloudWatch metrics & alarms",
+    "Use X-Ray for tracing",
+    "Enable structured JSON logging",
+    "Understand cold start implications",
+    "Analyze function invocation metrics",
+    "Set up Lambda Insights",
+    "Monitor concurrency and throttling",
+    "Visualize logs in CloudWatch",
+    "Document your monitoring setup"
+  ],
+  [
+    "Understand retry behavior in Lambda",
+    "Handle errors in function code",
+    "Implement DLQs with SQS",
+    "Use try/catch blocks for error handling",
+    "Use structured error messages",
+    "Configure maximum retry attempts",
+    "Test retry scenarios",
+    "Use AWS SDK error handling best practices",
+    "Track errors in CloudWatch",
+    "Document your error-handling strategy"
+  ],
+  [
+    "Profile function performance",
+    "Optimize memory vs execution time",
+    "Minimize cold starts with provisioned concurrency",
+    "Use smaller deployment packages",
+    "Understand Lambda quotas",
+    "Optimize code for performance",
+    "Use caching strategies (e.g., Elasticache)",
+    "Experiment with different runtimes",
+    "Test performance in real-world scenarios",
+    "Document optimization results"
+  ],
+  [
+    "Explore asynchronous processing patterns",
+    "Build complex workflows with Step Functions",
+    "Use Lambda as a microservice",
+    "Implement Blue/Green deployments",
+    "Explore hybrid/multi-cloud integrations",
+    "Integrate third-party APIs",
+    "Design for multi-region failover",
+    "Develop with local emulation tools",
+    "Simulate large-scale load",
+    "Document advanced architectures"
+  ],
+  [
+    "Deploy Lambda with IaC (Terraform/CDK/CloudFormation)",
+    "Set up CI/CD pipelines for Lambda",
+    "Understand deployment package structure",
+    "Use versioning and aliases",
+    "Implement canary deployments",
+    "Design for high availability",
+    "Contribute to AWS Lambda community projects",
+    "Share your knowledge through blogs/tutorials",
+    "Audit your entire Lambda environment",
+    "Achieve Lambda mastery! ⚡"
+  ]
+];
+
+const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+  tasksInLevel.map(desc => ({
+    id: `${levelIndex}-${desc}`,
+    description: desc,
+    level: levelIndex + 1,
+    completed: false
+  }))
+);
+
+const savedTasks = JSON.parse(localStorage.getItem('lambda_tasks')) || tasks;
+const savedBooks = JSON.parse(localStorage.getItem('lambda_books')) || Array(10).fill(false);
+const savedPodcasts = JSON.parse(localStorage.getItem('lambda_podcasts')) || Array(5).fill(false);
+
+const levelsContainer = document.getElementById('levelsContainer');
+const booksList = document.getElementById('booksList');
+const podcastsList = document.getElementById('podcastsList');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+
+function renderLevels() {
+  levelsContainer.innerHTML = '';
+  levels.forEach((levelTitle, i) => {
+    const levelNum = i + 1;
+    const div = document.createElement('section');
+    div.className = 'bg-gray-700 rounded p-4';
+    const h2 = document.createElement('h2');
+    h2.className = 'text-lg font-semibold text-yellow-300 mb-3';
+    h2.textContent = levelTitle;
+    div.appendChild(h2);
+    const ul = document.createElement('ul');
+    ul.className = 'space-y-2';
+    savedTasks.filter(t => t.level === levelNum).forEach(task => {
+      const li = document.createElement('li');
+      li.className = 'flex items-center bg-gray-600 rounded p-2';
+      li.innerHTML = `
+        <input type="checkbox" class="mr-3 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+        <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+      `;
+      ul.appendChild(li);
+    });
+    div.appendChild(ul);
+    levelsContainer.appendChild(div);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const completedCount = savedTasks.filter(t => t.completed).length;
+  const totalCount = savedTasks.length;
+  const percent = Math.round((completedCount / totalCount) * 100);
+  progressBar.style.width = `${percent}%`;
+  progressText.textContent = `${completedCount}/${totalCount} tasks completed (${percent}%)`;
+}
+
+document.body.addEventListener('change', e => {
+  if (e.target.matches('.task-checkbox')) {
+    const id = e.target.dataset.id;
+    const task = savedTasks.find(t => t.id === id);
+    if (task) {
+      task.completed = e.target.checked;
+      localStorage.setItem('lambda_tasks', JSON.stringify(savedTasks));
+      renderLevels();
+    }
+  }
+  if (e.target.matches('[data-book]')) {
+    const idx = parseInt(e.target.dataset.book, 10);
+    savedBooks[idx] = e.target.checked;
+    localStorage.setItem('lambda_books', JSON.stringify(savedBooks));
+  }
+  if (e.target.matches('[data-podcast]')) {
+    const idx = parseInt(e.target.dataset.podcast, 10);
+    savedPodcasts[idx] = e.target.checked;
+    localStorage.setItem('lambda_podcasts', JSON.stringify(savedPodcasts));
+  }
+});
+
+function renderBooks() {
+  savedBooks.forEach((checked, i) => {
+    const el = booksList.querySelector(`[data-book="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+function renderPodcasts() {
+  savedPodcasts.forEach((checked, i) => {
+    const el = podcastsList.querySelector(`[data-podcast="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+
+renderLevels();
+renderBooks();
+renderPodcasts();
+</script>
+</body>
+</html>

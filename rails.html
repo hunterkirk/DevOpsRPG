@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rails Mastery RPG Tracker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .completed { text-decoration: line-through; color: #888; }
+</style>
+</head>
+<body class="p-6 max-w-7xl mx-auto">
+<h1 class="text-4xl font-extrabold text-pink-400 mb-6">🎲 Rails Mastery RPG Tracker</h1>
+<p class="mb-8 text-gray-400">Level up your Rails skills by completing tasks, reading essential books, and listening to top podcasts!</p>
+
+<div class="flex flex-col md:flex-row gap-8">
+  <section class="flex-1 space-y-6" id="levelsContainer"></section>
+  <aside class="w-full md:w-96 bg-gray-800 rounded p-6 space-y-8">
+    <div>
+      <h2 class="text-xl font-bold text-pink-300 mb-3">📚 10 Must-Read Rails Books</h2>
+      <ul id="booksList" class="space-y-2">
+        <li><label><input type="checkbox" data-book="0" class="mr-2" />Agile Web Development with Rails</label></li>
+        <li><label><input type="checkbox" data-book="1" class="mr-2" />The Rails Way</label></li>
+        <li><label><input type="checkbox" data-book="2" class="mr-2" />Crafting Rails Applications</label></li>
+        <li><label><input type="checkbox" data-book="3" class="mr-2" />Rails AntiPatterns</label></li>
+        <li><label><input type="checkbox" data-book="4" class="mr-2" />Ruby on Rails Tutorial</label></li>
+        <li><label><input type="checkbox" data-book="5" class="mr-2" />Rails 5 Test Prescriptions</label></li>
+        <li><label><input type="checkbox" data-book="6" class="mr-2" />Everyday Rails Testing</label></li>
+        <li><label><input type="checkbox" data-book="7" class="mr-2" />Metaprogramming Ruby</label></li>
+        <li><label><input type="checkbox" data-book="8" class="mr-2" />Refactoring: Ruby Edition</label></li>
+        <li><label><input type="checkbox" data-book="9" class="mr-2" />Ruby Science</label></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-pink-300 mb-3">🎧 5 Popular Rails Podcasts</h2>
+      <ul id="podcastsList" class="space-y-2">
+        <li><label><input type="checkbox" data-podcast="0" class="mr-2" />Remote Ruby</label></li>
+        <li><label><input type="checkbox" data-podcast="1" class="mr-2" />Ruby Rogues</label></li>
+        <li><label><input type="checkbox" data-podcast="2" class="mr-2" />Rails with Jason</label></li>
+        <li><label><input type="checkbox" data-podcast="3" class="mr-2" />The Ruby Blend</label></li>
+        <li><label><input type="checkbox" data-podcast="4" class="mr-2" />Ruby on Rails Podcast</label></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<div class="mt-8">
+  <p class="text-gray-400 mb-2">Overall Progress:</p>
+  <div class="h-5 bg-gray-700 rounded overflow-hidden">
+    <div id="progressBar" class="h-5 bg-pink-500 transition-all duration-300"></div>
+  </div>
+  <p id="progressText" class="text-sm text-gray-400 mt-1"></p>
+</div>
+
+<script>
+const levels = [
+  "Level 1: Rails Basics",
+  "Level 2: MVC Mastery",
+  "Level 3: Database & ActiveRecord",
+  "Level 4: Routing & Controllers",
+  "Level 5: Views & Frontend",
+  "Level 6: Testing in Rails",
+  "Level 7: Authentication & Authorization",
+  "Level 8: API & JSON Handling",
+  "Level 9: Performance & Scaling",
+  "Level 10: Rails Mastery"
+];
+
+const levelTasks = [
+  [
+    "Understand what Rails is",
+    "Install Rails on your machine",
+    "Create your first Rails app",
+    "Understand the folder structure",
+    "Use the Rails console",
+    "Start a local server with rails server",
+    "Generate a scaffold",
+    "Run database migrations",
+    "Understand Rails generators",
+    "Explore the Rails Guides"
+  ],
+  [
+    "Understand MVC architecture",
+    "Create a new controller",
+    "Add actions to your controller",
+    "Create corresponding views",
+    "Understand model-view separation",
+    "Use instance variables in views",
+    "Understand strong parameters",
+    "Debug MVC issues",
+    "Understand controller callbacks",
+    "Create partials for views"
+  ],
+  [
+    "Understand what ActiveRecord is",
+    "Create and run migrations",
+    "Use Rails console to explore data",
+    "Perform CRUD with ActiveRecord",
+    "Understand associations (has_many, belongs_to)",
+    "Use validations in models",
+    "Add scopes to models",
+    "Use callbacks in models",
+    "Understand polymorphic associations",
+    "Add indexes and constraints"
+  ],
+  [
+    "Understand Rails routing",
+    "Use resources in routes",
+    "Add custom routes",
+    "Use nested routes",
+    "Understand named routes",
+    "Explore RESTful conventions",
+    "Use constraints in routes",
+    "Understand route helpers",
+    "Debug routing issues",
+    "Use concerns for routing"
+  ],
+  [
+    "Understand ERB templates",
+    "Use layouts and partials",
+    "Pass variables to views",
+    "Use helpers in views",
+    "Add basic CSS/JS with Rails",
+    "Use the asset pipeline",
+    "Integrate Tailwind or Bootstrap",
+    "Use Turbo/Hotwire for live updates",
+    "Explore Action View components",
+    "Create dynamic UI elements"
+  ],
+  [
+    "Understand why testing matters",
+    "Set up RSpec in a Rails app",
+    "Write model tests",
+    "Write controller tests",
+    "Write feature tests (Capybara)",
+    "Use FactoryBot for test data",
+    "Use fixtures for test data",
+    "Mock/stub external services",
+    "Test mailers and background jobs",
+    "Run tests automatically in CI"
+  ],
+  [
+    "Add Devise to your project",
+    "Configure Devise views",
+    "Use CanCanCan for authorization",
+    "Understand roles and permissions",
+    "Use pundit for policies",
+    "Test authentication flow",
+    "Protect sensitive endpoints",
+    "Understand CSRF protection",
+    "Use JWT for APIs (optional)",
+    "Add OAuth2 login (Google, GitHub)"
+  ],
+  [
+    "Create an API-only Rails app",
+    "Use Jbuilder or fast_jsonapi",
+    "Set up routes for APIs",
+    "Add versioning to your API",
+    "Handle JSON requests and responses",
+    "Use serializers for responses",
+    "Add authentication to APIs",
+    "Use Postman or curl to test",
+    "Explore API documentation with Swagger",
+    "Understand CORS & security for APIs"
+  ],
+  [
+    "Use caching (fragment, page, Russian doll)",
+    "Understand N+1 queries and eager loading",
+    "Use Bullet to detect queries",
+    "Optimize database indexes",
+    "Use background jobs (Sidekiq, Resque)",
+    "Profile performance with rack-mini-profiler",
+    "Use CDN and asset caching",
+    "Monitor app performance",
+    "Understand scaling patterns",
+    "Deploy to production (Heroku, AWS)"
+  ],
+  [
+    "Refactor your Rails app for clarity",
+    "Use concerns for reusable code",
+    "Understand Rails engines & plugins",
+    "Create custom rake tasks",
+    "Explore Action Cable for real-time",
+    "Use advanced ActiveRecord techniques",
+    "Contribute to an open source Rails gem",
+    "Secure your app against common exploits",
+    "Document your app’s architecture",
+    "Achieve Rails Mastery! 🚀"
+  ]
+];
+
+const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+  tasksInLevel.map(desc => ({
+    id: `${levelIndex}-${desc}`,
+    description: desc,
+    level: levelIndex + 1,
+    completed: false
+  }))
+);
+
+const savedTasks = JSON.parse(localStorage.getItem('rails_tasks')) || tasks;
+const savedBooks = JSON.parse(localStorage.getItem('rails_books')) || Array(10).fill(false);
+const savedPodcasts = JSON.parse(localStorage.getItem('rails_podcasts')) || Array(5).fill(false);
+
+const levelsContainer = document.getElementById('levelsContainer');
+const booksList = document.getElementById('booksList');
+const podcastsList = document.getElementById('podcastsList');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+
+function renderLevels() {
+  levelsContainer.innerHTML = '';
+  levels.forEach((levelTitle, i) => {
+    const levelNum = i + 1;
+    const div = document.createElement('section');
+    div.className = 'bg-gray-700 rounded p-4';
+    const h2 = document.createElement('h2');
+    h2.className = 'text-lg font-semibold text-pink-300 mb-3';
+    h2.textContent = levelTitle;
+    div.appendChild(h2);
+    const ul = document.createElement('ul');
+    ul.className = 'space-y-2';
+    savedTasks.filter(t => t.level === levelNum).forEach(task => {
+      const li = document.createElement('li');
+      li.className = 'flex items-center bg-gray-600 rounded p-2';
+      li.innerHTML = `
+        <input type="checkbox" class="mr-3 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+        <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+      `;
+      ul.appendChild(li);
+    });
+    div.appendChild(ul);
+    levelsContainer.appendChild(div);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const completedCount = savedTasks.filter(t => t.completed).length;
+  const totalCount = savedTasks.length;
+  const percent = Math.round((completedCount / totalCount) * 100);
+  progressBar.style.width = `${percent}%`;
+  progressText.textContent = `${completedCount}/${totalCount} tasks completed (${percent}%)`;
+}
+
+document.body.addEventListener('change', e => {
+  if (e.target.matches('.task-checkbox')) {
+    const id = e.target.dataset.id;
+    const task = savedTasks.find(t => t.id === id);
+    if (task) {
+      task.completed = e.target.checked;
+      localStorage.setItem('rails_tasks', JSON.stringify(savedTasks));
+      renderLevels();
+    }
+  }
+  if (e.target.matches('[data-book]')) {
+    const idx = parseInt(e.target.dataset.book, 10);
+    savedBooks[idx] = e.target.checked;
+    localStorage.setItem('rails_books', JSON.stringify(savedBooks));
+  }
+  if (e.target.matches('[data-podcast]')) {
+    const idx = parseInt(e.target.dataset.podcast, 10);
+    savedPodcasts[idx] = e.target.checked;
+    localStorage.setItem('rails_podcasts', JSON.stringify(savedPodcasts));
+  }
+});
+
+function renderBooks() {
+  savedBooks.forEach((checked, i) => {
+    const el = booksList.querySelector(`[data-book="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+function renderPodcasts() {
+  savedPodcasts.forEach((checked, i) => {
+    const el = podcastsList.querySelector(`[data-podcast="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+
+renderLevels();
+renderBooks();
+renderPodcasts();
+</script>
+</body>
+</html>

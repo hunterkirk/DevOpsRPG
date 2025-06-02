@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-gray-100">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prometheus Mastery RPG Tracker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .completed { text-decoration: line-through; color: #888; }
+</style>
+</head>
+<body class="p-6 max-w-7xl mx-auto">
+<h1 class="text-4xl font-extrabold text-blue-400 mb-6">🛡️ Prometheus Mastery RPG Tracker</h1>
+<p class="mb-8 text-gray-400">Level up your Prometheus skills by completing tasks, reading essential books, and listening to top podcasts!</p>
+
+<div class="flex flex-col md:flex-row gap-8">
+  <section class="flex-1 space-y-6" id="levelsContainer"></section>
+  <aside class="w-full md:w-96 bg-gray-800 rounded p-6 space-y-8">
+    <div>
+      <h2 class="text-xl font-bold text-blue-300 mb-3">📚 10 Must-Read Prometheus & Monitoring Books</h2>
+      <ul id="booksList" class="space-y-2">
+        <li><label><input type="checkbox" data-book="0" class="mr-2" />Prometheus: Up & Running</label></li>
+        <li><label><input type="checkbox" data-book="1" class="mr-2" />The Site Reliability Workbook</label></li>
+        <li><label><input type="checkbox" data-book="2" class="mr-2" />Seeking SRE</label></li>
+        <li><label><input type="checkbox" data-book="3" class="mr-2" />Monitoring Distributed Systems</label></li>
+        <li><label><input type="checkbox" data-book="4" class="mr-2" />The Art of Monitoring</label></li>
+        <li><label><input type="checkbox" data-book="5" class="mr-2" />Cloud Native Monitoring with Prometheus</label></li>
+        <li><label><input type="checkbox" data-book="6" class="mr-2" />The Practice of System and Network Administration</label></li>
+        <li><label><input type="checkbox" data-book="7" class="mr-2" />Prometheus Cookbook</label></li>
+        <li><label><input type="checkbox" data-book="8" class="mr-2" />Kubernetes Up & Running</label></li>
+        <li><label><input type="checkbox" data-book="9" class="mr-2" />Effective Monitoring and Alerting</label></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-blue-300 mb-3">🎧 5 Popular Observability Podcasts</h2>
+      <ul id="podcastsList" class="space-y-2">
+        <li><label><input type="checkbox" data-podcast="0" class="mr-2" />SRE Weekly Podcast</label></li>
+        <li><label><input type="checkbox" data-podcast="1" class="mr-2" />On-Call Nightmares</label></li>
+        <li><label><input type="checkbox" data-podcast="2" class="mr-2" />Observabilitycast</label></li>
+        <li><label><input type="checkbox" data-podcast="3" class="mr-2" />The SRE Podcast</label></li>
+        <li><label><input type="checkbox" data-podcast="4" class="mr-2" />Real World DevOps</label></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<div class="mt-8">
+  <p class="text-gray-400 mb-2">Overall Progress:</p>
+  <div class="h-5 bg-gray-700 rounded overflow-hidden">
+    <div id="progressBar" class="h-5 bg-blue-500 transition-all duration-300"></div>
+  </div>
+  <p id="progressText" class="text-sm text-gray-400 mt-1"></p>
+</div>
+
+<script>
+const levels = [
+  "Level 1: Introduction to Prometheus",
+  "Level 2: PromQL Fundamentals",
+  "Level 3: Exporters & Metrics",
+  "Level 4: Setting Up Prometheus",
+  "Level 5: Alerting & Rules",
+  "Level 6: Grafana Integration",
+  "Level 7: Recording Rules & Scalability",
+  "Level 8: Service Discovery & Relabeling",
+  "Level 9: High Availability & Federation",
+  "Level 10: Prometheus Mastery"
+];
+
+const levelTasks = [
+  [
+    "Understand what Prometheus is",
+    "Install Prometheus locally",
+    "Explore the Prometheus UI",
+    "Understand metrics & time-series",
+    "Read the Prometheus docs",
+    "Understand metric types: counter, gauge, histogram, summary",
+    "Explore targets & service discovery",
+    "Understand data retention & storage",
+    "Configure basic scrape targets",
+    "Scrape metrics from a demo app"
+  ],
+  [
+    "Understand PromQL basics",
+    "Use instant vector selectors",
+    "Use range vector selectors",
+    "Use aggregation operators",
+    "Use arithmetic & comparison operators",
+    "Explore label selectors & filters",
+    "Use rate() & irate() functions",
+    "Understand recording rules in PromQL",
+    "Create basic queries for visualization",
+    "Explore advanced PromQL examples"
+  ],
+  [
+    "Install node_exporter",
+    "Explore default exporters",
+    "Understand custom exporters",
+    "Scrape metrics from node_exporter",
+    "Install & use blackbox_exporter",
+    "Understand the textfile collector",
+    "Monitor app metrics with client libraries",
+    "Explore pushgateway basics",
+    "Use third-party exporters (e.g., mysqld_exporter)",
+    "Expose custom metrics from your app"
+  ],
+  [
+    "Download and run Prometheus binary",
+    "Understand configuration file structure",
+    "Configure scrape intervals",
+    "Add multiple scrape jobs",
+    "Configure static and dynamic targets",
+    "Use file-based service discovery",
+    "Reload configuration dynamically",
+    "Enable remote write/read endpoints",
+    "Enable TLS and authentication",
+    "Understand best practices for config"
+  ],
+  [
+    "Understand alerting rules",
+    "Write basic alerting rules",
+    "Configure alertmanager",
+    "Understand alertmanager config",
+    "Integrate with Slack/Email/PagerDuty",
+    "Test alert delivery",
+    "Explore inhibition and silences",
+    "Use alertmanager templates",
+    "Understand grouped alerts",
+    "Use alertmanager clustering"
+  ],
+  [
+    "Install Grafana",
+    "Add Prometheus as a data source",
+    "Create basic dashboards",
+    "Use built-in panels for visualization",
+    "Customize Grafana panels",
+    "Import community dashboards",
+    "Explore templating variables",
+    "Use Grafana alerting",
+    "Share dashboards with your team",
+    "Understand dashboard best practices"
+  ],
+  [
+    "Understand recording rules",
+    "Configure recording rules in Prometheus",
+    "Use recording rules for performance",
+    "Explore rule file best practices",
+    "Enable remote storage adapters",
+    "Scale Prometheus with remote read/write",
+    "Understand long-term storage options",
+    "Use Thanos/Cortex for HA",
+    "Explore sharding strategies",
+    "Plan for scalability in production"
+  ],
+  [
+    "Understand service discovery options",
+    "Use file-based service discovery",
+    "Explore Kubernetes SD",
+    "Understand EC2/Consul SD",
+    "Use relabel_configs for target discovery",
+    "Transform labels dynamically",
+    "Filter targets with relabeling",
+    "Debug target discovery",
+    "Understand target metadata",
+    "Use SD for dynamic environments"
+  ],
+  [
+    "Understand Prometheus HA strategies",
+    "Set up multiple Prometheus servers",
+    "Explore data replication options",
+    "Understand federation basics",
+    "Configure federation for global views",
+    "Avoid query overloads with federation",
+    "Monitor Prometheus with Prometheus",
+    "Use external storage (Thanos/Cortex)",
+    "Explore remote write integration",
+    "Plan for global observability"
+  ],
+  [
+    "Review all Prometheus concepts",
+    "Create a production-grade setup",
+    "Monitor Kubernetes with Prometheus",
+    "Automate config management",
+    "Integrate with CI/CD pipelines",
+    "Contribute to open source exporters",
+    "Create custom exporters",
+    "Understand security best practices",
+    "Teach Prometheus to your team",
+    "Achieve Prometheus Mastery! 🚀"
+  ]
+];
+
+const tasks = levelTasks.flatMap((tasksInLevel, levelIndex) =>
+  tasksInLevel.map(desc => ({
+    id: `${levelIndex}-${desc}`,
+    description: desc,
+    level: levelIndex + 1,
+    completed: false
+  }))
+);
+
+const savedTasks = JSON.parse(localStorage.getItem('prometheus_tasks')) || tasks;
+const savedBooks = JSON.parse(localStorage.getItem('prometheus_books')) || Array(10).fill(false);
+const savedPodcasts = JSON.parse(localStorage.getItem('prometheus_podcasts')) || Array(5).fill(false);
+
+const levelsContainer = document.getElementById('levelsContainer');
+const booksList = document.getElementById('booksList');
+const podcastsList = document.getElementById('podcastsList');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+
+function renderLevels() {
+  levelsContainer.innerHTML = '';
+  levels.forEach((levelTitle, i) => {
+    const levelNum = i + 1;
+    const div = document.createElement('section');
+    div.className = 'bg-gray-700 rounded p-4';
+    const h2 = document.createElement('h2');
+    h2.className = 'text-lg font-semibold text-blue-300 mb-3';
+    h2.textContent = levelTitle;
+    div.appendChild(h2);
+    const ul = document.createElement('ul');
+    ul.className = 'space-y-2';
+    savedTasks.filter(t => t.level === levelNum).forEach(task => {
+      const li = document.createElement('li');
+      li.className = 'flex items-center bg-gray-600 rounded p-2';
+      li.innerHTML = `
+        <input type="checkbox" class="mr-3 task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''} />
+        <span class="${task.completed ? 'completed' : ''}">${task.description}</span>
+      `;
+      ul.appendChild(li);
+    });
+    div.appendChild(ul);
+    levelsContainer.appendChild(div);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const completedCount = savedTasks.filter(t => t.completed).length;
+  const totalCount = savedTasks.length;
+  const percent = Math.round((completedCount / totalCount) * 100);
+  progressBar.style.width = `${percent}%`;
+  progressText.textContent = `${completedCount}/${totalCount} tasks completed (${percent}%)`;
+}
+
+document.body.addEventListener('change', e => {
+  if (e.target.matches('.task-checkbox')) {
+    const id = e.target.dataset.id;
+    const task = savedTasks.find(t => t.id === id);
+    if (task) {
+      task.completed = e.target.checked;
+      localStorage.setItem('prometheus_tasks', JSON.stringify(savedTasks));
+      renderLevels();
+    }
+  }
+  if (e.target.matches('[data-book]')) {
+    const idx = parseInt(e.target.dataset.book, 10);
+    savedBooks[idx] = e.target.checked;
+    localStorage.setItem('prometheus_books', JSON.stringify(savedBooks));
+  }
+  if (e.target.matches('[data-podcast]')) {
+    const idx = parseInt(e.target.dataset.podcast, 10);
+    savedPodcasts[idx] = e.target.checked;
+    localStorage.setItem('prometheus_podcasts', JSON.stringify(savedPodcasts));
+  }
+});
+
+function renderBooks() {
+  savedBooks.forEach((checked, i) => {
+    const el = booksList.querySelector(`[data-book="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+function renderPodcasts() {
+  savedPodcasts.forEach((checked, i) => {
+    const el = podcastsList.querySelector(`[data-podcast="${i}"]`);
+    if (el) el.checked = checked;
+  });
+}
+
+renderLevels();
+renderBooks();
+renderPodcasts();
+</script>
+</body>
+</html>
